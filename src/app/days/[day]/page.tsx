@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DAYS, formatDate, getDay } from "@/days/registry";
@@ -7,7 +8,7 @@ export function generateStaticParams() {
   return DAYS.map((d) => ({ day: String(d.day) }));
 }
 
-export default async function DayPage({ params }: { params: Promise<{ day: string }> }) {
+async function DayContent({ params }: { params: Promise<{ day: string }> }) {
   const { day } = await params;
   const entry = getDay(Number(day));
   if (!entry) notFound();
@@ -17,10 +18,7 @@ export default async function DayPage({ params }: { params: Promise<{ day: strin
   const next = getDay(entry.day + 1);
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
-        All days
-      </Link>
+    <>
       <p className="mt-4 text-sm text-zinc-500">
         {entry.level} | {formatDate(entry.date)}
       </p>
@@ -41,6 +39,19 @@ export default async function DayPage({ params }: { params: Promise<{ day: strin
         {prev ? <Link href={`/days/${prev.day}`}>Previous: Day {prev.day}</Link> : <span />}
         {next ? <Link href={`/days/${next.day}`}>Next: Day {next.day}</Link> : <span />}
       </nav>
+    </>
+  );
+}
+
+export default function DayPage({ params }: { params: Promise<{ day: string }> }) {
+  return (
+    <main className="mx-auto w-full max-w-4xl px-6 py-10">
+      <Link href="/" className="text-sm text-blue-600 hover:underline">
+        All days
+      </Link>
+      <Suspense fallback={<p className="mt-6 text-zinc-500">Loading...</p>}>
+        <DayContent params={params} />
+      </Suspense>
     </main>
   );
 }

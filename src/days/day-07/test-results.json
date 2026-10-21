@@ -1,0 +1,16 @@
+{
+  "suite": "password-reset",
+  "run": "2026-10-29T10:12:03Z",
+  "environment": "staging",
+  "results": [
+    { "name": "request reset for a registered email", "status": "pass" },
+    { "name": "reset link opens the reset form", "status": "pass" },
+    { "name": "set a new password with a valid token", "status": "pass" },
+    { "name": "expired token is rejected", "status": "pass" },
+    { "name": "used token cannot be reused", "status": "pass" },
+    { "name": "reset email arrives within 2 minutes (SSO-created Gmail user)", "status": "fail", "detail": "No email after 5 minutes" },
+    { "name": "reset email arrives within 2 minutes (password-created user)", "status": "pass" },
+    { "name": "unknown email returns a generic message", "status": "pass" }
+  ],
+  "complaint": "Password reset email is never received for some users."
+}

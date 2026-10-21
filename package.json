@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --test \"src/days/**/*.test.js\""
+    "test": "node --test \"src/days/**/*.test.js\"",
+    "test:seeded": "node --test \"src/days/**/*.seeded.js\""
   },
   "dependencies": {
     "next": "16.4.2",

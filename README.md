@@ -8,7 +8,8 @@ One Next.js app and one git repo for the whole GitHub Copilot Training Program (
 ```
 npm install
 npm run dev     # http://localhost:3000
-npm test        # Node test runner over src/days/**/*.test.js
+npm test        # Node test runner over src/days/**/*.test.js (todo tests are lab stubs)
+npm run test:seeded   # intentionally failing Day 4 tests (Dev bug + QA failing test)
 ```
 
 ## Layout
@@ -20,6 +21,14 @@ npm test        # Node test runner over src/days/**/*.test.js
 | `src/days/day-NN/` | Everything for one day: lab code, tests, showcase page, LAB.md |
 | `src/app/page.tsx` | Home: all days grouped by level |
 | `src/app/days/[day]/page.tsx` | One route per day (`/days/1` ... `/days/30`) |
+
+## Facilitator mode
+
+Add `?facilitator=1` to any day URL (e.g. `/days/9?facilitator=1`) to show answer keys, demo scripts and the Day 10 rubric. Convenience only, not security: do not deploy publicly with the keys in the payload.
+
+## Status
+
+Level 1 (Basic), Days 1-10: ready. See `docs/BASIC-PLAN.md`. Days 11-30: planned.
 
 ## Adding a day
 

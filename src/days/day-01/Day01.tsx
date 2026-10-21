@@ -1,4 +1,6 @@
 import OrderPlayground from "./OrderPlayground";
+import Quiz from "@/components/Quiz";
+import { QUIZZES } from "../assessments";
 
 const agenda = [
   ["Concept", "What Copilot is and is not; where it fits in the 7-phase AI Enabled Development Guide; the five AI agents the org uses"],
@@ -70,12 +72,9 @@ export default function Day01() {
       </section>
 
       <section>
-        <h2 className="text-xl font-semibold">Quiz check</h2>
-        <ul className="ml-5 list-disc">
-          <li>Can you state what Copilot is and is not, in your own words?</li>
-          <li>Did you name at least one suggestion you rejected, and why?</li>
-          <li>Did you check the Chat summary against the actual code?</li>
-        </ul>
+        <h2 className="text-xl font-semibold">Quiz</h2>
+        <p className="mb-3 mt-2 text-sm">Also check: did you name a suggestion you rejected, and why? Did you check the Chat summary against the real code?</p>
+        <Quiz questions={QUIZZES[1]} />
       </section>
     </div>
   );
