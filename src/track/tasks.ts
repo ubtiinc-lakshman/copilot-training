@@ -18,6 +18,22 @@ export const TRACK_INTRO = [
   "Seed files (data, bugs, a login route to audit) are in app-track/seed/ in the training repo. Fake data only.",
 ];
 
+export type Prereq = { name: string; need: string; check?: string };
+
+// Sort these out before Day 2. Run: node app-track/check-prereqs.mjs (from a clone of the training repo).
+export const PREREQS: Prereq[] = [
+  { name: "Node.js", need: "22.12 or newer (24 LTS recommended). Next.js 16 needs 20.9+, but Vitest (Day 2) needs 22.12+", check: "node -v" },
+  { name: "npm", need: "10 or newer, installed with Node", check: "npm -v" },
+  { name: "Git", need: "2.30 or newer, with your name and email configured", check: "git --version" },
+  { name: "Git identity", need: "Needed for the commits at the end of each day", check: 'git config --global user.name "Your Name" && git config --global user.email you@company.com' },
+  { name: "IDE with Copilot + Copilot Chat", need: "Active on your own machine (set up and verified on Day 2)" },
+  { name: "Access to the npm registry", need: "Behind a proxy, set it first (npm config set proxy / https-proxy)", check: "npm ping" },
+  { name: "A plain working folder", need: "Not inside OneDrive or SharePoint (sync breaks node_modules). For example C:\\work", check: "mkdir C:\\work" },
+  { name: "Disk space and a browser", need: "About 1 GB free per app, and Chrome or Edge for localhost:3000" },
+  { name: "Day 8 only", need: "If you pick Playwright: npx playwright install (a few hundred MB). For the rewrite in another language: that language's toolchain, or just read and review the output" },
+  { name: "Optional: GitHub CLI or a GitHub repo", need: "Day 7 and Day 10 PR practice. The GitHub web UI works instead", check: "gh --version" },
+];
+
 export const TRACK: TrackTask[] = [
   {
     day: 2,

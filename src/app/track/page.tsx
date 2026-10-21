@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CodeBlock } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
-import { TRACK, TRACK_INTRO } from "@/track/tasks";
+import { PREREQS, TRACK, TRACK_INTRO } from "@/track/tasks";
 
 export const metadata = { title: "Optional app track: Order Desk" };
 
@@ -18,6 +18,22 @@ export default function TrackPage() {
           <li key={t}>{t}</li>
         ))}
       </ul>
+
+      <section className="mt-8 space-y-2">
+        <h2 className="text-xl font-semibold">Prerequisites (sort these out before Day 2)</h2>
+        <table className="w-full text-sm">
+          <tbody>
+            {PREREQS.map((p) => (
+              <tr key={p.name} className="border-b border-zinc-200 align-top dark:border-zinc-800">
+                <td className="w-48 py-2 pr-4 font-semibold">{p.name}</td>
+                <td className="pr-4">{p.need}</td>
+                <td>{p.check && <code className="text-xs">{p.check}</code>}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <CodeBlock label="Quick check (from a clone of the training repo)">{"node app-track/check-prereqs.mjs"}</CodeBlock>
+      </section>
 
       <nav className="mt-6 flex flex-wrap gap-3 text-sm">
         {TRACK.map((t) => (

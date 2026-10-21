@@ -8,6 +8,20 @@ It is separate from the standalone day labs in `src/days/`. Nothing here is requ
 - Tasks, starter prompts and "done when" checklists: the `/track` page of the training site.
 - `seed/` holds fake data and the paste-in files (the seeded bugs for Day 4 and Day 7, the login route to audit on Day 9).
 
+## Prerequisites (before Day 2)
+
+- Node.js 22.12 or newer (24 LTS recommended) and npm 10+. Next.js 16 needs 20.9+, Vitest needs 22.12+.
+- Git 2.30+ with `user.name` and `user.email` configured.
+- IDE with Copilot and Copilot Chat active (verified on Day 2).
+- Access to the npm registry (set the proxy if you are behind one: `npm ping` to test).
+- A plain working folder, not OneDrive/SharePoint (sync breaks `node_modules`). About 1 GB free per app.
+- Day 8 only: Playwright browsers (`npx playwright install`) if you choose Playwright.
+- Optional: GitHub CLI (`gh`) or a GitHub repo for the Day 7 and Day 10 pull requests.
+
+Check everything in one go: `node app-track/check-prereqs.mjs`
+
+## The plan
+
 | Day | Adds to the app |
 |---|---|
 | 2 | Scaffold, git, Vitest |
