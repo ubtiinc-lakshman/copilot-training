@@ -1,0 +1,4 @@
+[
+  { "id": 1, "email": "asha@example.com", "password": "FAKE-password-1", "role": "admin" },
+  { "id": 2, "email": "ravi@example.com", "password": "FAKE-password-2", "role": "customer" }
+]

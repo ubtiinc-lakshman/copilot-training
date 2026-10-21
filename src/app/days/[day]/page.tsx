@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { DAYS, formatDate, getDay } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
+import { getTrackTask } from "@/track/tasks";
 
 export function generateStaticParams() {
   return DAYS.map((d) => ({ day: String(d.day) }));
@@ -32,6 +33,15 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
         <p className="rounded border border-dashed border-zinc-300 p-6 text-zinc-600">
           This day&apos;s showcase is added the day before the session. Create <code>src/days/day-{String(entry.day).padStart(2, "0")}/</code>{" "}
           and register it in <code>src/days/showcases.tsx</code>.
+        </p>
+      )}
+
+      {getTrackTask(entry.day) && (
+        <p className="mt-10 rounded border border-dashed border-zinc-300 px-4 py-3 text-sm">
+          Optional app track, Day {entry.day}: {getTrackTask(entry.day)!.title}.{" "}
+          <Link href={`/track#day-${entry.day}`} className="font-semibold text-blue-600 hover:underline">
+            See the task
+          </Link>
         </p>
       )}
 

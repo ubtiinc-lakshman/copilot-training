@@ -10,6 +10,13 @@ export default function Home() {
         Developers &amp; QA track. 30 sessions, Oct 21 to Dec 1, 2026. One folder per day in <code>src/days</code>.
       </p>
 
+      <p className="mt-4 rounded border border-zinc-200 px-4 py-3 text-sm dark:border-zinc-800">
+        Optional: build one Next.js app alongside the training (Days 2-10).{" "}
+        <Link href="/track" className="font-semibold text-blue-600 hover:underline">
+          Open the app track
+        </Link>
+      </p>
+
       {LEVELS.map((level) => (
         <section key={level} className="mt-10">
           <h2 className="mb-3 text-xl font-semibold">Level: {level}</h2>

@@ -1,0 +1,5 @@
+[
+  { "id": "o-1001", "customer": "Asha", "total": 7498, "status": "shipped" },
+  { "id": "o-1002", "customer": "Ravi", "total": 18999, "status": "pending" },
+  { "id": "o-1003", "customer": "Meena", "total": 1299, "status": "cancelled" }
+]
