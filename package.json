@@ -1,0 +1,10 @@
+{
+  "name": "copilot-training-practice-repo",
+  "version": "1.0.0",
+  "description": "Shared practice repo for the GitHub Copilot Training Program (Developers & QA)",
+  "scripts": {
+    "test": "node --test tests/"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}
