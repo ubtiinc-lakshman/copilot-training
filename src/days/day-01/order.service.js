@@ -16,7 +16,12 @@ function applyDiscount(total, code) {
 }
 
 // TODO (Day 1 - Task 1, suggestion 1): return true if the given string is a valid email address using regex.
-function isValidEmail(email) {}
+function isValidEmail(email) {
+  if (typeof email !== 'string') return false;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  return emailRegex.test(email);
+}
 
 // TODO (Day 1 - Task 1, suggestion 2): return the order total formatted as a currency string, e.g. "$1,234.50".
 function formatCurrency(amount) {}

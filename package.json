@@ -1,10 +1,28 @@
 {
-  "name": "copilot-training-practice-repo",
+  "name": "copilot-training",
   "version": "1.0.0",
-  "description": "Shared practice repo for the GitHub Copilot Training Program (Developers & QA)",
+  "description": "GitHub Copilot Training Program (Developers & QA): one Next.js app, one folder per day",
+  "private": true,
   "scripts": {
-    "test": "node --test"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint",
+    "test": "node --test \"src/days/**/*.test.js\""
   },
-  "license": "UNLICENSED",
-  "private": true
+  "dependencies": {
+    "next": "16.4.2",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.4.2",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
 }
