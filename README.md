@@ -3,14 +3,42 @@
 One Next.js app and one git repo for the whole GitHub Copilot Training Program (Developers & QA).
 30 sessions, Oct 21 to Dec 1, 2026. Each day has its own folder.
 
+## Prerequisites
+
+| Need | Version | Check |
+|---|---|---|
+| Node.js | 22.13 or newer. 24 LTS recommended (built and tested on 24.14). Next.js 16 needs 20.9+, the results database uses Node's built-in `node:sqlite` (22.13+), and `npm test` uses Node's test-file globs | `node -v` |
+| npm | 10 or newer (comes with Node) | `npm -v` |
+| Git | 2.30 or newer | `git --version` |
+| Free port | 3000 (change with `npm run dev -- -p 3001`) | |
+| Disk | about 1 GB for `node_modules` and the build | |
+| npm registry access | Behind a proxy: `npm config set proxy <url>` and `npm config set https-proxy <url>` | `npm ping` |
+
+Works on Windows, macOS and Linux. On Windows, clone into a plain folder (not OneDrive/SharePoint: sync breaks `node_modules`). No database server, Docker or other tools are needed.
+
+## First-time setup
+
+```
+git clone <repo-url> copilot-training
+cd copilot-training
+npm install
+copy .env.example .env.local      # macOS/Linux: cp .env.example .env.local
+```
+
+Edit `.env.local` and set `FACILITATOR_KEY` to your own secret. It protects `/facilitator/results`. Without it the results API refuses to answer. The file is git-ignored, so every clone needs its own.
+
 ## Run
 
 ```
-npm install
 npm run dev     # http://localhost:3000
 npm test        # Node test runner over src/days/**/*.test.js (todo tests are lab stubs)
 npm run test:seeded   # intentionally failing Day 4 tests (Dev bug + QA failing test)
+npm run build && npm start    # production build
 ```
+
+The quiz results database (`data/results.db`) is created automatically on the first saved result. It needs a writable disk.
+
+Troubleshooting: `EADDRINUSE` means port 3000 is taken (stop the other server or use `-p`). Node prints an "SQLite is an experimental feature" warning: that is expected. Page changes not showing: stop the server, delete `.next`, start again.
 
 ## Layout
 
