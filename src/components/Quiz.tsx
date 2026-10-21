@@ -1,36 +1,63 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFacilitator } from "@/lib/facilitator";
+import { gradeQuiz, isCorrect, type Given, type Question } from "@/lib/grade";
 
-export type Question = {
-  q: string;
-  type: "mcq" | "tf" | "short";
-  options?: string[];
-  correct?: number | boolean; // mcq: option index, tf: true/false
-  keywords?: string[]; // short: any keyword (case-insensitive) counts as correct
-  answer: string; // shown in facilitator mode
-};
+export type { Question };
 
-type Given = string | number | boolean | undefined;
+type SaveState = "idle" | "saving" | "saved" | "error";
 
-function isCorrect(q: Question, given: Given): boolean {
-  if (given === undefined || given === "") return false;
-  if (q.type === "short") return (q.keywords ?? []).some((k) => String(given).toLowerCase().includes(k.toLowerCase()));
-  return given === q.correct;
-}
-
-export default function Quiz({ questions, passPercent }: { questions: Question[]; passPercent?: number }) {
+export default function Quiz({ day, questions, passPercent }: { day: number; questions: Question[]; passPercent?: number }) {
   const facilitator = useFacilitator();
   const [given, setGiven] = useState<Given[]>(() => questions.map(() => undefined));
   const [submitted, setSubmitted] = useState(false);
+  const [name, setName] = useState("");
+  const [save, setSave] = useState<SaveState>("idle");
+  const [message, setMessage] = useState("");
+
+  useEffect(() => {
+    setName(localStorage.getItem("participant:name") ?? "");
+  }, []);
 
   const set = (i: number, v: Given) => setGiven((g) => g.map((x, j) => (j === i ? v : x)));
-  const score = questions.filter((q, i) => isCorrect(q, given[i])).length;
-  const percent = Math.round((score / questions.length) * 100);
+  const { score, total, percent } = gradeQuiz(questions, given);
+
+  const submit = async () => {
+    setSubmitted(true);
+    if (!name.trim()) {
+      setSave("error");
+      setMessage("Enter your name above so your result can be saved.");
+      return;
+    }
+    localStorage.setItem("participant:name", name.trim());
+    setSave("saving");
+    try {
+      const res = await fetch("/api/results", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ day, name: name.trim(), answers: given.map((g) => g ?? null) }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error ?? "Save failed");
+      setSave("saved");
+      setMessage("Result saved.");
+    } catch (e) {
+      setSave("error");
+      setMessage(`Not saved: ${(e as Error).message}`);
+    }
+  };
 
   return (
     <div className="space-y-4">
+      <label className="block text-sm font-semibold">
+        Your name (saved with your result)
+        <input
+          className="mt-1 w-full max-w-sm rounded border border-zinc-300 px-2 py-1 font-normal dark:border-zinc-700 dark:bg-zinc-900"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="e.g. lakshman.s"
+        />
+      </label>
       {questions.map((q, i) => (
         <div key={q.q} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
           <p className="font-semibold">
@@ -68,16 +95,17 @@ export default function Quiz({ questions, passPercent }: { questions: Question[]
           {facilitator && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-950">Answer: {q.answer}</p>}
         </div>
       ))}
-      <div className="flex items-center gap-4">
-        <button className="rounded bg-blue-600 px-4 py-2 text-white" onClick={() => setSubmitted(true)}>
+      <div className="flex flex-wrap items-center gap-4">
+        <button className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50" onClick={submit} disabled={save === "saving"}>
           Check answers
         </button>
         {submitted && (
           <span className="font-semibold">
-            Score: {score}/{questions.length} ({percent}%)
+            Score: {score}/{total} ({percent}%)
             {passPercent !== undefined && (percent >= passPercent ? " - PASS" : ` - below the ${passPercent}% pass mark`)}
           </span>
         )}
+        {save !== "idle" && <span className={`text-sm ${save === "error" ? "text-red-600" : "text-zinc-500"}`}>{save === "saving" ? "Saving..." : message}</span>}
       </div>
     </div>
   );

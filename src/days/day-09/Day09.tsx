@@ -43,7 +43,7 @@ export default function Day09() {
       </Section>
 
       <Section title="Written test (10 questions, pass mark 70%)">
-        <Quiz questions={QUIZZES[9]} passPercent={70} />
+        <Quiz day={9} questions={QUIZZES[9]} passPercent={70} />
       </Section>
 
       <Section title="Assignment (due before Day 10)">

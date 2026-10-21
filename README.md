@@ -30,6 +30,15 @@ Add `?facilitator=1` to any day URL (e.g. `/days/9?facilitator=1`) to show answe
 
 Level 1 (Basic), Days 1-10: ready. See `docs/BASIC-PLAN.md`. Days 11-30: planned.
 
+## Quiz results (server)
+
+Quiz submissions are stored in SQLite at `data/results.db` (git-ignored, created on first save, uses Node's built-in `node:sqlite`). The server re-grades the answers itself; the browser score is never trusted.
+
+- Participants enter a name on the quiz; results save on **Check answers**.
+- Facilitator page: `/facilitator/results` (enter the key). Shows best score per participant per day, the average vs the 70% gate, Day 9 hard gate, all attempts, CSV export.
+- Set `FACILITATOR_KEY` in `.env.local` (not committed). Without it the results API refuses to answer.
+- Back up `data/results.db`. Needs a host with a writable disk (not serverless).
+
 ## Adding a day
 
 1. Create `src/days/day-NN/` with the day's code, tests (`*.test.js`) and a `DayNN.tsx` showcase.

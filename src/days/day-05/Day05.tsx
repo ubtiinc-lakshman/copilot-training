@@ -40,7 +40,7 @@ export default function Day05() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz questions={QUIZZES[5]} />
+        <Quiz day={5} questions={QUIZZES[5]} />
       </Section>
 
       <FacilitatorOnly>

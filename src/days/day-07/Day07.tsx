@@ -67,7 +67,7 @@ export default function Day07() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz questions={QUIZZES[7]} />
+        <Quiz day={7} questions={QUIZZES[7]} />
       </Section>
 
       <FacilitatorOnly>

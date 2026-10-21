@@ -1,4 +1,4 @@
-import type { Question } from "@/components/Quiz";
+import type { Question } from "@/lib/grade";
 
 // Basic level assessment questions (from the Basic assessment questionnaires).
 export const QUIZZES: Record<number, Question[]> = {

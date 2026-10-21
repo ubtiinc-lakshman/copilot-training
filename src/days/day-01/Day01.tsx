@@ -74,7 +74,7 @@ export default function Day01() {
       <section>
         <h2 className="text-xl font-semibold">Quiz</h2>
         <p className="mb-3 mt-2 text-sm">Also check: did you name a suggestion you rejected, and why? Did you check the Chat summary against the real code?</p>
-        <Quiz questions={QUIZZES[1]} />
+        <Quiz day={1} questions={QUIZZES[1]} />
       </section>
     </div>
   );
