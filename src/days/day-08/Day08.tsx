@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import PhoneTester from "./PhoneTester";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 const reflection = `Language / framework I tried:
@@ -44,7 +43,7 @@ export default function Day08() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={8} questions={QUIZZES[8]} />
+        <Quiz day={8} />
       </Section>
 
       <FacilitatorOnly>

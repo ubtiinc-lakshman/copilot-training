@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 const reviewer = [
@@ -67,7 +66,7 @@ export default function Day07() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={7} questions={QUIZZES[7]} />
+        <Quiz day={7} />
       </Section>
 
       <FacilitatorOnly>

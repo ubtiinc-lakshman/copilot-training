@@ -1,7 +1,6 @@
 import { Section, CodeBlock, Callout } from "@/components/Section";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 const commands = [
@@ -60,7 +59,7 @@ export default function Day04() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={4} questions={QUIZZES[4]} />
+        <Quiz day={4} />
       </Section>
 
       <FacilitatorOnly>

@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import PromptBuilder from "./PromptBuilder";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 export default function Day05() {
@@ -40,7 +39,7 @@ export default function Day05() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={5} questions={QUIZZES[5]} />
+        <Quiz day={5} />
       </Section>
 
       <FacilitatorOnly>

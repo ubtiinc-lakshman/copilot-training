@@ -1,8 +1,8 @@
 import { auth, isFacilitator } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
 import { db, type AttendanceRow, type ResultRow } from "@/lib/db";
-import { gradeQuiz, type Given } from "@/lib/grade";
-import { QUIZZES } from "@/days/assessments";
+import { gradeQuiz, isCorrect, type Given } from "@/lib/grade";
+import { getQuiz } from "@/lib/quizzes";
 import { DAYS } from "@/days/registry";
 import { isOpen } from "@/lib/schedule";
 
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
   const day = Number(body.day);
-  const questions = QUIZZES[day];
+  const questions = await getQuiz(day);
   if (!questions) return Response.json({ error: "No quiz for that day" }, { status: 400 });
   if (!isOpen(DAYS[day - 1].date) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   if (!Array.isArray(body.answers) || body.answers.length !== questions.length) {
@@ -30,7 +30,7 @@ export async function POST(request: Request) {
   const sql = await db();
   await sql`INSERT INTO results (day, email, name, score, total, percent, answers)
     VALUES (${day}, ${user.email.toLowerCase()}, ${user.name ?? user.email}, ${score}, ${total}, ${percent}, ${JSON.stringify(answers)}::jsonb)`;
-  return Response.json({ score, total, percent });
+  return Response.json({ score, total, percent, correct: questions.map((q, i) => isCorrect(q, answers[i])) });
 }
 
 // GET: facilitators only (FACILITATOR_EMAILS).

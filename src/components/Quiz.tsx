@@ -1,25 +1,38 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useFacilitator } from "@/lib/facilitator";
-import { gradeQuiz, isCorrect, type Given, type Question } from "@/lib/grade";
-
-export type { Question };
+import type { Given } from "@/lib/grade";
+import type { PublicQuestion } from "@/lib/quizzes";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 
-export default function Quiz({ day, questions, passPercent }: { day: number; questions: Question[]; passPercent?: number }) {
+export default function Quiz({ day, passPercent }: { day: number; passPercent?: number }) {
   const facilitator = useFacilitator();
-  const [given, setGiven] = useState<Given[]>(() => questions.map(() => undefined));
+  // Questions come from the server without answers; grading happens there too.
+  const [questions, setQuestions] = useState<PublicQuestion[] | null>(null);
+  const [given, setGiven] = useState<Given[]>([]);
+  const [outcome, setOutcome] = useState<{ score: number; total: number; percent: number; correct: boolean[] } | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const [save, setSave] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
 
+  useEffect(() => {
+    fetch(`/api/quiz/${day}`)
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error("Quiz not available"))))
+      .then((d) => {
+        setQuestions(d.questions);
+        setGiven(d.questions.map(() => undefined));
+      })
+      .catch((e) => {
+        setSave("error");
+        setMessage(e.message);
+      });
+  }, [day]);
+
   const set = (i: number, v: Given) => setGiven((g) => g.map((x, j) => (j === i ? v : x)));
-  const { score, total, percent } = gradeQuiz(questions, given);
 
   const submit = async () => {
-    setSubmitted(true);
     setSave("saving");
     try {
       const res = await fetch("/api/results", {
@@ -27,7 +40,10 @@ export default function Quiz({ day, questions, passPercent }: { day: number; que
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ day, answers: given.map((g) => g ?? null) }),
       });
-      if (!res.ok) throw new Error((await res.json()).error ?? "Save failed");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Save failed");
+      setOutcome(data);
+      setSubmitted(true);
       setSave("saved");
       setMessage("Result saved.");
     } catch (e) {
@@ -35,6 +51,9 @@ export default function Quiz({ day, questions, passPercent }: { day: number; que
       setMessage(`Not saved: ${(e as Error).message}`);
     }
   };
+
+  if (!questions) return <p className="text-sm text-zinc-500">{save === "error" ? message : "Loading quiz..."}</p>;
+  const { score, total, percent } = outcome ?? { score: 0, total: questions.length, percent: 0 };
 
   return (
     <div className="space-y-4">
@@ -68,11 +87,11 @@ export default function Quiz({ day, questions, passPercent }: { day: number; que
             />
           )}
           {submitted && (
-            <p className={`mt-2 text-sm font-semibold ${isCorrect(q, given[i]) ? "text-green-600" : "text-red-600"}`}>
-              {isCorrect(q, given[i]) ? "Correct" : "Not correct"}
+            <p className={`mt-2 text-sm font-semibold ${outcome?.correct[i] ? "text-green-600" : "text-red-600"}`}>
+              {outcome?.correct[i] ? "Correct" : "Not correct"}
             </p>
           )}
-          {facilitator && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-950">Answer: {q.answer}</p>}
+          {facilitator && q.answer && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-950">Answer: {q.answer}</p>}
         </div>
       ))}
       <div className="flex flex-wrap items-center gap-4">

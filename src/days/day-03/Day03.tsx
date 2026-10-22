@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import DecisionLog from "@/components/DecisionLog";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 
 export default function Day03() {
   return (
@@ -53,7 +52,7 @@ export default function Day03() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={3} questions={QUIZZES[3]} />
+        <Quiz day={3} />
       </Section>
 
       <FacilitatorOnly>

@@ -1,6 +1,5 @@
 import OrderPlayground from "./OrderPlayground";
 import Quiz from "@/components/Quiz";
-import { QUIZZES } from "../assessments";
 
 const agenda = [
   ["Concept", "What Copilot is and is not; where it fits in the 7-phase AI Enabled Development Guide; the five AI agents the org uses"],
@@ -74,7 +73,7 @@ export default function Day01() {
       <section>
         <h2 className="text-xl font-semibold">Quiz</h2>
         <p className="mb-3 mt-2 text-sm">Also check: did you name a suggestion you rejected, and why? Did you check the Chat summary against the real code?</p>
-        <Quiz day={1} questions={QUIZZES[1]} />
+        <Quiz day={1} />
       </section>
     </div>
   );

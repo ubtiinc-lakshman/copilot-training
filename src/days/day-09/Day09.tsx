@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import Quiz from "@/components/Quiz";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 const checklist = [
@@ -43,7 +42,7 @@ export default function Day09() {
       </Section>
 
       <Section title="Written test (10 questions, pass mark 70%)">
-        <Quiz day={9} questions={QUIZZES[9]} passPercent={70} />
+        <Quiz day={9} passPercent={70} />
       </Section>
 
       <Section title="Assignment (due before Day 10)">

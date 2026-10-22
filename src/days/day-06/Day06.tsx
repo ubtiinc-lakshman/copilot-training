@@ -2,7 +2,6 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
-import { QUIZZES } from "../assessments";
 import { readDayFile } from "@/lib/readDayFile";
 
 const coverage = [
@@ -52,7 +51,7 @@ export default function Day06() {
       </Section>
 
       <Section title="Quiz">
-        <Quiz day={6} questions={QUIZZES[6]} />
+        <Quiz day={6} />
       </Section>
 
       <FacilitatorOnly>
