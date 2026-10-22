@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { DAYS, formatDate, getDay } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
 import { getTrackTask } from "@/track/tasks";
+import CheckIn from "@/components/CheckIn";
 
 export function generateStaticParams() {
   return DAYS.map((d) => ({ day: String(d.day) }));
@@ -20,6 +21,7 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 
   return (
     <>
+      <CheckIn day={entry.day} />
       <p className="mt-4 text-sm text-zinc-500">
         {entry.level} | {formatDate(entry.date)}
       </p>

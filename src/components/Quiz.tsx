@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useFacilitator } from "@/lib/facilitator";
 import { gradeQuiz, isCorrect, type Given, type Question } from "@/lib/grade";
 
@@ -12,31 +12,20 @@ export default function Quiz({ day, questions, passPercent }: { day: number; que
   const facilitator = useFacilitator();
   const [given, setGiven] = useState<Given[]>(() => questions.map(() => undefined));
   const [submitted, setSubmitted] = useState(false);
-  const [name, setName] = useState("");
   const [save, setSave] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    setName(localStorage.getItem("participant:name") ?? "");
-  }, []);
 
   const set = (i: number, v: Given) => setGiven((g) => g.map((x, j) => (j === i ? v : x)));
   const { score, total, percent } = gradeQuiz(questions, given);
 
   const submit = async () => {
     setSubmitted(true);
-    if (!name.trim()) {
-      setSave("error");
-      setMessage("Enter your name above so your result can be saved.");
-      return;
-    }
-    localStorage.setItem("participant:name", name.trim());
     setSave("saving");
     try {
       const res = await fetch("/api/results", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ day, name: name.trim(), answers: given.map((g) => g ?? null) }),
+        body: JSON.stringify({ day, answers: given.map((g) => g ?? null) }),
       });
       if (!res.ok) throw new Error((await res.json()).error ?? "Save failed");
       setSave("saved");
@@ -49,15 +38,6 @@ export default function Quiz({ day, questions, passPercent }: { day: number; que
 
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-semibold">
-        Your name (saved with your result)
-        <input
-          className="mt-1 w-full max-w-sm rounded border border-zinc-300 px-2 py-1 font-normal dark:border-zinc-700 dark:bg-zinc-900"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. lakshman.s"
-        />
-      </label>
       {questions.map((q, i) => (
         <div key={q.q} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
           <p className="font-semibold">

@@ -25,7 +25,7 @@ npm install
 copy .env.example .env.local      # macOS/Linux: cp .env.example .env.local
 ```
 
-Edit `.env.local` and set `FACILITATOR_KEY` to your own secret. It protects `/facilitator/results`. Without it the results API refuses to answer. The file is git-ignored, so every clone needs its own.
+Fill in `.env.local` (see the comments in `.env.example`): Auth.js secret, the Microsoft Entra app registration, `FACILITATOR_EMAILS`, and a Neon `DATABASE_URL`. The file is git-ignored, so every clone needs its own.
 
 ## Run
 
@@ -58,14 +58,20 @@ Add `?facilitator=1` to any day URL (e.g. `/days/9?facilitator=1`) to show answe
 
 Level 1 (Basic), Days 1-10: ready. See `docs/BASIC-PLAN.md`. Days 11-30: planned.
 
-## Quiz results (server)
+## Login, results and attendance
 
-Quiz submissions are stored in SQLite at `data/results.db` (git-ignored, created on first save, uses Node's built-in `node:sqlite`). The server re-grades the answers itself; the browser score is never trusted.
+Everyone signs in with their Microsoft work account (Auth.js, single Entra tenant). Quiz results and day attendance are stored in Neon Postgres, keyed by email. The server re-grades quiz answers itself.
 
-- Participants enter a name on the quiz; results save on **Check answers**.
-- Facilitator page: `/facilitator/results` (enter the key). Shows best score per participant per day, the average vs the 70% gate, Day 9 hard gate, all attempts, CSV export.
-- Set `FACILITATOR_KEY` in `.env.local` (not committed). Without it the results API refuses to answer.
-- Back up `data/results.db`. Needs a host with a writable disk (not serverless).
+- Attendance: opening `/days/N` while signed in records that day (first visit counts).
+- Facilitator page: `/facilitator/results`, only for emails in `FACILITATOR_EMAILS`. Best score per participant per day, average vs the 70% gate, Day 9 hard gate, attendance, all attempts, CSV export.
+- Tables are created automatically on first use.
+
+## Deploy to Vercel
+
+1. Entra admin center: App registrations, New registration, single tenant. Redirect URI (Web): `https://<your-site>/api/auth/callback/microsoft-entra-id` (and `http://localhost:3000/api/auth/callback/microsoft-entra-id` for local). Create a client secret.
+2. Vercel: import the repo, then Storage, add Neon (sets `DATABASE_URL`).
+3. Project env vars: `AUTH_SECRET` (`npx auth secret`), `AUTH_MICROSOFT_ENTRA_ID_ID`, `AUTH_MICROSOFT_ENTRA_ID_SECRET`, `AUTH_MICROSOFT_ENTRA_ID_TENANT_ID`, `FACILITATOR_EMAILS`.
+4. Deploy. Note: `?facilitator=1` still reveals answer keys to any signed-in participant (convenience only).
 
 ## Adding a day
 

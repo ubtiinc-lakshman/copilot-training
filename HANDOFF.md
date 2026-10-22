@@ -28,7 +28,7 @@ Location: `D:\UBTI_IP\Copilot_Training`. Local git only, no remote yet. Commits 
 
 ```
 npm install
-copy .env.example .env.local     # then set FACILITATOR_KEY
+copy .env.example .env.local     # then fill in the auth/db vars
 npm run dev                      # http://localhost:3000
 npm test
 ```
@@ -57,7 +57,7 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 - **Day folder pattern:** `src/days/day-NN/` plus a `DayNN.tsx` registered in `showcases.tsx`. Lab files are plain JS (CommonJS) so `node --test` runs them with no build step.
 - **Stubs and seeds:** unfinished lab functions have `{ todo: ... }` tests so `npm test` stays green. Intentional failures live in `*.seeded.js`, run only by `npm run test:seeded`.
 - **Facilitator mode:** `?facilitator=1` on any page shows keys and demo scripts. Convenience only; the keys are in the page payload, so do not deploy publicly.
-- **Quiz results:** stored in `data/results.db` (git-ignored). The server grades the submitted answers itself. Participants type their own name (no login). `FACILITATOR_KEY` in `.env.local` protects the results API.
+- **Login and storage:** Auth.js v5 with Microsoft Entra (single tenant), `src/auth.ts` and `src/proxy.ts` gate the whole site. Quiz results and attendance live in Neon Postgres (`src/lib/db.ts`, tables auto-created). Facilitators = `FACILITATOR_EMAILS`. Deploy steps in README. Not yet tested against a real Entra app or Neon.
 - **Next.js 16 specifics:** Cache Components are on, so `params` must be read inside a Suspense boundary (see the day page). Read `node_modules/next/dist/docs/` before framework-level changes (`AGENTS.md`).
 - **Fake credentials only** in anything seeded (`FAKE-...`).
 - Git prints LF/CRLF warnings on Windows. They are harmless.

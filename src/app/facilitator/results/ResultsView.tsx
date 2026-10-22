@@ -1,18 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import type { ResultRow } from "@/lib/db";
+import type { AttendanceRow, ResultRow } from "@/lib/db";
 
 const PASS = 70;
 
 export default function ResultsView() {
-  const [key, setKey] = useState("");
+  const [attendance, setAttendance] = useState<AttendanceRow[]>([]);
   const [rows, setRows] = useState<ResultRow[] | null>(null);
   const [error, setError] = useState("");
 
   const load = async () => {
     setError("");
-    const res = await fetch("/api/results", { headers: { "x-facilitator-key": key } });
+    const res = await fetch("/api/results");
     const data = await res.json();
     if (!res.ok) {
       setRows(null);
@@ -20,21 +20,22 @@ export default function ResultsView() {
       return;
     }
     setRows(data.rows);
+    setAttendance(data.attendance);
   };
 
   // Best attempt per participant per day, then the average across the days they attempted.
   const people = new Map<string, Map<number, number>>();
   for (const r of rows ?? []) {
-    const who = r.name.toLowerCase();
+    const who = r.email;
     const days = people.get(who) ?? new Map<number, number>();
     days.set(r.day, Math.max(days.get(r.day) ?? 0, r.percent));
     people.set(who, days);
   }
   const quizDays = [...new Set((rows ?? []).map((r) => r.day))].sort((a, b) => a - b);
-  const display = (who: string) => rows!.find((r) => r.name.toLowerCase() === who)!.name;
+  const display = (who: string) => rows!.find((r) => r.email === who)!.name;
 
   const csv = () => {
-    const lines = ["id,time,day,name,score,total,percent", ...rows!.map((r) => [r.id, r.created_at, r.day, `"${r.name.replace(/"/g, '""')}"`, r.score, r.total, r.percent].join(","))];
+    const lines = ["id,time,day,email,name,score,total,percent", ...rows!.map((r) => [r.id, r.created_at, r.day, r.email, `"${r.name.replace(/"/g, '""')}"`, r.score, r.total, r.percent].join(","))];
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([lines.join("\n")], { type: "text/csv" }));
     a.download = "quiz-results.csv";
@@ -45,9 +46,8 @@ export default function ResultsView() {
   return (
     <div className="space-y-8">
       <div className="flex flex-wrap items-center gap-2">
-        <input className={input} type="password" placeholder="Facilitator key" value={key} onChange={(e) => setKey(e.target.value)} onKeyDown={(e) => e.key === "Enter" && load()} />
         <button className="rounded bg-blue-600 px-3 py-1 text-sm text-white" onClick={load}>
-          {rows ? "Refresh" : "View results"}
+          {rows ? "Refresh" : "Load results"}
         </button>
         {rows && (
           <button className="rounded border border-zinc-400 px-3 py-1 text-sm" onClick={csv}>
@@ -121,6 +121,25 @@ export default function ResultsView() {
             </table>
           </section>
         </>
+      )}
+
+      {rows && (
+        <section>
+          <h2 className="mb-2 text-xl font-semibold">Attendance (days opened)</h2>
+          <p className="mb-2 text-xs text-zinc-500">A day counts when the participant signs in and opens that day&apos;s page. Level gate needs 80%.</p>
+          <table className="w-full text-sm">
+            <tbody>
+              {[...Map.groupBy(attendance, (a) => a.email)].map(([email, list]) => (
+                <tr key={email} className="border-b border-zinc-200 dark:border-zinc-800">
+                  <td className="py-1 pr-4 font-semibold">{list[0].name}</td>
+                  <td className="pr-4 text-zinc-500">{email}</td>
+                  <td className="pr-4">{list.length} days</td>
+                  <td className="text-zinc-500">{list.map((a) => a.day).sort((a, b) => a - b).join(", ")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
       )}
     </div>
   );

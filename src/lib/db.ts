@@ -1,35 +1,46 @@
-import { DatabaseSync } from "node:sqlite";
-import fs from "node:fs";
-import path from "node:path";
+import { neon } from "@neondatabase/serverless";
 
-// SQLite file at ./data/results.db (git-ignored). Built into Node 24, no extra dependency.
-let db: DatabaseSync | undefined;
+// Neon Postgres over HTTP (DATABASE_URL, set by the Vercel Neon integration).
+const sql = neon(process.env.DATABASE_URL ?? "");
 
-export function getDb(): DatabaseSync {
-  if (!db) {
-    const dir = path.join(process.cwd(), "data");
-    fs.mkdirSync(dir, { recursive: true });
-    db = new DatabaseSync(path.join(dir, "results.db"));
-    db.exec(`CREATE TABLE IF NOT EXISTS results (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+let ready: Promise<unknown> | undefined;
+// Tables are created on first use, once per server instance.
+export function db() {
+  ready ??= Promise.all([
+    sql`CREATE TABLE IF NOT EXISTS results (
+      id SERIAL PRIMARY KEY,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
       day INTEGER NOT NULL,
+      email TEXT NOT NULL,
       name TEXT NOT NULL,
       score INTEGER NOT NULL,
       total INTEGER NOT NULL,
       percent INTEGER NOT NULL,
-      answers TEXT NOT NULL
-    )`);
-  }
-  return db;
+      answers JSONB NOT NULL
+    )`,
+    sql`CREATE TABLE IF NOT EXISTS attendance (
+      email TEXT NOT NULL,
+      name TEXT NOT NULL,
+      day INTEGER NOT NULL,
+      first_seen TIMESTAMPTZ NOT NULL DEFAULT now(),
+      PRIMARY KEY (email, day)
+    )`,
+  ]).catch((e) => {
+    ready = undefined;
+    throw e;
+  });
+  return ready.then(() => sql);
 }
 
 export type ResultRow = {
   id: number;
   created_at: string;
   day: number;
+  email: string;
   name: string;
   score: number;
   total: number;
   percent: number;
 };
+
+export type AttendanceRow = { email: string; name: string; day: number };
