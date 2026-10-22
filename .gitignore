@@ -43,3 +43,5 @@ next-env.d.ts
 # results database
 /data/
 !.env.example
+
+.vercel
