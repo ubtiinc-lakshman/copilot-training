@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { DAYS, formatDate, getDay } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
 import { getTrackTask } from "@/track/tasks";
+import { auth, isFacilitator } from "@/auth";
+import { isOpen } from "@/lib/schedule";
 import CheckIn from "@/components/CheckIn";
 
 export function generateStaticParams() {
@@ -14,6 +16,17 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
   const { day } = await params;
   const entry = getDay(Number(day));
   if (!entry) notFound();
+
+  // Locked until the day's date; the content is never sent to participants before then.
+  // Session first: reading it makes the rest dynamic, so locked content is never prerendered.
+  const email = (await auth())?.user?.email;
+  if (!isOpen(entry.date) && !isFacilitator(email)) {
+    return (
+      <p className="mt-6 rounded border border-dashed border-zinc-300 p-6 text-zinc-600">
+        Day {entry.day}: {entry.title} opens on {formatDate(entry.date)}. The lab, prompts and quiz appear that morning.
+      </p>
+    );
+  }
 
   const Showcase = SHOWCASES[entry.day];
   const prev = getDay(entry.day - 1);
