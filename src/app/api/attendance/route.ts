@@ -1,4 +1,5 @@
-import { auth, isFacilitator } from "@/auth";
+import { auth } from "@/auth";
+import { actingFacilitator } from "@/lib/viewMode";
 import { db } from "@/lib/db";
 import { DAYS } from "@/days/registry";
 import { isOpen } from "@/lib/schedule";
@@ -10,7 +11,7 @@ export async function POST(request: Request) {
   const day = Number((await request.json().catch(() => ({}))).day);
   const entry = DAYS.find((d) => d.day === day);
   if (!entry) return Response.json({ error: "Unknown day" }, { status: 400 });
-  if (!isOpen(entry.date) && !isFacilitator(user.email)) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
+  if (!isOpen(entry.date) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   const sql = await db();
   await sql`INSERT INTO attendance (email, name, day) VALUES (${user.email.toLowerCase()}, ${user.name ?? user.email}, ${day}) ON CONFLICT DO NOTHING`;
   return Response.json({ ok: true });

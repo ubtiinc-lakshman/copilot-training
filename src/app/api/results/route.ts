@@ -1,4 +1,5 @@
 import { auth, isFacilitator } from "@/auth";
+import { actingFacilitator } from "@/lib/viewMode";
 import { db, type AttendanceRow, type ResultRow } from "@/lib/db";
 import { gradeQuiz, type Given } from "@/lib/grade";
 import { QUIZZES } from "@/days/assessments";
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
   const day = Number(body.day);
   const questions = QUIZZES[day];
   if (!questions) return Response.json({ error: "No quiz for that day" }, { status: 400 });
-  if (!isOpen(DAYS[day - 1].date) && !isFacilitator(user.email)) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
+  if (!isOpen(DAYS[day - 1].date) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   if (!Array.isArray(body.answers) || body.answers.length !== questions.length) {
     return Response.json({ error: "answers must match the number of questions" }, { status: 400 });
   }
