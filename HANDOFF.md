@@ -1,6 +1,6 @@
 # Handoff: GitHub Copilot Training repo
 
-Last updated: Thu Oct 22, 2026 (Day 2 of 30). Read this first, then `README.md`.
+Last updated: Fri Oct 23, 2026 (Day 3 of 30). Read this first, then `README.md`.
 
 ## What this is
 
@@ -8,7 +8,7 @@ One Next.js 16 app (React 19, TypeScript, Tailwind 4) and one git repo for the w
 
 The site is the facilitator's showcase for each day: objective, concept, lab, assignment, quiz, answer keys. The labs are small standalone Node files participants edit with Copilot. Separately there is an optional app track where participants build one Next.js app ("Order Desk") across Days 2-10.
 
-Location: `D:\UBTI_IP\Copilot_Training`. Local git only, no remote yet. Commits use a local `training` identity (no global git identity is set).
+Location: `D:\UBTI_IP\Copilot_Training`. Git remote: `github.com/ubtiinc-lakshman/copilot-training` (PUBLIC). Pushing to `main` auto-deploys to Vercel production. Commits use a local `training` identity (no global git identity is set).
 
 ## Status
 
@@ -17,18 +17,22 @@ Location: `D:\UBTI_IP\Copilot_Training`. Local git only, no remote yet. Commits 
 | Level 1 Basic, Days 1-10 | Built and committed (showcase page, lab files, LAB.md, quiz where the day has one) |
 | Days 11-30 | Not built. `/days/N` shows a placeholder. Titles and dates are in `src/days/registry.ts` |
 | Day 1 | Delivered Wed Oct 21 |
-| Quiz results on the server | Done: SQLite, server-side grading, `/facilitator/results` |
+| Live site | https://copilot-training-two.vercel.app (Vercel project `copilot-training`, team `ic-innovation`) |
+| Login | Done: Microsoft Entra, single tenant `ubtitestcustomer.onmicrosoft.com` (app "Copilot Training"); whole site gated by `src/proxy.ts` |
+| Storage | Done: Neon Postgres (`results`, `attendance`, `quizzes` tables). Quiz questions and answers live ONLY in the DB |
+| Day unlock by date | Done: a day is locked until its date (India time, `TRAINING_TZ`); facilitators bypass; "View as participant" toggle |
+| Results page | Done: `/facilitator/results`, facilitators only, auto-refresh, heat map, attendance matrix |
 | Optional app track (Days 2-10) | Done: `/track` page, seed files, prerequisites, `check-prereqs.mjs` |
 | `npm test` | Passes: 10 pass, 5 todo (todo = lab stubs participants fill in) |
 | `npm run test:seeded` | 2 failures, on purpose (Day 4 Dev bug and QA failing test) |
-| `npx next build` | Passes (last run after the app-track prerequisites commit) |
-| `npm run lint` | Not run |
+| `npx next build` | Passes (needs dummy auth env vars locally) |
+| `npm run lint` | Clean for the results page; not run on the whole repo |
 
 ## How to run
 
 ```
 npm install
-copy .env.example .env.local     # then fill in the auth/db vars
+copy .env.example .env.local     # then fill in the auth/db vars (or `npx vercel env pull`)
 npm run dev                      # http://localhost:3000
 npm test
 ```
@@ -42,11 +46,14 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 | `src/days/registry.ts` | The 30 days (level, title, date; dates computed from Oct 21) |
 | `src/days/showcases.tsx` | Maps day number to its showcase component |
 | `src/days/day-NN/` | One day: `DayNN.tsx`, lab code, tests, `LAB.md`, seeds |
-| `src/days/assessments.ts` | Quiz questions and answers for Days 1, 3-9 |
 | `src/components/` | `Section`, `CodeBlock`, `Callout`, `ChecklistTracker`, `Quiz`, `DecisionLog`, `FacilitatorOnly` |
-| `src/lib/` | `grade.ts` (shared grading), `db.ts` (SQLite), `facilitator.ts`, `readDayFile.ts` |
+| `src/auth.ts`, `src/proxy.ts`, `src/app/login/` | Entra sign-in (Auth.js v5) and the site-wide gate |
+| `src/lib/` | `grade.ts`, `db.ts` (Neon), `quizzes.ts` (quiz from DB), `schedule.ts` (day unlock), `viewMode.ts` (participant view), `facilitator.ts`, `readDayFile.ts` |
+| `scripts/seed-quizzes.mjs` | Loads `data/quizzes.json` (git-ignored, local only) into the `quizzes` table |
 | `src/app/days/[day]/page.tsx` | Day route (static params 1-30, wrapped in Suspense) |
-| `src/app/api/results/route.ts` | POST quiz answers (server re-grades), GET results (needs key) |
+| `src/app/api/results/route.ts` | POST quiz answers (server re-grades, returns per-question correct), GET results (facilitators) |
+| `src/app/api/quiz/[day]/route.ts` | GET a day's questions without answers (answers only for acting facilitators) |
+| `src/app/api/attendance/route.ts` | POST: records a day opened by the signed-in user |
 | `src/app/facilitator/results/` | Results page |
 | `src/app/track/page.tsx`, `src/track/tasks.ts` | Optional app track page and task data |
 | `app-track/` | Track README, `check-prereqs.mjs`, `seed/` (fake data and paste-in bug files) |
@@ -62,6 +69,14 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 - **Fake credentials only** in anything seeded (`FAKE-...`).
 - Git prints LF/CRLF warnings on Windows. They are harmless.
 
+## Vercel and Azure setup
+
+- Vercel env vars (production): `AUTH_SECRET`, `AUTH_MICROSOFT_ENTRA_ID_ID/_SECRET/_TENANT_ID`, `FACILITATOR_EMAILS` (lakshman.s@ubtiinc.com, Flossy.Veronica@ubtiinc.com), `DATABASE_URL` (Neon, set by the integration). Env changes need a redeploy.
+- Entra client secret expires 2027-04-30. Redirect URIs: the production callback and localhost:3000.
+- Vercel Authentication (SSO protection) is OFF so participants reach our own login; previews are therefore also open (still behind Entra).
+- Quiz data: edit `data/quizzes.json` locally (not in git) and run `npx vercel env run -e production -- node scripts/seed-quizzes.mjs`. Back this file up; it is the only copy besides the DB.
+- Participants must exist in the Test Customer tenant (members or invited guests).
+
 ## Source material (outside this repo)
 
 `C:\Users\lakshman.s\UB Technology Innovations, Inc\Innovation Center - Documents\IC - Training\Github Copilot\`
@@ -75,21 +90,24 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 ## Known gaps and risks
 
 1. **Quiz answers for Days 1 and 3-8 were reconstructed** from memory of the questionnaires, not copied. Check them against `Assessment Questionnaire By Level/` (Days 2 and 10 use a checklist and a rubric, not a quiz).
-2. **Nothing has been clicked through in a browser.** Pages were checked with `curl` (200 and content) and the results API end to end. Quiz submit, facilitator mode, checklists and the decision log are untested in a browser.
-3. **No attendance tracking.** The results page covers only the 70% score side of the level gate.
-4. **Names are unauthenticated**, so anyone can submit under any name. Matters for the Day 9 hard gate.
-5. **Hosting:** SQLite needs a writable disk (not serverless). `data/results.db` has no backup.
+2. **Sign-in works (confirmed by the user). Not yet browser-verified:** quiz load/submit from the DB, the participant-view toggle, locked-day message, new results page, Flossy's facilitator access.
+3. **Attendance** = opened the day page while signed in (not session presence).
+4. **Old quiz answers are in public git history** (assessments.ts, commits before 91b9a9c). Removing them needs a history rewrite and force-push; not done. Treat Days 1-9 quizzes as exposed.
+5. **Facilitator-only text** (demo scripts, answer keys inside `FacilitatorOnly` blocks) is still in the public source; `?facilitator=1` reveals it to any signed-in participant. `LAB.md` files not checked for solutions.
+5b. Neon has its own backups; `data/quizzes.json` is local only.
 6. `/days/99` returns 200 with the not-found content instead of a 404.
 7. **App track:** seed files were not run inside a real Order Desk app. The Day 4 order route gives a TypeScript error on `next build` (works in dev). `check-prereqs.mjs` was only run on this machine. Vitest needs Node 22.12+.
 8. A leftover dev server from earlier sessions may still hold port 3000 and could serve stale code.
 
 ## Suggested next steps
 
-1. Day 3 and Day 4 are next in the build order for the sessions; check each day's page the day before.
-2. Verify the reconstructed quizzes (gap 1).
-3. Click through one full day in a browser, including a quiz submit and `/facilitator/results`.
-4. Build Intermediate (Days 11-20) from `Lab_Workbook_Intermediate.md`, same pattern: showcase, lab files, `LAB.md`, quiz data, seeded failures. Write a `docs/INTERMEDIATE-PLAN.md` first, as was done for Basic.
-5. Decide where the site is hosted and whether to add a remote repo, a backup for the database, and participant sign-in.
+1. Click through: quiz on an open day (loads, scores, saves), `?facilitator=1`, participant view, a locked day, `/facilitator/results`.
+2. Decide on the public repo: make it private (add participants as collaborators so they can copy `app-track/` and labs) or rewrite history to drop the old answer keys; move facilitator-only blocks out of the source if they must stay secret.
+3. Verify the reconstructed quizzes (gap 1) against `Assessment Questionnaire By Level/`, then re-seed.
+4. Invite participants to the Test Customer tenant; confirm they can sign in.
+5. Ideas for participants (user wants to discuss next): own progress page, checklist/decision-log persistence, etc.
+6. Build Intermediate (Days 11-20) from `Lab_Workbook_Intermediate.md`; write `docs/INTERMEDIATE-PLAN.md` first. Quiz data now goes in `data/quizzes.json` + seed, not in code.
+7. Uncommitted local edits not made by Claude: `src/days/day-03/*`, `.gitignore`, `instructions.md`, `skills-lock.json`. Review before committing.
 
 ## Starting a new conversation
 
