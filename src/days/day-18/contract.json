@@ -1,0 +1,16 @@
+{
+  "endpoint": "POST /api/orders",
+  "auth": "Bearer token required",
+  "request": {
+    "required": ["items", "shippingAddress"],
+    "fields": {
+      "items": "array of { sku: string, qty: integer >= 1 }",
+      "shippingAddress": "object { line1: string, city: string, postalCode: string }"
+    }
+  },
+  "responses": {
+    "201": { "fields": ["orderId", "status"] },
+    "400": { "fields": ["error"] },
+    "401": { "fields": ["error"] }
+  }
+}

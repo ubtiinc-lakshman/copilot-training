@@ -1,0 +1,5 @@
+[
+  { "key": "ctrl+alt+enter", "command": "editor.action.inlineSuggest.commit", "when": "inlineSuggestionVisible" },
+  { "key": "ctrl+alt+c", "command": "workbench.panel.chat.view.copilot.focus" },
+  { "key": "ctrl+alt+t", "command": "workbench.action.chat.open", "args": { "query": "/tests" } }
+]

@@ -54,13 +54,13 @@ export function LevelGate() {
   return (
     <div className="space-y-2 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
       <label className="block">
-        Attendance across Days 1-10 (%) <input className={input} type="number" value={attendance} onChange={(e) => setAttendance(Number(e.target.value))} />
+        Attendance across the level (%) <input className={input} type="number" value={attendance} onChange={(e) => setAttendance(Number(e.target.value))} />
       </label>
       <label className="block">
         Average assessment score (%) <input className={input} type="number" value={average} onChange={(e) => setAverage(Number(e.target.value))} />
       </label>
       <p className={`font-semibold ${pass ? "text-green-600" : "text-red-600"}`}>
-        {pass ? "Level 1 gate: PASS" : "Level 1 gate: not met (needs 80% attendance and 70% average)"}
+        {pass ? "Level gate: PASS" : "Level gate: not met (needs 80% attendance and 70% average)"}
       </p>
     </div>
   );

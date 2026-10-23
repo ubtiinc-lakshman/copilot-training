@@ -1,0 +1,9 @@
+// What an unconfigured Copilot tends to suggest for "add removeItem": works, but breaks the style guide.
+function removeItem(inventory, sku) {
+  var next = Object.assign({}, inventory);
+  console.log("removing " + sku);
+  delete next[sku];
+  return next;
+}
+
+test("removes an item", () => {});

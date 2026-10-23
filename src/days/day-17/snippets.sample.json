@@ -1,0 +1,7 @@
+{
+  "Copilot: write tests": {
+    "prefix": "cptests",
+    "body": ["# Context", "${1:what the code does}", "# Task", "Generate tests for the selected code.", "# Requirements", "- Happy path, empty input, boundary values, and one failure case", "- Use ${2:node:test}"],
+    "description": "Day 17: a structured test prompt in one keystroke"
+  }
+}

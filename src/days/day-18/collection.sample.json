@@ -1,0 +1,8 @@
+{
+  "name": "Orders API (generated from a GENERIC example, not the real contract)",
+  "requests": [
+    { "name": "create order", "method": "POST", "path": "/api/orders", "auth": true, "body": { "products": [{ "sku": "AB-1", "qty": 1 }], "address": { "line1": "1 Main St", "city": "Pune", "postalCode": "411001" } }, "expectStatus": 200, "expectFields": ["orderId", "status"] },
+    { "name": "invalid body", "method": "POST", "path": "/api/orders", "auth": true, "body": { "items": [], "shippingAddress": {} }, "expectStatus": 400, "expectFields": ["message"] },
+    { "name": "missing token", "method": "POST", "path": "/api/orders", "auth": false, "body": { "items": [], "shippingAddress": {} }, "expectStatus": 401, "expectFields": ["error"] }
+  ]
+}

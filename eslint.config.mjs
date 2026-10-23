@@ -12,6 +12,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "app-track/**",
+    "src/days/**/*.js", // lab files are plain CommonJS on purpose
     "next-env.d.ts",
   ]),
 ]);
