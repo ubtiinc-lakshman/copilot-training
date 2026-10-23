@@ -19,6 +19,16 @@ import Day17 from "./day-17/Day17";
 import Day18 from "./day-18/Day18";
 import Day19 from "./day-19/Day19";
 import Day20 from "./day-20/Day20";
+import Day21 from "./day-21/Day21";
+import Day22 from "./day-22/Day22";
+import Day23 from "./day-23/Day23";
+import Day24 from "./day-24/Day24";
+import Day25 from "./day-25/Day25";
+import Day26 from "./day-26/Day26";
+import Day27 from "./day-27/Day27";
+import Day28 from "./day-28/Day28";
+import Day29 from "./day-29/Day29";
+import Day30 from "./day-30/Day30";
 
 // Register each day's showcase here as it is built. Days without an entry show a placeholder.
 export const SHOWCASES: Record<number, ComponentType> = {
@@ -42,4 +52,14 @@ export const SHOWCASES: Record<number, ComponentType> = {
   18: Day18,
   19: Day19,
   20: Day20,
+  21: Day21,
+  22: Day22,
+  23: Day23,
+  24: Day24,
+  25: Day25,
+  26: Day26,
+  27: Day27,
+  28: Day28,
+  29: Day29,
+  30: Day30,
 };

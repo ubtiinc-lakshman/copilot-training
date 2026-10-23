@@ -1,0 +1,9 @@
+[
+  { "id": 1, "user_id": 101, "status": "pending", "total_cents": 4599, "created_at": "2026-10-01T09:30:00Z" },
+  { "id": 2, "user_id": 102, "status": "shipped", "total_cents": 1299, "created_at": "2026-10-02T11:00:00Z" },
+  { "id": 3, "user_id": 103, "status": "delivered", "total_cents": 8800, "created_at": "2026-10-03T14:15:00Z" },
+  { "id": 4, "user_id": null, "status": "cancelled", "total_cents": 500, "created_at": "2026-10-04T08:00:00Z" },
+  { "id": 5, "user_id": 105, "status": "pending", "total_cents": -250, "created_at": "2026-10-05T10:10:00Z" },
+  { "id": 6, "user_id": 106, "status": "shipped", "total_cents": 2100, "created_at": "2026-02-31T10:10:00Z" },
+  { "id": 6, "user_id": 107, "status": "pending", "total_cents": 999, "created_at": "2026-10-06T10:10:00Z" }
+]

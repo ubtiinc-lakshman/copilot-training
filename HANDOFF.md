@@ -15,7 +15,7 @@ Location: `D:\UBTI_IP\Copilot_Training`. Git remote: `github.com/ubtiinc-lakshma
 | Area | State |
 |---|---|
 | Level 1 Basic, Days 1-10 | Built and committed (showcase page, lab files, LAB.md, quiz where the day has one) |
-| Days 11-30 | Not built. `/days/N` shows a placeholder. Titles and dates are in `src/days/registry.ts` |
+| Days 11-30 | Built (see `docs/INTERMEDIATE-ADVANCED-PLAN.md`): pages via `LabDay`, lab files, LAB.md, quiz data for 11-19 and 21-29 in `data/quizzes.json`. NOT yet seeded to the DB; NOT yet browser-checked. Days 20 and 30 are rubric days (no quiz) |
 | Day 1 | Delivered Wed Oct 21 |
 | Live site | https://copilot-training-two.vercel.app (Vercel project `copilot-training`, team `ic-innovation`) |
 | Login | Done: Microsoft Entra, single tenant `ubtitestcustomer.onmicrosoft.com` (app "Copilot Training"); whole site gated by `src/proxy.ts` |
@@ -23,8 +23,8 @@ Location: `D:\UBTI_IP\Copilot_Training`. Git remote: `github.com/ubtiinc-lakshma
 | Day unlock by date | Done: a day is locked until its date (India time, `TRAINING_TZ`); facilitators bypass; "View as participant" toggle |
 | Results page | Done: `/facilitator/results`, facilitators only, auto-refresh, heat map, attendance matrix |
 | Optional app track (Days 2-10) | Done: `/track` page, seed files, prerequisites, `check-prereqs.mjs` |
-| `npm test` | Passes: 10 pass, 5 todo (todo = lab stubs participants fill in) |
-| `npm run test:seeded` | 2 failures, on purpose (Day 4 Dev bug and QA failing test) |
+| `npm test` | Passes: 40 pass, 17 todo (todo = lab stubs participants fill in) |
+| `npm run test:seeded` | Fails on purpose: Day 4, Day 12 (bugs and triage), Day 15 (flaky). Not for CI |
 | `npx next build` | Passes (needs dummy auth env vars locally) |
 | `npm run lint` | Clean for the results page; not run on the whole repo |
 
@@ -106,7 +106,7 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 3. Verify the reconstructed quizzes (gap 1) against `Assessment Questionnaire By Level/`, then re-seed.
 4. Invite participants to the Test Customer tenant; confirm they can sign in.
 5. Ideas for participants (user wants to discuss next): own progress page, checklist/decision-log persistence, etc.
-6. Build Intermediate (Days 11-20) from `Lab_Workbook_Intermediate.md`; write `docs/INTERMEDIATE-PLAN.md` first. Quiz data now goes in `data/quizzes.json` + seed, not in code.
+6. Seed the Day 11-29 quizzes (`npx vercel env run -e production -- node scripts/seed-quizzes.mjs`) before Day 11 opens on Nov 4, then click through Days 11-30.
 7. Uncommitted local edits not made by Claude: `src/days/day-03/*`, `.gitignore`, `instructions.md`, `skills-lock.json`. Review before committing.
 
 ## Starting a new conversation
