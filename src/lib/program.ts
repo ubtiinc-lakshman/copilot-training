@@ -38,6 +38,10 @@ export async function addToRoster(sql: Sql, p: RosterInput) {
     ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, team = EXCLUDED.team, github_id = EXCLUDED.github_id`;
 }
 
+export async function isOnRoster(sql: Sql, email: string) {
+  return (await sql`SELECT 1 FROM roster WHERE email = ${email.trim().toLowerCase()}`).length > 0;
+}
+
 // Removing a person only hides them from the progress page; their saved work stays in the database.
 export async function removeFromRoster(sql: Sql, email: string) {
   await sql`DELETE FROM roster WHERE email = ${email.trim().toLowerCase()}`;

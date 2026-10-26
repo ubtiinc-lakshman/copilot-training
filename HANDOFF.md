@@ -141,7 +141,7 @@ The training changed to one app per week (plan: `docs/APP-BUILD-PLAN.md`, announ
 | `src/app/api/{activity,painpoint,submission,progress}/route.ts` | The endpoints |
 | `data/painpoints.json`, `scripts/seed-painpoints.mjs` | Pain-point bank (git-ignored, week 1 = 44 written) |
 | `src/lib/assign.test.mjs` | `npm run test:site`: 10 tests on in-memory Postgres (PGlite) |
-| `roster` table, `data/roster.json`, `scripts/seed-roster.mjs`, `src/app/api/roster/route.ts` | The 36 participants (from "Training List - with GitHub IDs.xlsx"). `data/roster.json` is git-ignored. The facilitator progress page lists ONLY roster members (facilitators and testers are left out; work of removed people stays in the DB). Facilitators add, update and remove people in the "Participants" section of `/facilitator/progress`. Pain-point assignment is NOT restricted to the roster |
+| `roster` table, `data/roster.json`, `scripts/seed-roster.mjs`, `src/app/api/roster/route.ts` | The 36 participants (from "Training List - with GitHub IDs.xlsx"). `data/roster.json` is git-ignored. The facilitator progress page lists ONLY roster members (facilitators and testers are left out; work of removed people stays in the DB). Facilitators add, update and remove people in the "Participants" section of `/facilitator/progress`. Pain-point assignment IS restricted to the roster (/api/painpoint returns 403 otherwise; facilitators who want to test must add themselves) |
 
 Also added after the first version of this section:
 
@@ -172,4 +172,3 @@ Open / next, in order:
 5. Admin answers still needed: GitHub Copilot credits (four questions in `docs/APP-BUILD-PLAN.md`), Vercel and Supabase accounts and licensing, email provider (s10), AI provider and key (s13), whether MCP and Copilot code review are enabled (s08, s12), data-residency or security approval, Cloudflare as fallback, network check from the conference room.
 6. The product steps in the session content (Supabase, Vercel, MCP settings) were written from general knowledge and not tested on the real accounts; test the exact steps the day before each session.
 7. Reroll policy for pain points (default: no reroll). Certification rule: at least 80% attendance, at least 4 of 5 apps deployed and passing, quiz average at least 70%.
-8. Optional: restrict pain-point assignment to roster members so outsiders cannot use up the bank.

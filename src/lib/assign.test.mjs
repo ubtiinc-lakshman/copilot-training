@@ -68,7 +68,7 @@ test("the database itself refuses to give one pain point to two people", async (
 });
 
 // ---- the rest of the weekly program's SQL (src/lib/program.ts) ----
-import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress, addToRoster, removeFromRoster } from "./program.ts";
+import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress, addToRoster, removeFromRoster, isOnRoster } from "./program.ts";
 
 async function withAttendanceTables(pg) {
   // loadProgress also reads the older results/attendance tables created by db.ts
@@ -127,4 +127,11 @@ test("the facilitator view lists only the roster, matched case-insensitively; re
   p = await loadProgress(sql);
   assert.deepEqual(p.people.map((x) => x.name), ["Asha"]);
   assert.equal(p.completions.length, 0);
+});
+
+test("roster membership check is case-insensitive", async () => {
+  const { sql } = await setup();
+  await addToRoster(sql, { name: "Asha", email: "A@x.com" });
+  assert.equal(await isOnRoster(sql, "a@X.com"), true);
+  assert.equal(await isOnRoster(sql, "boss@x.com"), false);
 });
