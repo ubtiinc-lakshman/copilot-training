@@ -169,7 +169,7 @@ Gotchas learned:
 Open / next, in order:
 1. Sign in on the live site and click through `/`, `/today`, `/sessions/s01`, the quiz, the pain point button, `/facilitator/progress` (check the 36 people, add/remove one and undo). A facilitator test click uses one pain point (week 1 has 8 spare, other weeks about 7).
 2. Pain-point bank is done for weeks 1-5 (217: 44, 44, 43, 43, 43). Weeks 2-5 were written Oct 26 and not reviewed by anyone; skim them before Nov 2. Source is `data/painpoints.json` (git-ignored); validate with `node scripts/seed-painpoints.mjs --check`, load with the seed script.
-3. Invite the 36 roster people to the Entra tenant (they must exist there to sign in).
+3. Done: the 36 roster people are invited to the Entra tenant (confirm that each one can sign in; only invited or member accounts can).
 4. Decide the finale (Tue Dec 1): it has an event but no session page.
 5. Admin answers still needed: GitHub Copilot credits (four questions in `docs/APP-BUILD-PLAN.md`), Vercel and Supabase accounts and licensing, email provider (s10), AI provider and key (s13), whether MCP and Copilot code review are enabled (s08, s12), data-residency or security approval, Cloudflare as fallback, network check from the conference room.
 6. The product steps in the session content (Supabase, Vercel, MCP settings) were written from general knowledge and not tested on the real accounts; test the exact steps the day before each session.
