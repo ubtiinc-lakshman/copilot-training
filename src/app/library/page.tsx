@@ -3,7 +3,7 @@ import { connection } from "next/server";
 import Link from "next/link";
 import { DAYS, LEVELS, formatDate } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
-import { isOpen } from "@/lib/schedule";
+import { isLessonOpen } from "@/lib/schedule";
 
 export const metadata = { title: "Self-learning library" };
 
@@ -22,7 +22,7 @@ async function DayList() {
                     <b>Day {d.day}</b> {d.title}
                   </span>
                   <span className="flex shrink-0 items-center gap-3 text-sm text-zinc-500">
-                    {!isOpen(d.date) ? (
+                    {!isLessonOpen() ? (
                       <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-800">Opens {formatDate(d.date)}</span>
                     ) : (
                       <>

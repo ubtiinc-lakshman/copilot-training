@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DAYS } from "@/days/registry";
 import type { AttendanceRow, ResultRow } from "@/lib/db";
-import { isOpen } from "@/lib/schedule";
+import { isLessonOpen } from "@/lib/schedule";
 
 const PASS = 70;
 const GATE_ATTENDANCE = 80;
@@ -70,7 +70,7 @@ export default function ResultsView() {
   }, [auto, load]);
 
   // ---- derived data ----
-  const openDays = DAYS.filter((d) => isOpen(d.date)).map((d) => d.day);
+  const openDays = DAYS.filter((d) => isLessonOpen()).map((d) => d.day);
   const people = new Map<string, Person>();
   const person = (email: string, name: string) => {
     let p = people.get(email);
