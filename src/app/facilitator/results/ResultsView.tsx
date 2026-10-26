@@ -2,14 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { DAYS } from "@/days/registry";
-import type { AttendanceRow, ResultRow } from "@/lib/db";
+import type { AttendanceRow, LabRow, ResultRow } from "@/lib/db";
 import { isLessonOpen } from "@/lib/schedule";
 
 const PASS = 70;
 const GATE_ATTENDANCE = 80;
 const REFRESH_MS = 15_000;
 
-type Person = { email: string; name: string; scores: Map<number, number>; attended: Set<number> };
+type Person = { email: string; name: string; scores: Map<number, number>; attended: Set<number>; labs: Map<number, LabRow> };
 
 const heat = (v: number) =>
   v >= PASS ? "bg-green-100 text-green-900 dark:bg-green-950 dark:text-green-200" : v >= 50 ? "bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200" : "bg-red-100 text-red-900 dark:bg-red-950 dark:text-red-200";
@@ -19,6 +19,7 @@ const ago = (ms: number) => (ms < 5_000 ? "just now" : ms < 60_000 ? `${Math.rou
 export default function ResultsView() {
   const [rows, setRows] = useState<ResultRow[] | null>(null);
   const [attendance, setAttendance] = useState<AttendanceRow[]>([]);
+  const [labs, setLabs] = useState<LabRow[]>([]);
   const [refreshing, setRefreshing] = useState(true); // true during the first load too
   const [error, setError] = useState("");
   const [updatedAt, setUpdatedAt] = useState(0);
@@ -40,6 +41,7 @@ export default function ResultsView() {
       seen.current = ids;
       setRows(data.rows);
       setAttendance(data.attendance);
+      setLabs(data.labs ?? []);
       setUpdatedAt(Date.now());
       setError("");
     } catch (e) {
@@ -74,7 +76,7 @@ export default function ResultsView() {
   const people = new Map<string, Person>();
   const person = (email: string, name: string) => {
     let p = people.get(email);
-    if (!p) people.set(email, (p = { email, name, scores: new Map(), attended: new Set() }));
+    if (!p) people.set(email, (p = { email, name, scores: new Map(), attended: new Set(), labs: new Map() }));
     return p;
   };
   for (const r of rows ?? []) {
@@ -82,6 +84,7 @@ export default function ResultsView() {
     p.scores.set(r.day, Math.max(p.scores.get(r.day) ?? 0, r.percent)); // best attempt per day
   }
   for (const a of attendance) person(a.email, a.name).attended.add(a.day);
+  for (const l of labs) person(l.email, l.name).labs.set(l.day, l);
 
   const quizDays = [...new Set((rows ?? []).map((r) => r.day))].sort((a, b) => a - b);
   const everyone = [...people.values()].map((p) => {
@@ -158,7 +161,7 @@ export default function ResultsView() {
       </div>
 
       {/* summary */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
         <div className={card}>
           <p className="text-xs text-muted">Participants</p>
           <p className="text-2xl font-bold">{people.size}</p>
@@ -170,6 +173,10 @@ export default function ResultsView() {
         <div className={card}>
           <p className="text-xs text-muted">Average score</p>
           <p className="text-2xl font-bold">{overallAvg === null ? "-" : `${overallAvg}%`}</p>
+        </div>
+        <div className={card}>
+          <p className="text-xs text-muted">Lab tasks completed</p>
+          <p className="text-2xl font-bold">{labs.length}</p>
         </div>
         <div className={card}>
           <p className="text-xs text-muted">On track</p>
@@ -228,6 +235,7 @@ export default function ResultsView() {
                   ))}
                   <th className="px-2 text-center">Avg</th>
                   <th className="px-2 text-center">Attend.</th>
+                  <th className="px-2 text-center">Labs</th>
                   <th>Status</th>
                 </tr>
               </thead>
@@ -248,6 +256,7 @@ export default function ResultsView() {
                     })}
                     <td className="px-2 text-center font-semibold">{avg ?? "-"}</td>
                     <td className="px-2 text-center">{att}%</td>
+                    <td className="px-2 text-center">{p.labs.size}/{DAYS.length}</td>
                     <td className={status === "On track" ? "text-green-600" : "text-red-600"}>{status}</td>
                   </tr>
                 ))}
@@ -257,6 +266,43 @@ export default function ResultsView() {
           </div>
         )}
       </section>
+
+      {/* lab task completion matrix */}
+      {people.size > 0 && (
+        <section>
+          <h2 className="mb-2 text-xl font-bold">Lab tasks</h2>
+          <p className="mb-2 text-xs text-muted">A tick means the participant marked that lesson&apos;s lab task as completed. Hover for their note.</p>
+          <div className="overflow-x-auto">
+            <table className="text-sm">
+              <thead>
+                <tr className="text-left">
+                  <th className="pr-4">Participant</th>
+                  {DAYS.map((d) => (
+                    <th key={d.day} className="px-1 text-center text-xs font-normal text-muted">{d.day}</th>
+                  ))}
+                  <th className="px-2 text-center text-xs font-normal text-muted">Done</th>
+                </tr>
+              </thead>
+              <tbody>
+                {stats.map(({ p }) => (
+                  <tr key={p.email} className="border-t border-line">
+                    <td className="py-1 pr-4">{p.name}</td>
+                    {DAYS.map((d) => {
+                      const l = p.labs.get(d.day);
+                      return (
+                        <td key={d.day} className="px-1 text-center" title={l ? `${new Date(l.completed_at).toLocaleString()}${l.note ? ` - ${l.note}` : ""}` : "Not completed"}>
+                          {l ? <span className="text-green-600">✓</span> : <span className="text-zinc-300 dark:text-zinc-700">·</span>}
+                        </td>
+                      );
+                    })}
+                    <td className="px-2 text-center font-semibold">{p.labs.size}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
 
       {/* attendance matrix */}
       {people.size > 0 && openDays.length > 0 && (

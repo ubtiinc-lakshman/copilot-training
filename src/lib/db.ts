@@ -46,3 +46,4 @@ export type ResultRow = {
 };
 
 export type AttendanceRow = { email: string; name: string; day: number };
+export type LabRow = { email: string; name: string; day: number; note: string | null; completed_at: string };

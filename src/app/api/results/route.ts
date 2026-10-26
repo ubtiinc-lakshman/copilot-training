@@ -1,6 +1,6 @@
 import { auth, isFacilitator } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
-import { db, type AttendanceRow, type ResultRow } from "@/lib/db";
+import { db, type AttendanceRow, type LabRow, type ResultRow } from "@/lib/db";
 import { gradeQuiz, isCorrect, type Given } from "@/lib/grade";
 import { getQuiz } from "@/lib/quizzes";
 import { DAYS } from "@/days/registry";
@@ -39,5 +39,8 @@ export async function GET() {
   const sql = await db();
   const rows = (await sql`SELECT id, created_at, day, email, name, score, total, percent FROM results ORDER BY id DESC`) as ResultRow[];
   const attendance = (await sql`SELECT email, name, day FROM attendance`) as AttendanceRow[];
-  return Response.json({ rows, attendance });
+  const labs = ((await sql`SELECT email, name, activity, note, completed_at FROM completions WHERE activity LIKE 'lab-%'`) as (Omit<LabRow, "day"> & { activity: string })[]).map(
+    ({ activity, ...r }) => ({ ...r, day: Number(activity.slice(4)) }),
+  );
+  return Response.json({ rows, attendance, labs });
 }
