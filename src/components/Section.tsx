@@ -2,8 +2,8 @@ import type { ReactNode } from "react";
 
 export function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <section className="space-y-2">
-      <h2 className="text-xl font-semibold">{title}</h2>
+    <section className="card space-y-3 p-6">
+      <h2 className="text-lg font-bold">{title}</h2>
       {children}
     </section>
   );
@@ -12,12 +12,12 @@ export function Section({ title, children }: { title: string; children: ReactNod
 export function CodeBlock({ children, label }: { children: string; label?: string }) {
   return (
     <div>
-      {label && <p className="mb-1 text-xs font-semibold text-zinc-500">{label}</p>}
-      <pre className="overflow-x-auto whitespace-pre-wrap rounded bg-zinc-900 p-3 text-sm text-zinc-100">{children}</pre>
+      {label && <p className="mb-1 font-mono text-xs font-semibold text-muted">{label}</p>}
+      <pre className="overflow-x-auto whitespace-pre-wrap rounded-xl bg-[#0f1220] p-4 font-mono text-sm leading-relaxed text-slate-100">{children}</pre>
     </div>
   );
 }
 
 export function Callout({ children }: { children: ReactNode }) {
-  return <p className="rounded bg-amber-100 px-3 py-2 font-semibold text-amber-900">{children}</p>;
+  return <p className="rounded-xl border border-amber-300/60 bg-amber-50 px-4 py-3 font-semibold text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">{children}</p>;
 }

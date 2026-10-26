@@ -7,7 +7,9 @@ import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
 import { todayISO } from "@/lib/schedule";
 import { DAYS, formatDate } from "@/days/registry";
-import { EVENTS, WEEKS, currentWeek, eventsOn, libraryFor, nextEvent } from "@/program/calendar";
+import { EVENTS, WEEKS, currentWeek, eventsOn, libraryFor, nextEvent, trackedEvents } from "@/program/calendar";
+
+const KIND = { session: "Session", call: "Live call", finale: "Finale", submit: "Submit" } as const;
 
 async function Dashboard() {
   await connection(); // depends on today's date and the signed-in user
@@ -21,73 +23,110 @@ async function Dashboard() {
   const week = currentWeek(today);
   const todays = eventsOn(today);
   const next = nextEvent(today);
+  const doneCount = trackedEvents.filter((e) => done.has(e.id)).length;
+  const pct = Math.round((doneCount / trackedEvents.length) * 100);
 
   const state = (id: string, date: string) =>
     done.has(id) ? (
-      <span className="text-green-700">Done</span>
+      <span className="chip-done">Done</span>
     ) : date === today ? (
-      <span className="font-semibold text-amber-700">Today</span>
+      <span className="chip-today">Today</span>
     ) : date < today ? (
-      <span className="text-red-600">Not done</span>
+      <span className="chip-late">Not done</span>
     ) : (
-      <span className="text-zinc-400">{formatDate(date)}</span>
+      <span className="chip-idle">{formatDate(date)}</span>
     );
 
   return (
     <>
-      <Link href="/today" className="mt-6 block rounded-lg border border-blue-300 bg-blue-50 p-5 text-blue-950 hover:bg-blue-100">
-        <p className="text-sm">{formatDate(today)}</p>
-        {todays.length > 0 ? (
-          <>
-            <p className="text-lg font-bold">Today: {todays.map((e) => e.title).join(" + ")}</p>
-            <p className="text-sm underline">Open My week for the lab and to mark it done</p>
-          </>
-        ) : (
-          <>
-            <p className="text-lg font-bold">Nothing scheduled today</p>
-            {next && <p className="text-sm">Next: {next.title} on {formatDate(next.date)}</p>}
-          </>
-        )}
-      </Link>
+      <div className="mt-8 grid gap-4 md:grid-cols-[1fr_auto]">
+        <Link href="/today" className="relative overflow-hidden rounded-2xl p-6 text-white shadow-lg transition hover:shadow-xl" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
+          <p className="text-sm/6 opacity-80">{formatDate(today)}</p>
+          {todays.length > 0 ? (
+            <>
+              <p className="mt-1 text-2xl font-bold">{todays.map((e) => e.title).join(" + ")}</p>
+              <p className="mt-3 inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm font-semibold">Open today&apos;s lab &rarr;</p>
+            </>
+          ) : (
+            <>
+              <p className="mt-1 text-2xl font-bold">Nothing scheduled today</p>
+              {next && <p className="mt-2 text-sm opacity-90">Next up: {next.title} on {formatDate(next.date)}</p>}
+            </>
+          )}
+        </Link>
 
-      <h2 className="mb-3 mt-10 text-xl font-semibold">The five apps</h2>
+        <div className="card flex items-center gap-4 p-6">
+          <div
+            className="grid h-20 w-20 shrink-0 place-items-center rounded-full"
+            style={{ background: `conic-gradient(var(--brand) ${pct * 3.6}deg, var(--line) 0)` }}
+            role="img"
+            aria-label={`${pct} percent of labs completed`}
+          >
+            <div className="grid h-14 w-14 place-items-center rounded-full bg-surface text-lg font-bold">{pct}%</div>
+          </div>
+          <div className="text-sm">
+            <p className="font-bold">Your progress</p>
+            <p className="text-muted">
+              {doneCount} of {trackedEvents.length} labs and calls done
+            </p>
+            <p className="text-muted">{submitted.size} of {WEEKS.length} apps submitted</p>
+          </div>
+        </div>
+      </div>
+
+      <h2 className="mb-4 mt-12 text-xl font-bold">The five apps</h2>
       <div className="space-y-4">
         {WEEKS.map((w) => {
           const evs = EVENTS.filter((e) => e.week === w.week && e.kind !== "submit" && e.kind !== "finale");
           const started = today >= w.assignOpens;
+          const current = w.week === week;
           return (
-            <section key={w.week} className={`rounded-lg border p-4 ${w.week === week ? "border-blue-400" : "border-zinc-200 dark:border-zinc-800"}`}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h3 className="font-bold">
-                  App {w.week}: {w.feature}
-                </h3>
-                <span className="text-sm text-zinc-500">
-                  {formatDate(w.assignOpens)} to {formatDate(w.due)}
-                </span>
+            <section key={w.week} className={`card p-5 ${current ? "!border-brand ring-2 ring-brand/20" : ""} ${!started ? "opacity-80" : ""}`}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl font-bold text-white" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
+                    {w.week}
+                  </span>
+                  <div>
+                    <h3 className="font-bold leading-tight">{w.feature}</h3>
+                    <p className="text-xs text-muted">
+                      {formatDate(w.assignOpens)} &rarr; due {formatDate(w.due)}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  {current && <span className="chip-brand">This week</span>}
+                  {submitted.has(w.week) ? <span className="chip-done">Submitted</span> : <span className="chip-idle">Not submitted</span>}
+                </div>
               </div>
-              <p className="mt-1 text-sm">
+
+              <p className="mt-3 rounded-xl bg-brand-soft px-3 py-2 text-sm">
                 {titles.has(w.week) ? (
-                  <>Your pain point: <b>{titles.get(w.week)}</b></>
+                  <>
+                    <span className="text-muted">Your pain point:</span> <b>{titles.get(w.week)}</b>
+                  </>
                 ) : started ? (
-                  <Link href="/today" className="text-blue-600 underline">Get your pain point</Link>
+                  <Link href="/today" className="link">
+                    Get your pain point &rarr;
+                  </Link>
                 ) : (
-                  <span className="text-zinc-500">Pain point assigned on {formatDate(w.assignOpens)}</span>
+                  <span className="text-muted">Pain point is assigned on {formatDate(w.assignOpens)}</span>
                 )}
-                {" · "}
-                {submitted.has(w.week) ? <span className="text-green-700">Submitted</span> : <span className="text-zinc-500">Not submitted</span>}
               </p>
-              <ul className="mt-2 divide-y divide-zinc-100 text-sm dark:divide-zinc-800">
+
+              <ul className="mt-3 divide-y divide-line text-sm">
                 {evs.map((e) => (
-                  <li key={e.id} className="flex flex-wrap items-baseline justify-between gap-2 py-1">
+                  <li key={e.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                     <span>
+                      <span className="mr-2 text-xs font-semibold uppercase tracking-wide text-muted">{KIND[e.kind]}</span>
                       {e.title}
                       {libraryFor(e.id).length > 0 && (
-                        <span className="ml-2 text-zinc-500">
+                        <span className="ml-2 text-xs text-muted">
                           Go deeper:{" "}
                           {libraryFor(e.id).map((n, i) => (
                             <span key={n}>
                               {i > 0 && ", "}
-                              <Link href={`/days/${n}`} className="text-blue-600 underline" title={DAYS.find((d) => d.day === n)?.title}>
+                              <Link href={`/days/${n}`} className="link" title={DAYS.find((d) => d.day === n)?.title}>
                                 Day {n}
                               </Link>
                             </span>
@@ -109,21 +148,23 @@ async function Dashboard() {
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <h1 className="text-3xl font-bold">GitHub Copilot Training</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-        Build a real app every week, Oct 27 to Dec 1, 2026. Each session teaches one skill and you use it on your own app.
-      </p>
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <p className="chip-brand">Oct 27 &ndash; Dec 1, 2026</p>
+      <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
+        Build a real app <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>every week</span>
+      </h1>
+      <p className="mt-3 max-w-2xl text-muted">Each session teaches one skill. You use it straight away on your own app, deploy it, and submit it on Monday.</p>
 
-      <Suspense fallback={<p className="mt-10 text-zinc-500">Loading...</p>}>
+      <Suspense fallback={<p className="mt-10 text-muted">Loading...</p>}>
         <Dashboard />
       </Suspense>
 
-      <Link href="/library" className="mt-10 block rounded-lg border border-zinc-200 p-5 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900">
-        <p className="text-lg font-bold">Self-learning library</p>
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          The 30 Copilot lessons with labs and quizzes, plus the optional Order Desk app track. Use them whenever you want to go deeper.
-        </p>
+      <Link href="/library" className="card-link mt-12 flex items-center justify-between gap-4 p-6">
+        <div>
+          <p className="text-lg font-bold">Self-learning library</p>
+          <p className="text-sm text-muted">30 Copilot lessons with labs and quizzes, plus the optional Order Desk app track.</p>
+        </div>
+        <span className="text-2xl text-brand">&rarr;</span>
       </Link>
     </main>
   );

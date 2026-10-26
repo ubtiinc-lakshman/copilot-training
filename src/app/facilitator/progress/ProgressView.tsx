@@ -35,8 +35,8 @@ export default function ProgressView() {
     };
   }, []);
 
-  if (error) return <p className="text-red-600">{error}</p>;
-  if (!data) return <p className="text-zinc-500">Loading...</p>;
+  if (error) return <p className="text-rose-600">{error}</p>;
+  if (!data) return <p className="text-muted">Loading...</p>;
 
   const today = todayISO();
   const doneSet = new Set(data.completions.map((c) => `${c.email}|${c.activity}`));
@@ -68,18 +68,18 @@ export default function ProgressView() {
 
   return (
     <div className="space-y-10">
-      <div className="flex flex-wrap items-center gap-3 text-sm text-zinc-500">
+      <div className="flex flex-wrap items-center gap-3 text-sm text-muted">
         <span>
           {data.people.length} participants have used the site. Updates every 30 seconds. People who have not signed in yet are not listed.
         </span>
-        <button className="rounded border border-zinc-400 px-3 py-1 text-zinc-800" onClick={csv}>
+        <button className="btn-ghost !px-3 !py-1" onClick={csv}>
           Export CSV
         </button>
       </div>
 
       {latest && (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">Latest: {latest.title}</h2>
+          <h2 className="mb-2 text-xl font-bold">Latest: {latest.title}</h2>
           <p className="text-sm">
             <b>{data.people.filter((p) => doneSet.has(`${p.email}|${latest.id}`)).length}</b> of {data.people.length} marked it complete.{" "}
             {(() => {
@@ -91,12 +91,12 @@ export default function ProgressView() {
       )}
 
       <section>
-        <h2 className="mb-2 text-xl font-semibold">Who completed what</h2>
-        <p className="mb-2 text-xs text-zinc-500">S = session lab, F = Friday call for that week, End = finale. Hover a column for its title, a tick for the note.</p>
+        <h2 className="mb-2 text-xl font-bold">Who completed what</h2>
+        <p className="mb-2 text-xs text-muted">S = session lab, F = Friday call for that week, End = finale. Hover a column for its title, a tick for the note.</p>
         <div className="overflow-x-auto">
           <table className="text-sm">
             <thead>
-              <tr className="border-b border-zinc-300 text-left dark:border-zinc-700">
+              <tr className="border-b border-line text-left">
                 <th className="py-1 pr-4">Participant</th>
                 {opened.map((e) => (
                   <th key={e.id} className="px-2 text-center" title={`${e.date} ${e.title}`}>
@@ -112,7 +112,7 @@ export default function ProgressView() {
             </thead>
             <tbody>
               {data.people.map((p) => (
-                <tr key={p.email} className="border-b border-zinc-200 dark:border-zinc-800">
+                <tr key={p.email} className="border-b border-line">
                   <td className="py-1 pr-4 font-semibold" title={p.email}>
                     {p.name}
                   </td>
@@ -143,11 +143,11 @@ export default function ProgressView() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-xl font-semibold">Pain points given</h2>
+        <h2 className="mb-2 text-xl font-bold">Pain points given</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-zinc-300 text-left dark:border-zinc-700">
+              <tr className="border-b border-line text-left">
                 <th className="py-1 pr-4">Participant</th>
                 {dueWeeks.map((w) => (
                   <th key={w.week} className="pr-4">
@@ -158,7 +158,7 @@ export default function ProgressView() {
             </thead>
             <tbody>
               {data.people.map((p) => (
-                <tr key={p.email} className="border-b border-zinc-200 align-top dark:border-zinc-800">
+                <tr key={p.email} className="border-b border-line align-top">
                   <td className="py-1 pr-4 font-semibold">{p.name}</td>
                   {dueWeeks.map((w) => (
                     <td key={w.week} className="pr-4">
@@ -173,9 +173,9 @@ export default function ProgressView() {
       </section>
 
       <section>
-        <h2 className="mb-2 text-xl font-semibold">Submissions ({data.submissions.length})</h2>
+        <h2 className="mb-2 text-xl font-bold">Submissions ({data.submissions.length})</h2>
         <div className="space-y-3">
-          {data.submissions.length === 0 && <p className="text-sm text-zinc-500">None yet.</p>}
+          {data.submissions.length === 0 && <p className="text-sm text-muted">None yet.</p>}
           {data.submissions.map((s) => {
             const who = data.people.find((p) => p.email === s.email)?.name ?? s.email;
             const due = WEEKS.find((w) => w.week === s.week)?.due ?? "";

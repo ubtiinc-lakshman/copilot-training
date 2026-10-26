@@ -7,8 +7,8 @@ export const metadata = { title: "Optional app track: Order Desk" };
 
 export default function TrackPage() {
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/library" className="text-sm text-blue-600 hover:underline">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <Link href="/library" className="text-sm link">
         Library
       </Link>
       <h1 className="mb-2 mt-4 text-3xl font-bold">Optional app track: Order Desk</h1>
@@ -20,7 +20,7 @@ export default function TrackPage() {
       </ul>
 
       <section className="mt-8 space-y-2">
-        <h2 className="text-xl font-semibold">Prerequisites (sort these out before Day 2)</h2>
+        <h2 className="text-xl font-bold">Prerequisites (sort these out before Day 2)</h2>
         <table className="w-full text-sm">
           <tbody>
             {PREREQS.map((p) => (
@@ -37,7 +37,7 @@ export default function TrackPage() {
 
       <nav className="mt-6 flex flex-wrap gap-3 text-sm">
         {TRACK.map((t) => (
-          <a key={t.day} href={`#day-${t.day}`} className="text-blue-600 hover:underline">
+          <a key={t.day} href={`#day-${t.day}`} className="link">
             Day {t.day}
           </a>
         ))}
@@ -46,7 +46,7 @@ export default function TrackPage() {
       <div className="mt-10 space-y-12">
         {TRACK.map((t) => (
           <section key={t.day} id={`day-${t.day}`} className="scroll-mt-6 space-y-3">
-            <h2 className="text-xl font-semibold">
+            <h2 className="text-xl font-bold">
               Day {t.day}: {t.title}
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
@@ -75,7 +75,7 @@ export default function TrackPage() {
             {t.prompt && <CodeBlock label="Starter prompt">{t.prompt}</CodeBlock>}
             <h3 className="font-semibold">Done when</h3>
             <ChecklistTracker id={`track-day-${t.day}`} items={t.accept} />
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-muted">
               Commit: <code>{t.commit}</code>
             </p>
           </section>

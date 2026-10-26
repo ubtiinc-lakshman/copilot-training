@@ -14,11 +14,11 @@ async function FacilitatorOnly() {
 export default function ProgressPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-6 py-10">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
+      <Link href="/" className="text-sm link">
         Home
       </Link>
       <h1 className="mb-6 mt-4 text-3xl font-bold">Program progress</h1>
-      <Suspense fallback={<p className="text-zinc-500">Loading...</p>}>
+      <Suspense fallback={<p className="text-muted">Loading...</p>}>
         <FacilitatorOnly />
       </Suspense>
     </main>

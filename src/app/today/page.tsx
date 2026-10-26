@@ -33,7 +33,7 @@ async function MyWeek() {
   const upcoming = nextEvent(today);
 
   const eventCard = (e: ProgramEvent) => (
-    <section key={e.id} className="space-y-2 rounded-lg border border-zinc-300 p-5 dark:border-zinc-700">
+    <section key={e.id} className="card space-y-2 p-6">
       <h3 className="text-lg font-bold">{e.title}</h3>
       {e.skill && (
         <p className="text-sm">
@@ -46,12 +46,12 @@ async function MyWeek() {
         </p>
       )}
       {libraryFor(e.id).length > 0 && (
-        <p className="text-sm text-zinc-600">
+        <p className="text-sm text-muted">
           Go deeper:{" "}
           {libraryFor(e.id).map((n, i) => (
             <span key={n}>
               {i > 0 && ", "}
-              <Link href={`/days/${n}`} className="text-blue-600 underline">
+              <Link href={`/days/${n}`} className="link">
                 Day {n}: {DAYS.find((d) => d.day === n)?.title}
               </Link>
             </span>
@@ -60,7 +60,7 @@ async function MyWeek() {
       )}
       {e.kind === "submit" ? (
         <>
-          <p className="text-sm text-zinc-600">
+          <p className="text-sm text-muted">
             Submit your deployed app for week {e.week}, then tell us the challenge you faced and how you solved it. After this, get your next pain point below.
           </p>
           <SubmissionForm week={e.week} initial={submissions.get(e.week) ?? null} due={getWeek(e.week)!.due} />
@@ -80,20 +80,20 @@ async function MyWeek() {
   const status = (e: ProgramEvent) => {
     if (e.kind === "submit") {
       const s = submissions.get(e.week);
-      if (s) return <span className="text-green-700">Submitted: <a className="underline" href={s.url} target="_blank" rel="noreferrer">{s.url}</a></span>;
-      return today >= e.date ? <span className="text-red-600">Not submitted</span> : <span className="text-zinc-400">Upcoming</span>;
+      if (s) return <span className="text-emerald-700">Submitted: <a className="underline" href={s.url} target="_blank" rel="noreferrer">{s.url}</a></span>;
+      return today >= e.date ? <span className="text-rose-600">Not submitted</span> : <span className="text-muted">Upcoming</span>;
     }
-    if (done.has(e.id)) return <span className="font-semibold text-green-700">Completed</span>;
-    if (today > e.date) return <span className="text-red-600">Not done</span>;
-    return today === e.date ? <span className="text-amber-700">Today</span> : <span className="text-zinc-400">Upcoming</span>;
+    if (done.has(e.id)) return <span className="font-semibold text-emerald-700">Completed</span>;
+    if (today > e.date) return <span className="text-rose-600">Not done</span>;
+    return today === e.date ? <span className="chip-today">Today</span> : <span className="text-muted">Upcoming</span>;
   };
 
   return (
     <div className="space-y-10">
       <div>
-        <p className="text-sm text-zinc-500">{formatDate(today)}</p>
-        <h1 className="text-3xl font-bold">My week</h1>
-        <p className="mt-1 text-zinc-600">
+        <p className="text-sm text-muted">{formatDate(today)}</p>
+        <h1 className="text-3xl font-extrabold tracking-tight">My week</h1>
+        <p className="mt-1 text-muted">
           {info ? (
             <>
               Week {week} of {WEEKS.length}. This week&apos;s app: <b>{info.feature}</b>. Due {formatDate(info.due)}.
@@ -105,11 +105,11 @@ async function MyWeek() {
       </div>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Today</h2>
+        <h2 className="text-xl font-bold">Today</h2>
         {todays.length > 0 ? (
           todays.map(eventCard)
         ) : (
-          <p className="rounded border border-dashed border-zinc-300 p-4 text-sm text-zinc-600">
+          <p className="card border-dashed p-5 text-sm text-muted">
             Nothing is scheduled today.
             {upcoming && <> Next: <b>{upcoming.title}</b> on {formatDate(upcoming.date)}.</>}
           </p>
@@ -117,7 +117,7 @@ async function MyWeek() {
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">{info ? `Week ${week} pain point` : "Your pain point"}</h2>
+        <h2 className="text-xl font-bold">{info ? `Week ${week} pain point` : "Your pain point"}</h2>
         {info ? (
           <PainPointCard key={`${week}${painPoints.has(week)}`} initial={painPoints.get(week) ?? null} open opensOn={formatDate(info.assignOpens)} />
         ) : (
@@ -127,7 +127,7 @@ async function MyWeek() {
 
       {[...painPoints.entries()].filter(([w]) => w !== week).length > 0 && (
         <section className="space-y-3">
-          <h2 className="text-xl font-semibold">Earlier pain points</h2>
+          <h2 className="text-xl font-bold">Earlier pain points</h2>
           {[...painPoints.entries()]
             .filter(([w]) => w !== week)
             .sort(([a], [b]) => a - b)
@@ -141,12 +141,12 @@ async function MyWeek() {
       )}
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">My progress</h2>
-        <table className="w-full text-sm">
+        <h2 className="text-xl font-bold">My progress</h2>
+        <table className="card w-full overflow-hidden text-sm">
           <tbody>
             {EVENTS.map((e) => (
-              <tr key={e.id} className="border-b border-zinc-200 align-top dark:border-zinc-800">
-                <td className="w-28 py-1 pr-3 text-zinc-500">{formatDate(e.date)}</td>
+              <tr key={e.id} className="border-b border-line align-top">
+                <td className="w-28 py-1 pr-3 text-muted">{formatDate(e.date)}</td>
                 <td className="pr-3">{e.title}</td>
                 <td>{status(e)}</td>
               </tr>
@@ -155,9 +155,9 @@ async function MyWeek() {
         </table>
       </section>
 
-      <p className="text-sm text-zinc-500">
+      <p className="text-sm text-muted">
         Earlier Copilot lessons (the 30-day library) are still available for self-learning:{" "}
-        <Link href="/library" className="text-blue-600 underline">
+        <Link href="/library" className="link">
           open the library
         </Link>
         .
@@ -168,7 +168,7 @@ async function MyWeek() {
 
 export default function TodayPage() {
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
       <Suspense fallback={<p className="text-zinc-500">Loading...</p>}>
         <MyWeek />
       </Suspense>

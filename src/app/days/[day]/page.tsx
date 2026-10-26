@@ -23,7 +23,7 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
   const email = (await auth())?.user?.email;
   if (!isLessonOpen() && !(await actingFacilitator(email))) {
     return (
-      <p className="mt-6 rounded border border-dashed border-zinc-300 p-6 text-zinc-600">
+      <p className="mt-6 card border-dashed p-6 text-muted">
         Day {entry.day}: {entry.title} opens on {formatDate(entry.date)}. The lab, prompts and quiz appear that morning.
       </p>
     );
@@ -36,26 +36,26 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
   return (
     <>
       <CheckIn day={entry.day} />
-      <p className="mt-4 text-sm text-zinc-500">
+      <p className="mt-4 text-sm text-muted">
         {entry.level} | {formatDate(entry.date)}
       </p>
-      <h1 className="mb-8 mt-1 text-3xl font-bold">
+      <h1 className="mb-8 mt-1 text-3xl font-extrabold tracking-tight">
         Day {entry.day}: {entry.title}
       </h1>
 
       {Showcase ? (
         <Showcase />
       ) : (
-        <p className="rounded border border-dashed border-zinc-300 p-6 text-zinc-600">
+        <p className="card border-dashed p-6 text-muted">
           This day&apos;s showcase is added the day before the session. Create <code>src/days/day-{String(entry.day).padStart(2, "0")}/</code>{" "}
           and register it in <code>src/days/showcases.tsx</code>.
         </p>
       )}
 
       {getTrackTask(entry.day) && (
-        <p className="mt-10 rounded border border-dashed border-zinc-300 px-4 py-3 text-sm">
+        <p className="mt-10 card border-dashed px-4 py-3 text-sm">
           Optional app track, Day {entry.day}: {getTrackTask(entry.day)!.title}.{" "}
-          <Link href={`/track#day-${entry.day}`} className="font-semibold text-blue-600 hover:underline">
+          <Link href={`/track#day-${entry.day}`} className="link">
             See the task
           </Link>
         </p>
@@ -71,11 +71,11 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 
 export default function DayPage({ params }: { params: Promise<{ day: string }> }) {
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/library" className="text-sm text-blue-600 hover:underline">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <Link href="/library" className="link text-sm">
         Library
       </Link>
-      <Suspense fallback={<p className="mt-6 text-zinc-500">Loading...</p>}>
+      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
         <DayContent params={params} />
       </Suspense>
     </main>

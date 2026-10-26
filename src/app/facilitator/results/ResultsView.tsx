@@ -160,19 +160,19 @@ export default function ResultsView() {
       {/* summary */}
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <div className={card}>
-          <p className="text-xs text-zinc-500">Participants</p>
+          <p className="text-xs text-muted">Participants</p>
           <p className="text-2xl font-bold">{people.size}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-zinc-500">Quiz attempts</p>
+          <p className="text-xs text-muted">Quiz attempts</p>
           <p className="text-2xl font-bold">{rows.length}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-zinc-500">Average score</p>
+          <p className="text-xs text-muted">Average score</p>
           <p className="text-2xl font-bold">{overallAvg === null ? "-" : `${overallAvg}%`}</p>
         </div>
         <div className={card}>
-          <p className="text-xs text-zinc-500">On track</p>
+          <p className="text-xs text-muted">On track</p>
           <p className="text-2xl font-bold">{onTrack}/{people.size}</p>
         </div>
       </div>
@@ -180,7 +180,7 @@ export default function ResultsView() {
       {/* per-day */}
       {quizDays.length > 0 && (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">Quiz by day</h2>
+          <h2 className="mb-2 text-xl font-bold">Quiz by day</h2>
           <div className="space-y-1">
             {quizDays.map((d) => {
               const scores = allStats.map((p) => p.scores.get(d)).filter((v): v is number => v !== undefined);
@@ -191,7 +191,7 @@ export default function ResultsView() {
                   <div className="h-3 flex-1 overflow-hidden rounded bg-zinc-200 dark:bg-zinc-800">
                     <div className={`h-full ${avg >= PASS ? "bg-green-500" : avg >= 50 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${avg}%`, transition: "width .6s" }} />
                   </div>
-                  <span className="w-40 shrink-0 text-right text-zinc-500">
+                  <span className="w-40 shrink-0 text-right text-muted">
                     avg {avg}% - {scores.length}/{people.size} took it
                   </span>
                 </div>
@@ -204,7 +204,7 @@ export default function ResultsView() {
       {/* participants */}
       <section>
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-xl font-semibold">Participants</h2>
+          <h2 className="text-xl font-bold">Participants</h2>
           <input
             className="rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900"
             placeholder="Search name or email"
@@ -212,11 +212,11 @@ export default function ResultsView() {
             onChange={(e) => setQuery(e.target.value)}
           />
         </div>
-        <p className="mb-2 text-xs text-zinc-500">
+        <p className="mb-2 text-xs text-muted">
           Best score per day. Level gate: {PASS}% average, {GATE_ATTENDANCE}% attendance of the {openDays.length} day(s) opened so far; Day 9 is a hard gate at {PASS}%.
         </p>
         {people.size === 0 ? (
-          <p className="text-zinc-500">Nobody has signed in yet.</p>
+          <p className="text-muted">Nobody has signed in yet.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
@@ -233,10 +233,10 @@ export default function ResultsView() {
               </thead>
               <tbody>
                 {stats.map(({ p, avg, att, status }) => (
-                  <tr key={p.email} className="border-b border-zinc-200 dark:border-zinc-800">
+                  <tr key={p.email} className="border-b border-line">
                     <td className="py-1 pr-4">
                       <b>{p.name}</b>
-                      <div className="text-xs text-zinc-500">{p.email}</div>
+                      <div className="text-xs text-muted">{p.email}</div>
                     </td>
                     {quizDays.map((d) => {
                       const v = p.scores.get(d);
@@ -253,7 +253,7 @@ export default function ResultsView() {
                 ))}
               </tbody>
             </table>
-            {stats.length === 0 && <p className="py-3 text-zinc-500">No match.</p>}
+            {stats.length === 0 && <p className="py-3 text-muted">No match.</p>}
           </div>
         )}
       </section>
@@ -261,21 +261,21 @@ export default function ResultsView() {
       {/* attendance matrix */}
       {people.size > 0 && openDays.length > 0 && (
         <section>
-          <h2 className="mb-2 text-xl font-semibold">Attendance</h2>
-          <p className="mb-2 text-xs text-zinc-500">A dot means the participant opened that day&apos;s page while signed in.</p>
+          <h2 className="mb-2 text-xl font-bold">Attendance</h2>
+          <p className="mb-2 text-xs text-muted">A dot means the participant opened that day&apos;s page while signed in.</p>
           <div className="overflow-x-auto">
             <table className="text-sm">
               <thead>
                 <tr className="text-left">
                   <th className="pr-4">Participant</th>
                   {openDays.map((d) => (
-                    <th key={d} className="px-1 text-center text-xs font-normal text-zinc-500">{d}</th>
+                    <th key={d} className="px-1 text-center text-xs font-normal text-muted">{d}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {stats.map(({ p }) => (
-                  <tr key={p.email} className="border-t border-zinc-200 dark:border-zinc-800">
+                  <tr key={p.email} className="border-t border-line">
                     <td className="py-1 pr-4">{p.name}</td>
                     {openDays.map((d) => (
                       <td key={d} className="px-1 text-center">
@@ -292,12 +292,12 @@ export default function ResultsView() {
 
       {/* attempts */}
       <section>
-        <h2 className="mb-2 text-xl font-semibold">Recent attempts ({rows.length})</h2>
+        <h2 className="mb-2 text-xl font-bold">Recent attempts ({rows.length})</h2>
         <table className="w-full text-sm">
           <tbody>
             {(showAll ? rows : rows.slice(0, 15)).map((r) => (
-              <tr key={r.id} className={`border-b border-zinc-200 dark:border-zinc-800 ${fresh.has(r.id) ? "bg-blue-50 dark:bg-blue-950" : ""}`}>
-                <td className="py-1 pr-3 text-zinc-500">{new Date(r.created_at).toLocaleString()}</td>
+              <tr key={r.id} className={`border-b border-line ${fresh.has(r.id) ? "bg-blue-50 dark:bg-blue-950" : ""}`}>
+                <td className="py-1 pr-3 text-muted">{new Date(r.created_at).toLocaleString()}</td>
                 <td className="pr-3">Day {r.day}</td>
                 <td className="pr-3">{r.name}</td>
                 <td className="pr-3">{r.score}/{r.total}</td>

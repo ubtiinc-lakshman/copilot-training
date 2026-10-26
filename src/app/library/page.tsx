@@ -13,24 +13,24 @@ async function DayList() {
     <>
       {LEVELS.map((level) => (
         <section key={level} className="mt-10">
-          <h2 className="mb-3 text-xl font-semibold">Level: {level}</h2>
-          <ul className="divide-y divide-zinc-200 rounded-lg border border-zinc-200 dark:divide-zinc-800 dark:border-zinc-800">
+          <h2 className="mb-3 text-xl font-bold">{level}</h2>
+          <ul className="card divide-y divide-line overflow-hidden">
             {DAYS.filter((d) => d.level === level).map((d) => (
               <li key={d.day}>
-                <Link href={`/days/${d.day}`} className="flex items-center justify-between gap-4 px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-900">
+                <Link href={`/days/${d.day}`} className="flex items-center justify-between gap-4 px-5 py-3 transition hover:bg-brand-soft">
                   <span>
-                    <b>Day {d.day}</b> {d.title}
+                    <b className="mr-2 text-brand">Day {d.day}</b> {d.title}
                   </span>
-                  <span className="flex shrink-0 items-center gap-3 text-sm text-zinc-500">
+                  <span className="flex shrink-0 items-center gap-3 text-sm text-muted">
                     {!isLessonOpen() ? (
-                      <span className="rounded bg-amber-100 px-2 py-0.5 text-amber-800">Opens {formatDate(d.date)}</span>
+                      <span className="chip-idle">{formatDate(d.date)}</span>
                     ) : (
                       <>
                         {formatDate(d.date)}
                         {SHOWCASES[d.day] ? (
-                          <span className="rounded bg-green-100 px-2 py-0.5 text-green-800">Ready</span>
+                          <span className="chip-done">Ready</span>
                         ) : (
-                          <span className="rounded bg-zinc-100 px-2 py-0.5 text-zinc-600">Planned</span>
+                          <span className="chip-idle">Planned</span>
                         )}
                       </>
                     )}
@@ -47,27 +47,27 @@ async function DayList() {
 
 export default function Library() {
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
+    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+      <Link href="/" className="link text-sm">
         Home
       </Link>
-      <h1 className="mt-4 text-3xl font-bold">Self-learning library</h1>
-      <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+      <h1 className="mt-4 text-3xl font-extrabold tracking-tight">Self-learning library</h1>
+      <p className="mt-2 text-muted">
         The 30 Copilot lessons, with labs and quizzes. Use them to go deeper on anything the weekly sessions touch. Each weekly session on{" "}
-        <Link href="/" className="underline">
+        <Link href="/" className="link">
           Home
         </Link>{" "}
         links to the lessons that match it.
       </p>
 
-      <p className="mt-4 rounded border border-zinc-200 px-4 py-3 text-sm dark:border-zinc-800">
+      <p className="card mt-5 px-5 py-3 text-sm">
         Older optional extra: build one Next.js app alongside the first 10 lessons.{" "}
-        <Link href="/track" className="font-semibold text-blue-600 hover:underline">
+        <Link href="/track" className="link">
           Open the app track
         </Link>
       </p>
 
-      <Suspense fallback={<p className="mt-10 text-zinc-500">Loading...</p>}>
+      <Suspense fallback={<p className="mt-10 text-muted">Loading...</p>}>
         <DayList />
       </Suspense>
     </main>

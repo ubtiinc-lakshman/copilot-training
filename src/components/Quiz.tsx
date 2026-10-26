@@ -52,13 +52,13 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
     }
   };
 
-  if (!questions) return <p className="text-sm text-zinc-500">{save === "error" ? message : "Loading quiz..."}</p>;
+  if (!questions) return <p className="text-sm text-muted">{save === "error" ? message : "Loading quiz..."}</p>;
   const { score, total, percent } = outcome ?? { score: 0, total: questions.length, percent: 0 };
 
   return (
     <div className="space-y-4">
       {questions.map((q, i) => (
-        <div key={q.q} className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+        <div key={q.q} className="card p-5">
           <p className="font-semibold">
             {i + 1}. {q.q}
           </p>
@@ -81,13 +81,13 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
           )}
           {q.type === "short" && (
             <input
-              className="mt-2 w-full rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              className="input mt-2"
               value={String(given[i] ?? "")}
               onChange={(e) => set(i, e.target.value)}
             />
           )}
           {submitted && (
-            <p className={`mt-2 text-sm font-semibold ${outcome?.correct[i] ? "text-green-600" : "text-red-600"}`}>
+            <p className={`mt-2 text-sm font-semibold ${outcome?.correct[i] ? "text-emerald-600" : "text-rose-600"}`}>
               {outcome?.correct[i] ? "Correct" : "Not correct"}
             </p>
           )}
@@ -95,7 +95,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
         </div>
       ))}
       <div className="flex flex-wrap items-center gap-4">
-        <button className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50" onClick={submit} disabled={save === "saving"}>
+        <button className="btn-primary" onClick={submit} disabled={save === "saving"}>
           Check answers
         </button>
         {submitted && (
@@ -104,7 +104,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
             {passPercent !== undefined && (percent >= passPercent ? " - PASS" : ` - below the ${passPercent}% pass mark`)}
           </span>
         )}
-        {save !== "idle" && <span className={`text-sm ${save === "error" ? "text-red-600" : "text-zinc-500"}`}>{save === "saving" ? "Saving..." : message}</span>}
+        {save !== "idle" && <span className={`text-sm ${save === "error" ? "text-rose-600" : "text-muted"}`}>{save === "saving" ? "Saving..." : message}</span>}
       </div>
     </div>
   );

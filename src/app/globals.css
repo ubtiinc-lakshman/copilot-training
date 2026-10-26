@@ -1,26 +1,90 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f6fb;
+  --foreground: #14172b;
+  --surface: #ffffff;
+  --muted: #5b6078;
+  --line: #e4e6f0;
+  --brand: #5b5bf0;
+  --brand-2: #8b5cf6;
+  --brand-soft: #eef0ff;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-brand: var(--brand);
+  --color-brand-2: var(--brand-2);
+  --color-brand-soft: var(--brand-soft);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0a0c16;
+    --foreground: #eceef8;
+    --surface: #131627;
+    --muted: #9aa0ba;
+    --line: #262a40;
+    --brand: #8083ff;
+    --brand-2: #a78bfa;
+    --brand-soft: #1b1f3d;
   }
 }
 
 body {
   background: var(--background);
+  background-image: radial-gradient(60rem 28rem at 85% -10%, color-mix(in srgb, var(--brand) 14%, transparent), transparent);
+  background-repeat: no-repeat;
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+@utility card {
+  @apply rounded-2xl border border-line bg-surface shadow-sm;
+}
+@utility card-link {
+  @apply card transition hover:-translate-y-0.5 hover:border-brand/50 hover:shadow-md;
+}
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition disabled:opacity-50;
+}
+@utility btn-primary {
+  @apply btn text-white shadow-sm hover:brightness-110;
+  background-image: linear-gradient(135deg, var(--brand), var(--brand-2));
+}
+@utility btn-success {
+  @apply btn bg-emerald-600 text-white hover:bg-emerald-500;
+}
+@utility btn-ghost {
+  @apply btn border border-line bg-surface hover:border-brand/50;
+}
+@utility input {
+  @apply w-full rounded-xl border border-line bg-surface px-3 py-2 text-sm outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25;
+}
+@utility chip {
+  @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold;
+}
+@utility chip-done {
+  @apply chip bg-emerald-100 text-emerald-800 dark:bg-emerald-500/15 dark:text-emerald-300;
+}
+@utility chip-today {
+  @apply chip bg-amber-100 text-amber-800 dark:bg-amber-500/15 dark:text-amber-300;
+}
+@utility chip-late {
+  @apply chip bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300;
+}
+@utility chip-idle {
+  @apply chip bg-black/5 text-muted dark:bg-white/10;
+}
+@utility chip-brand {
+  @apply chip bg-brand-soft text-brand;
+}
+@utility link {
+  @apply font-medium text-brand underline-offset-4 hover:underline;
 }

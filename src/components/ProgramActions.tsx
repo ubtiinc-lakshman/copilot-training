@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import type { PainPoint } from "@/lib/assign";
 
-const field = "w-full rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900";
+const field = "input mt-1 font-normal";
 
 async function post(url: string, body?: unknown) {
   const res = await fetch(url, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body ?? {}) });
@@ -42,26 +42,26 @@ export function LabDone({ id, label, initialDone, initialNote }: { id: string; l
       )}
       {done ? (
         <p className="flex flex-wrap items-center gap-3 text-sm">
-          <span className="rounded bg-green-100 px-2 py-1 font-semibold text-green-800">Completed</span>
-          {note && <span className="text-zinc-600">{note}</span>}
-          <button className="text-xs text-zinc-500 underline" onClick={() => act(false)} disabled={busy}>
+          <span className="chip-done">Completed</span>
+          {note && <span className="text-muted">{note}</span>}
+          <button className="text-xs text-muted underline" onClick={() => act(false)} disabled={busy}>
             Undo
           </button>
         </p>
       ) : (
-        <button className="rounded bg-green-600 px-4 py-2 text-white disabled:opacity-50" onClick={() => act(true)} disabled={busy}>
+        <button className="btn-success" onClick={() => act(true)} disabled={busy}>
           {label}
         </button>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-rose-600">{error}</p>}
     </div>
   );
 }
 
 export function PainPointView({ p }: { p: PainPoint }) {
   return (
-    <div className="space-y-2 rounded-lg border border-blue-300 bg-blue-50 p-4 text-blue-950">
-      <p className="text-xs font-semibold uppercase">{p.audience === "org" ? "Inside an organisation" : "Common person"} | {p.category}</p>
+    <div className="card space-y-2 border-brand/40 bg-brand-soft p-5">
+      <p className="chip-brand !bg-surface">{p.audience === "org" ? "Inside an organisation" : "Common person"} | {p.category}</p>
       <h3 className="text-lg font-bold">{p.title}</h3>
       <p>{p.problem}</p>
       <p className="text-sm font-semibold">Your app must:</p>
@@ -81,11 +81,11 @@ export function PainPointCard({ initial, open, opensOn }: { initial: PainPoint |
   const [error, setError] = useState("");
 
   if (p) return <PainPointView p={p} />;
-  if (!open) return <p className="text-sm text-zinc-600">Your pain point opens on {opensOn}.</p>;
+  if (!open) return <p className="text-sm text-muted">Your pain point opens on {opensOn}.</p>;
   return (
     <div className="space-y-2">
       <button
-        className="rounded bg-blue-600 px-4 py-2 font-semibold text-white disabled:opacity-50"
+        className="btn-primary"
         disabled={busy}
         onClick={async () => {
           setBusy(true);
@@ -101,8 +101,8 @@ export function PainPointCard({ initial, open, opensOn }: { initial: PainPoint |
       >
         Give me my pain point
       </button>
-      <p className="text-xs text-zinc-500">Picked at random. No one else gets the same one, and you will never get the same one twice.</p>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      <p className="text-xs text-muted">Picked at random. No one else gets the same one, and you will never get the same one twice.</p>
+      {error && <p className="text-sm text-rose-600">{error}</p>}
     </div>
   );
 }
@@ -136,7 +136,7 @@ export function SubmissionForm({ week, initial, due }: { week: number; initial: 
       </label>
       <div className="flex flex-wrap items-center gap-3">
         <button
-          className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
+          className="btn-primary"
           disabled={busy}
           onClick={async () => {
             setBusy(true);
@@ -153,7 +153,7 @@ export function SubmissionForm({ week, initial, due }: { week: number; initial: 
         >
           {initial ? "Update submission" : "Submit app"}
         </button>
-        {state.kind !== "idle" && <span className={`text-sm ${state.kind === "error" ? "text-red-600" : "text-green-700"}`}>{state.text}</span>}
+        {state.kind !== "idle" && <span className={`text-sm ${state.kind === "error" ? "text-rose-600" : "text-emerald-700"}`}>{state.text}</span>}
       </div>
     </div>
   );
