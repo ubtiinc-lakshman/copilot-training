@@ -7,6 +7,7 @@ import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
 import { todayISO } from "@/lib/schedule";
 import { DAYS, formatDate } from "@/days/registry";
+import { SESSIONS } from "@/program/sessions";
 import { EVENTS, WEEKS, currentWeek, eventsOn, libraryFor, nextEvent, trackedEvents } from "@/program/calendar";
 
 const KIND = { session: "Session", call: "Live call", finale: "Finale", submit: "Submit" } as const;
@@ -119,7 +120,13 @@ async function Dashboard() {
                   <li key={e.id} className="flex flex-wrap items-center justify-between gap-2 py-2">
                     <span>
                       <span className="mr-2 text-xs font-semibold uppercase tracking-wide text-muted">{KIND[e.kind]}</span>
-                      {e.title}
+                      {SESSIONS[e.id] ? (
+                        <Link href={`/sessions/${e.id}`} className="link">
+                          {e.title}
+                        </Link>
+                      ) : (
+                        e.title
+                      )}
                       {libraryFor(e.id).length > 0 && (
                         <span className="ml-2 text-xs text-muted">
                           Go deeper:{" "}

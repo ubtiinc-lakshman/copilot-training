@@ -3,8 +3,8 @@ import { actingFacilitator } from "@/lib/viewMode";
 import { db, type AttendanceRow, type LabRow, type ResultRow } from "@/lib/db";
 import { gradeQuiz, isCorrect, type Given } from "@/lib/grade";
 import { getQuiz } from "@/lib/quizzes";
-import { DAYS } from "@/days/registry";
-import { isLessonOpen } from "@/lib/schedule";
+import { quizOpen } from "@/lib/schedule";
+import { getEvent } from "@/program/calendar";
 
 // POST: a signed-in participant submits quiz answers. The score is recomputed here, never trusted from the browser.
 export async function POST(request: Request) {
@@ -20,7 +20,7 @@ export async function POST(request: Request) {
   const day = Number(body.day);
   const questions = await getQuiz(day);
   if (!questions) return Response.json({ error: "No quiz for that day" }, { status: 400 });
-  if (!isLessonOpen() && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
+  if (!quizOpen(day, day > 100 ? getEvent(`s${String(day - 100).padStart(2, "0")}`)?.date : undefined) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   if (!Array.isArray(body.answers) || body.answers.length !== questions.length) {
     return Response.json({ error: "answers must match the number of questions" }, { status: 400 });
   }

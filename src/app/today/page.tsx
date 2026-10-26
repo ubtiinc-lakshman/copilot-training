@@ -9,6 +9,7 @@ import { currentUser } from "@/lib/user";
 import { todayISO } from "@/lib/schedule";
 import { DAYS, formatDate } from "@/days/registry";
 import type { PainPoint } from "@/lib/assign";
+import { SESSIONS } from "@/program/sessions";
 import { EVENTS, WEEKS, currentWeek, eventsOn, getWeek, libraryFor, nextEvent, type ProgramEvent } from "@/program/calendar";
 import { LabDone, PainPointCard, PainPointView, SubmissionForm, type SubmissionData } from "@/components/ProgramActions";
 
@@ -44,6 +45,11 @@ async function MyWeek() {
         <p className="text-sm">
           <b>Your lab:</b> {e.lab}
         </p>
+      )}
+      {SESSIONS[e.id] && (
+        <Link href={`/sessions/${e.id}`} className="btn-primary">
+          Open session content
+        </Link>
       )}
       {libraryFor(e.id).length > 0 && (
         <p className="text-sm text-muted">
