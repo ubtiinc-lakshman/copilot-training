@@ -2,7 +2,7 @@
 
 Last updated: Mon Oct 26, 2026. **Read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
 
-**State at the end of Oct 26 (everything pushed; `main` = `origin/main` at `52d2c8f`; production seeds run: 217 pain points for weeks 1-5 and a 36-person roster in Neon).** Session 1 is Tue Oct 27. Still to do: click through the live site (see "Open / next" at the bottom).
+**State at the end of Oct 26 (everything pushed; `main` = `origin/main` at `38c01b3`, plus this handoff commit; production seeds run: 217 pain points for weeks 1-5 and a 36-person roster in Neon).** Session 1 is Tue Oct 27. Still to do: click through the live site (see "Open / next" at the bottom).
 
 ## What this is
 
@@ -153,7 +153,9 @@ Also added after the first version of this section:
 | Quiz numbering | Session quizzes are quiz day 100 + session number (101 = s01 ... 115 = s15), stored in the same `quizzes` table and graded by `/api/results`. They open on the session date (`quizOpen` in `schedule.ts`). Answers live only in the git-ignored `data/quizzes.json` and Neon |
 | `calendar.ts` `libraryFor(id)` | Maps each session to library days for "Go deeper" links |
 | Library lab tracking (added by another session) | `LabTaskStatus` on each lesson saves `lab-<day>` completions; Results page shows them |
-| UI | Brand tokens and `@utility` classes in `src/app/globals.css` (`card`, `btn-primary`, `btn-ghost`, `input`, `chip-*`, `link`). Sticky top bar in `UserMenu` |
+| UI | Brand tokens and `@utility` classes in `src/app/globals.css` (`card`, `btn-primary`, `btn-ghost`, `input`, `chip-*`, `link`). Use these, not raw zinc/blue classes. All pages (home, My week, library, day pages, sessions, track, facilitator Progress and Results, lab widgets) were moved to this theme on Oct 26 |
+| Header | `src/components/UserMenu.tsx` (server) + `HeaderClient.tsx` (client: `NavLinks` highlights the current page, `AccountMenu` avatar dropdown that closes on outside click, Esc and navigation). Menu holds profile, My week, "View as participant" (facilitators) and Sign out. Progress and Results links are facilitator-only |
+| Profile | `/profile` (`src/app/profile/page.tsx`, `src/lib/profile.ts`): avatar, role, team and GitHub from the roster, stat tiles, certification progress bars (80% sessions, 4 of 5 apps, 70% quiz average), "My apps" list. Sessions done = labs and calls marked complete, not real attendance |
 
 Status: built, type-checked, linted on the new files, SQL tested (`npm run test:site`, `npm test`), `next build` passes. NOT browser-checked after sign-in (the Entra values are not available locally), NOT seeded in production, not pushed. Local `.env.local` now has the pulled Neon values plus a throwaway `AUTH_SECRET`; real sign-in locally still needs the Entra vars, which Vercel will not hand out (marked Secret).
 
@@ -161,7 +163,7 @@ Gotchas learned:
 - Anything calling `auth()` in a server component needs `await connection()` first (Cache Components), or prerender fails with the `crypto.getRandomValues()` error. Done in `UserMenu` and the day, progress and results pages.
 - Bash heredocs with apostrophes fail here; use the Write tool or a script file. Read a file with the Read tool before Write/Edit (a Bash `cat` does not count).
 - Tailwind 4: custom component classes must be `@utility`, not `@layer components`, if they are used inside `@apply`.
-- Never `git add -A` or `git add src`. Uncommitted edits that are not Claude's: `.gitignore`, `src/days/day-03/*`, `src/days/day-04/*`, `instructions.md`, `skills-lock.json`. Leftover local diff in `src/app/login/page.tsx` is harmless (revert it); `DecisionLog.tsx` has a harmless class change from the redesign.
+- Never `git add -A` or `git add src`. Uncommitted edits that are not Claude's: `.gitignore`, `src/days/day-03/*`, `src/days/day-04/*`, `instructions.md`, `skills-lock.json`. Leftover local diff in `src/app/login/page.tsx` is harmless (revert it); Also untracked/unrelated: `Notes.txt`. `DecisionLog.tsx` was restyled and committed.
 - Known lint error, not ours: `setState` in effect in `ChecklistTracker`.
 
 Open / next, in order:
