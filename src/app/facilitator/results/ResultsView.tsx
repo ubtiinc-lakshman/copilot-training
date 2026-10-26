@@ -111,8 +111,8 @@ export default function ResultsView() {
     a.click();
   };
 
-  const btn = "rounded border border-zinc-400 px-3 py-1 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900";
-  const card = "rounded-lg border border-zinc-200 p-4 dark:border-zinc-800";
+  const btn = "btn-ghost !px-3 !py-1";
+  const card = "card p-4";
 
   // First load: skeleton instead of an empty page.
   if (!rows) {
@@ -129,10 +129,10 @@ export default function ResultsView() {
           <>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className={`${card} h-20 animate-pulse bg-zinc-100 dark:bg-zinc-900`} />
+                <div key={i} className={`${card} h-20 animate-pulse bg-black/5 dark:bg-white/10`} />
               ))}
             </div>
-            <div className={`${card} h-64 animate-pulse bg-zinc-100 dark:bg-zinc-900`} />
+            <div className={`${card} h-64 animate-pulse bg-black/5 dark:bg-white/10`} />
           </>
         )}
       </div>
@@ -144,7 +144,7 @@ export default function ResultsView() {
       {/* toolbar */}
       <div className="flex flex-wrap items-center gap-3 text-sm">
         <span className="flex items-center gap-2" aria-live="polite">
-          <span className={`inline-block h-2 w-2 rounded-full ${refreshing ? "animate-pulse bg-blue-500" : error ? "bg-red-500" : auto ? "bg-green-500" : "bg-zinc-400"}`} />
+          <span className={`inline-block h-2 w-2 rounded-full ${refreshing ? "animate-pulse bg-brand" : error ? "bg-red-500" : auto ? "bg-green-500" : "bg-muted"}`} />
           {refreshing ? "Updating..." : `Updated ${ago(now - updatedAt)}`}
         </span>
         <button className={btn} onClick={load} disabled={refreshing}>
@@ -194,7 +194,7 @@ export default function ResultsView() {
               return (
                 <div key={d} className="flex items-center gap-3 text-sm">
                   <span className="w-14 shrink-0">Day {d}</span>
-                  <div className="h-3 flex-1 overflow-hidden rounded bg-zinc-200 dark:bg-zinc-800">
+                  <div className="h-3 flex-1 overflow-hidden rounded bg-black/5 dark:bg-white/10">
                     <div className={`h-full ${avg >= PASS ? "bg-green-500" : avg >= 50 ? "bg-amber-500" : "bg-red-500"}`} style={{ width: `${avg}%`, transition: "width .6s" }} />
                   </div>
                   <span className="w-40 shrink-0 text-right text-muted">
@@ -212,7 +212,7 @@ export default function ResultsView() {
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-xl font-bold">Participants</h2>
           <input
-            className="rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            className="input !w-auto"
             placeholder="Search name or email"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -227,7 +227,7 @@ export default function ResultsView() {
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-zinc-300 text-left dark:border-zinc-700">
+                <tr className="border-b border-line text-left">
                   <th className="py-1 pr-4">Participant</th>
                   {quizDays.map((d) => (
                     <th key={d} className="px-2 text-center">D{d}</th>
@@ -249,7 +249,7 @@ export default function ResultsView() {
                       const v = p.scores.get(d);
                       return (
                         <td key={d} className="px-1 text-center">
-                          {v === undefined ? <span className="text-zinc-400">-</span> : <span className={`inline-block min-w-10 rounded px-1 ${heat(v)}`}>{v}</span>}
+                          {v === undefined ? <span className="text-muted">-</span> : <span className={`inline-block min-w-10 rounded px-1 ${heat(v)}`}>{v}</span>}
                         </td>
                       );
                     })}
@@ -290,7 +290,7 @@ export default function ResultsView() {
                       const l = p.labs.get(d.day);
                       return (
                         <td key={d.day} className="px-1 text-center" title={l ? `${new Date(l.completed_at).toLocaleString()}${l.note ? ` - ${l.note}` : ""}` : "Not completed"}>
-                          {l ? <span className="text-green-600">✓</span> : <span className="text-zinc-300 dark:text-zinc-700">·</span>}
+                          {l ? <span className="text-green-600">✓</span> : <span className="text-line">·</span>}
                         </td>
                       );
                     })}
@@ -324,7 +324,7 @@ export default function ResultsView() {
                     <td className="py-1 pr-4">{p.name}</td>
                     {openDays.map((d) => (
                       <td key={d} className="px-1 text-center">
-                        {p.attended.has(d) ? <span className="text-green-600">●</span> : <span className="text-zinc-300 dark:text-zinc-700">○</span>}
+                        {p.attended.has(d) ? <span className="text-green-600">●</span> : <span className="text-line">○</span>}
                       </td>
                     ))}
                   </tr>
@@ -341,13 +341,13 @@ export default function ResultsView() {
         <table className="w-full text-sm">
           <tbody>
             {(showAll ? rows : rows.slice(0, 15)).map((r) => (
-              <tr key={r.id} className={`border-b border-line ${fresh.has(r.id) ? "bg-blue-50 dark:bg-blue-950" : ""}`}>
+              <tr key={r.id} className={`border-b border-line ${fresh.has(r.id) ? "bg-brand-soft" : ""}`}>
                 <td className="py-1 pr-3 text-muted">{new Date(r.created_at).toLocaleString()}</td>
                 <td className="pr-3">Day {r.day}</td>
                 <td className="pr-3">{r.name}</td>
                 <td className="pr-3">{r.score}/{r.total}</td>
                 <td className="font-semibold">{r.percent}%</td>
-                <td className="pl-3 text-xs text-blue-600">{fresh.has(r.id) ? "new" : ""}</td>
+                <td className="pl-3 text-xs text-brand">{fresh.has(r.id) ? "new" : ""}</td>
               </tr>
             ))}
           </tbody>

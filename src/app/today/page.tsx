@@ -175,7 +175,7 @@ async function MyWeek() {
 export default function TodayPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <Suspense fallback={<p className="text-zinc-500">Loading...</p>}>
+      <Suspense fallback={<p className="text-muted">Loading...</p>}>
         <MyWeek />
       </Suspense>
     </main>

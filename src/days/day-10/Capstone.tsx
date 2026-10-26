@@ -21,15 +21,15 @@ export function RubricScorer() {
   const [scores, setScores] = useState<number[]>(DIMENSIONS.map(() => 3));
   const total = scores.reduce((a, b) => a + b, 0);
   return (
-    <div className="space-y-2 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+    <div className="space-y-2 card p-4">
       {DIMENSIONS.map(([name, hint], i) => (
         <div key={name} className="flex items-center justify-between gap-4 text-sm">
           <span>
             <b>{name}</b>
-            <span className="block text-xs text-zinc-500">{hint}</span>
+            <span className="block text-xs text-muted">{hint}</span>
           </span>
           <select
-            className="rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900"
+            className="input !w-auto"
             value={scores[i]}
             onChange={(e) => setScores(scores.map((s, j) => (j === i ? Number(e.target.value) : s)))}
           >
@@ -50,9 +50,9 @@ export function LevelGate() {
   const [attendance, setAttendance] = useState(90);
   const [average, setAverage] = useState(75);
   const pass = attendance >= 80 && average >= 70;
-  const input = "w-20 rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900";
+  const input = "input !w-20";
   return (
-    <div className="space-y-2 rounded-lg border border-zinc-200 p-4 text-sm dark:border-zinc-800">
+    <div className="space-y-2 card p-4 text-sm">
       <label className="block">
         Attendance across the level (%) <input className={input} type="number" value={attendance} onChange={(e) => setAttendance(Number(e.target.value))} />
       </label>

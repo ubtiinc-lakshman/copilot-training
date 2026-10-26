@@ -15,11 +15,11 @@ export default function OrderPlayground() {
   const discounted = applyDiscount(total, code);
   const emailOk = isValidEmail(email);
 
-  const field = "w-full rounded border border-zinc-300 px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900";
+  const field = "input";
 
   return (
     <div className="grid gap-4 sm:grid-cols-2">
-      <div className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+      <div className="space-y-3 card p-4">
         <h3 className="font-semibold">Order</h3>
         <label className="block text-sm">
           Price
@@ -37,7 +37,7 @@ export default function OrderPlayground() {
           calculateTotal: <b>{total}</b> | applyDiscount: <b>{discounted}</b>
         </p>
       </div>
-      <div className="space-y-3 rounded-lg border border-zinc-200 p-4 dark:border-zinc-800">
+      <div className="space-y-3 card p-4">
         <h3 className="font-semibold">Email check (Copilot-suggested isValidEmail)</h3>
         <label className="block text-sm">
           Email
@@ -46,7 +46,7 @@ export default function OrderPlayground() {
         <p className={`text-sm font-semibold ${emailOk ? "text-green-600" : "text-red-600"}`}>
           {emailOk ? "Valid" : "Invalid"}
         </p>
-        <p className="text-xs text-zinc-500">
+        <p className="text-xs text-muted">
           Judge the suggestion: does it accept &quot;a@b.c&quot;? What about an email with a space? Reject or edit what you disagree with.
         </p>
       </div>

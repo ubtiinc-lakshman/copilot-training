@@ -38,8 +38,9 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
   return (
     <>
       <CheckIn day={entry.day} />
-      <p className="mt-4 text-sm text-muted">
-        {entry.level} | {formatDate(entry.date)}
+      <p className="mt-4 flex items-center gap-2 text-sm text-muted">
+        <span className="chip-brand">{entry.level}</span>
+        {formatDate(entry.date)}
       </p>
       <h1 className="mb-8 mt-1 text-3xl font-extrabold tracking-tight">
         Day {entry.day}: {entry.title}
@@ -63,9 +64,19 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
         </p>
       )}
 
-      <nav className="mt-12 flex justify-between text-sm">
-        {prev ? <Link href={`/days/${prev.day}`}>Previous: Day {prev.day}</Link> : <span />}
-        {next ? <Link href={`/days/${next.day}`}>Next: Day {next.day}</Link> : <span />}
+      <nav className="mt-12 grid gap-3 text-sm sm:grid-cols-2">
+        {prev ? (
+          <Link href={`/days/${prev.day}`} className="card-link p-4">
+            <span className="text-xs text-muted">Previous</span>
+            <span className="block font-semibold">Day {prev.day}: {prev.title}</span>
+          </Link>
+        ) : <span />}
+        {next && (
+          <Link href={`/days/${next.day}`} className="card-link p-4 text-right sm:col-start-2">
+            <span className="text-xs text-muted">Next</span>
+            <span className="block font-semibold">Day {next.day}: {next.title}</span>
+          </Link>
+        )}
       </nav>
     </>
   );

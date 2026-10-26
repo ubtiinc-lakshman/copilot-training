@@ -45,10 +45,10 @@ export default function Day07() {
         <table className="w-full text-sm">
           <tbody>
             {data.results.map((r) => (
-              <tr key={r.name} className="border-b border-zinc-200 dark:border-zinc-800">
+              <tr key={r.name} className="border-b border-line">
                 <td className={`w-16 py-1 font-semibold ${r.status === "pass" ? "text-green-600" : "text-red-600"}`}>{r.status}</td>
                 <td>{r.name}</td>
-                <td className="text-zinc-500">{r.detail}</td>
+                <td className="text-muted">{r.detail}</td>
               </tr>
             ))}
           </tbody>

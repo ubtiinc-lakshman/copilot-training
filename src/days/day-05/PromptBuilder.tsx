@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const input = "w-full rounded border border-zinc-300 px-2 py-1 text-sm dark:border-zinc-700 dark:bg-zinc-900";
+const input = "input";
 const VAGUE = ["good", "better", "modern", "nice", "clean", "fast"];
 
 // Day 5: fill the four sections, preview the prompt, and self-score it against the rubric.
@@ -38,17 +38,17 @@ export default function PromptBuilder() {
         <label className="block text-sm font-semibold">Additional Info<textarea className={input} rows={2} value={f.extra} onChange={set("extra")} placeholder="No new dependencies; Node 24; use Intl.NumberFormat" /></label>
       </div>
       <div className="space-y-3">
-        <pre className="whitespace-pre-wrap rounded bg-zinc-900 p-3 text-sm text-zinc-100">{prompt}</pre>
+        <pre className="whitespace-pre-wrap rounded-xl bg-[#0f1220] p-4 text-sm text-slate-100">{prompt}</pre>
         <ul className="space-y-1 text-sm">
           {checks.map(([label, ok]) => (
-            <li key={label} className={ok ? "text-green-600" : "text-zinc-500"}>
+            <li key={label} className={ok ? "text-green-600" : "text-muted"}>
               {ok ? "PASS" : "todo"} - {label}
             </li>
           ))}
         </ul>
         <p className="font-semibold">Self-score: {score}/5</p>
         {vagueWords.length > 0 && <p className="text-sm text-red-600">Replace vague words with specifics: {vagueWords.join(", ")}</p>}
-        <button className="rounded border border-zinc-400 px-3 py-1 text-sm" onClick={() => navigator.clipboard.writeText(prompt)}>
+        <button className="btn-ghost !px-3 !py-1" onClick={() => navigator.clipboard.writeText(prompt)}>
           Copy prompt
         </button>
       </div>

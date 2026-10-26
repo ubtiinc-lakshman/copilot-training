@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CodeBlock } from "@/components/Section";
+import { CodeBlock, Callout } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import { PREREQS, TRACK, TRACK_INTRO } from "@/track/tasks";
 
@@ -11,20 +11,20 @@ export default function TrackPage() {
       <Link href="/library" className="text-sm link">
         Library
       </Link>
-      <h1 className="mb-2 mt-4 text-3xl font-bold">Optional app track: Order Desk</h1>
-      <p className="mb-4 rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-amber-900">Not required. The standalone day labs are the training; this is for people who want to build a real app alongside.</p>
+      <h1 className="mb-3 mt-4 text-3xl font-extrabold tracking-tight">Optional app track: Order Desk</h1>
+      <div className="mb-4"><Callout>Not required. The standalone day labs are the training; this is for people who want to build a real app alongside.</Callout></div>
       <ul className="ml-5 list-disc space-y-1">
         {TRACK_INTRO.map((t) => (
           <li key={t}>{t}</li>
         ))}
       </ul>
 
-      <section className="mt-8 space-y-2">
+      <section className="card mt-8 space-y-2 p-6">
         <h2 className="text-xl font-bold">Prerequisites (sort these out before Day 2)</h2>
         <table className="w-full text-sm">
           <tbody>
             {PREREQS.map((p) => (
-              <tr key={p.name} className="border-b border-zinc-200 align-top dark:border-zinc-800">
+              <tr key={p.name} className="border-b border-line align-top">
                 <td className="w-48 py-2 pr-4 font-semibold">{p.name}</td>
                 <td className="pr-4">{p.need}</td>
                 <td>{p.check && <code className="text-xs">{p.check}</code>}</td>
@@ -35,9 +35,9 @@ export default function TrackPage() {
         <CodeBlock label="Quick check (from a clone of the training repo)">{"node app-track/check-prereqs.mjs"}</CodeBlock>
       </section>
 
-      <nav className="mt-6 flex flex-wrap gap-3 text-sm">
+      <nav className="mt-6 flex flex-wrap gap-2 text-sm">
         {TRACK.map((t) => (
-          <a key={t.day} href={`#day-${t.day}`} className="link">
+          <a key={t.day} href={`#day-${t.day}`} className="chip-brand hover:brightness-95">
             Day {t.day}
           </a>
         ))}
@@ -45,7 +45,7 @@ export default function TrackPage() {
 
       <div className="mt-10 space-y-12">
         {TRACK.map((t) => (
-          <section key={t.day} id={`day-${t.day}`} className="scroll-mt-6 space-y-3">
+          <section key={t.day} id={`day-${t.day}`} className="card scroll-mt-20 space-y-3 p-6">
             <h2 className="text-xl font-bold">
               Day {t.day}: {t.title}
             </h2>

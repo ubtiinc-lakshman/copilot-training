@@ -23,7 +23,7 @@ export default function Day04() {
         <table className="w-full text-sm">
           <tbody>
             {commands.map(([c, d]) => (
-              <tr key={c} className="border-b border-zinc-200 dark:border-zinc-800">
+              <tr key={c} className="border-b border-line">
                 <td className="py-1 pr-4 font-mono font-semibold">{c}</td>
                 <td>{d}</td>
               </tr>

@@ -89,7 +89,7 @@ export default function ProgressView() {
         </button>
       </div>
 
-      <section>
+      <section className="card p-6">
         <h2 className="mb-2 text-xl font-bold">Participants ({data.people.length})</h2>
         <form
           className="mb-3 flex flex-wrap items-end gap-2 text-sm"
@@ -127,7 +127,7 @@ export default function ProgressView() {
       </section>
 
       {latest && (
-        <section>
+        <section className="card p-6">
           <h2 className="mb-2 text-xl font-bold">Latest: {latest.title}</h2>
           <p className="text-sm">
             <b>{data.people.filter((p) => doneSet.has(`${p.email}|${latest.id}`)).length}</b> of {data.people.length} marked it complete.{" "}
@@ -139,7 +139,7 @@ export default function ProgressView() {
         </section>
       )}
 
-      <section>
+      <section className="card p-6">
         <h2 className="mb-2 text-xl font-bold">Who completed what</h2>
         <p className="mb-2 text-xs text-muted">S = session lab, F = Friday call for that week, End = finale. Hover a column for its title, a tick for the note.</p>
         <div className="overflow-x-auto">
@@ -167,7 +167,7 @@ export default function ProgressView() {
                   </td>
                   {opened.map((e) => (
                     <td key={e.id} className="px-2 text-center" title={note(p.email, e.id) ?? ""}>
-                      {doneSet.has(`${p.email}|${e.id}`) ? <span className="text-green-600">&#10003;</span> : <span className="text-zinc-300">-</span>}
+                      {doneSet.has(`${p.email}|${e.id}`) ? <span className="text-green-600">&#10003;</span> : <span className="text-line">-</span>}
                     </td>
                   ))}
                   {dueWeeks.map((w) => {
@@ -179,7 +179,7 @@ export default function ProgressView() {
                             link
                           </a>
                         ) : (
-                          <span className="text-zinc-300">-</span>
+                          <span className="text-line">-</span>
                         )}
                       </td>
                     );
@@ -191,7 +191,7 @@ export default function ProgressView() {
         </div>
       </section>
 
-      <section>
+      <section className="card p-6">
         <h2 className="mb-2 text-xl font-bold">Pain points given</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
@@ -211,7 +211,7 @@ export default function ProgressView() {
                   <td className="py-1 pr-4 font-semibold">{p.name}</td>
                   {dueWeeks.map((w) => (
                     <td key={w.week} className="pr-4">
-                      {pointOf(p.email, w.week)?.title ?? <span className="text-zinc-300">not taken</span>}
+                      {pointOf(p.email, w.week)?.title ?? <span className="text-line">not taken</span>}
                     </td>
                   ))}
                 </tr>
@@ -230,10 +230,10 @@ export default function ProgressView() {
             const due = WEEKS.find((w) => w.week === s.week)?.due ?? "";
             const late = new Date(s.submitted_at).toLocaleDateString("en-CA", { timeZone: "Asia/Kolkata" }) > due;
             return (
-              <details key={`${s.email}${s.week}`} className="rounded border border-zinc-200 p-3 text-sm dark:border-zinc-800">
+              <details key={`${s.email}${s.week}`} className="card p-4 text-sm">
                 <summary className="cursor-pointer">
-                  <b>Week {s.week}</b> {who} - <a className="text-blue-600 underline" href={s.url} target="_blank" rel="noreferrer">{s.url}</a>
-                  {late && <span className="ml-2 rounded bg-amber-100 px-2 py-0.5 text-amber-800">late</span>}
+                  <b>Week {s.week}</b> {who} - <a className="link" href={s.url} target="_blank" rel="noreferrer">{s.url}</a>
+                  {late && <span className="chip-late ml-2">late</span>}
                 </summary>
                 <p className="mt-2"><b>Pain point:</b> {pointOf(s.email, s.week)?.title ?? "none assigned"}</p>
                 <p className="mt-1"><b>Challenge:</b> {s.challenge}</p>

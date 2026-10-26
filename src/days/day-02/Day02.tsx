@@ -38,7 +38,7 @@ export default function Day02() {
         <table className="mt-3 w-full text-sm">
           <tbody>
             {models.map(([m, use]) => (
-              <tr key={m} className="border-b border-zinc-200 dark:border-zinc-800">
+              <tr key={m} className="border-b border-line">
                 <td className="py-1 pr-4 font-semibold">{m}</td>
                 <td>{use}</td>
               </tr>

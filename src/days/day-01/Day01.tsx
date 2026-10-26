@@ -39,7 +39,7 @@ export default function Day01() {
 
       <section>
         <h2 className="text-xl font-semibold">Live practice module</h2>
-        <p className="mb-3 mt-2 text-sm text-zinc-600 dark:text-zinc-400">
+        <p className="mb-3 mt-2 text-sm text-muted">
           Code lives in <code>src/days/day-01/order.service.js</code> (Dev) with tests in <code>order.service.test.js</code> (QA).
           Five TODO comments are waiting for Copilot suggestions. Run <code>npm test</code> to check your work.
         </p>
@@ -58,7 +58,7 @@ export default function Day01() {
         <p className="mt-2 text-sm">Check each suggestion for: empty or null input, rounding, wrong threshold (500 means 500 or more), off-by-one.</p>
 
         <h3 className="mt-5 font-semibold">Task 2: First Chat summary (10 min)</h3>
-        <pre className="mt-2 overflow-x-auto rounded bg-zinc-900 p-3 text-sm text-zinc-100">{prompt}</pre>
+        <pre className="mt-2 overflow-x-auto rounded-xl bg-[#0f1220] p-4 text-sm text-slate-100">{prompt}</pre>
         <p className="mt-2 text-sm">Compare the summary to the real code. If it missed or invented something, write your own 3-sentence version.</p>
       </section>
 
