@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { connection } from "next/server";
 import { DAYS, formatDate, getDay } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
 import { getTrackTask } from "@/track/tasks";
@@ -20,6 +21,7 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 
   // Locked until the day's date; the content is never sent to participants before then.
   // Session first: reading it makes the rest dynamic, so locked content is never prerendered.
+  await connection(); // auth() uses random bytes, so render per request, not at build
   const email = (await auth())?.user?.email;
   if (!isLessonOpen() && !(await actingFacilitator(email))) {
     return (
