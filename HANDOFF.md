@@ -2,11 +2,7 @@
 
 Last updated: Mon Oct 26, 2026. **Read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
 
-**State at the end of Oct 26 (local `main` is ahead of `origin/main`, NOT pushed; production seeds NOT run):**
-1. `git push origin main` (auto-deploys production). A push and seed attempt was blocked by the permission classifier; the user must run them or add an allow rule. Check `git status -sb` and `git log origin/main..` for what is unpushed.
-2. `npx vercel env run -e production -- node scripts/seed-painpoints.mjs` (adds 44 week-1 rows; without it nobody can get a pain point).
-3. `npx vercel env run -e production -- node scripts/seed-quizzes.mjs` (re-upserts every quiz in `data/quizzes.json`, including session quizzes 101-115).
-Session 1 is Tue Oct 27, so these three come first.
+**State at the end of Oct 26 (everything pushed; `main` = `origin/main` at `52d2c8f`; production seeds run: 217 pain points for weeks 1-5 and a 36-person roster in Neon).** Session 1 is Tue Oct 27. Still to do: click through the live site (see "Open / next" at the bottom).
 
 ## What this is
 
@@ -145,6 +141,7 @@ The training changed to one app per week (plan: `docs/APP-BUILD-PLAN.md`, announ
 | `src/app/api/{activity,painpoint,submission,progress}/route.ts` | The endpoints |
 | `data/painpoints.json`, `scripts/seed-painpoints.mjs` | Pain-point bank (git-ignored, week 1 = 44 written) |
 | `src/lib/assign.test.mjs` | `npm run test:site`: 10 tests on in-memory Postgres (PGlite) |
+| `roster` table, `data/roster.json`, `scripts/seed-roster.mjs`, `src/app/api/roster/route.ts` | The 36 participants (from "Training List - with GitHub IDs.xlsx"). `data/roster.json` is git-ignored. The facilitator progress page lists ONLY roster members (facilitators and testers are left out; work of removed people stays in the DB). Facilitators add, update and remove people in the "Participants" section of `/facilitator/progress`. Pain-point assignment is NOT restricted to the roster |
 
 Also added after the first version of this section:
 
@@ -168,10 +165,11 @@ Gotchas learned:
 - Known lint error, not ours: `setState` in effect in `ChecklistTracker`.
 
 Open / next, in order:
-1. Push and run the two seeds (top of this file). Sign in on the live site, click through `/`, `/today`, `/sessions/s01`, the quiz, the pain point button, `/facilitator/progress`. Remember a facilitator test click uses one of the 8 spare week-1 pain points.
-2. Pain points for weeks 2-5 (about 44 each, tagged by the week's required feature: 2 login/per-user data, 3 files, 4 email/webhook/job, 5 dashboard or AI, security-reviewed). Week 2 opens Mon Nov 2. Add to `data/painpoints.json` and run the seed script.
-3. Roster of the 36 participants (the progress page lists only people who have used the site). Invite them to the Entra tenant.
+1. Sign in on the live site and click through `/`, `/today`, `/sessions/s01`, the quiz, the pain point button, `/facilitator/progress` (check the 36 people, add/remove one and undo). A facilitator test click uses one pain point (week 1 has 8 spare, other weeks about 7).
+2. Pain-point bank is done for weeks 1-5 (217: 44, 44, 43, 43, 43). Weeks 2-5 were written Oct 26 and not reviewed by anyone; skim them before Nov 2. Source is `data/painpoints.json` (git-ignored); validate with `node scripts/seed-painpoints.mjs --check`, load with the seed script.
+3. Invite the 36 roster people to the Entra tenant (they must exist there to sign in).
 4. Decide the finale (Tue Dec 1): it has an event but no session page.
 5. Admin answers still needed: GitHub Copilot credits (four questions in `docs/APP-BUILD-PLAN.md`), Vercel and Supabase accounts and licensing, email provider (s10), AI provider and key (s13), whether MCP and Copilot code review are enabled (s08, s12), data-residency or security approval, Cloudflare as fallback, network check from the conference room.
 6. The product steps in the session content (Supabase, Vercel, MCP settings) were written from general knowledge and not tested on the real accounts; test the exact steps the day before each session.
 7. Reroll policy for pain points (default: no reroll). Certification rule: at least 80% attendance, at least 4 of 5 apps deployed and passing, quiz average at least 70%.
+8. Optional: restrict pain-point assignment to roster members so outsiders cannot use up the bank.
