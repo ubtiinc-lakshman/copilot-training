@@ -1,5 +1,11 @@
 // Teaching content for each in-person session, shown on /sessions/<id>. Session shape (60 min): teach 15, demo 10, lab 25, quiz 5, share 5.
 // Quiz questions are not here: they live in Neon (quiz day = 100 + session number), see data/quizzes.json.
+import { WEEK1 } from "./content/week1";
+import { WEEK2 } from "./content/week2";
+import { WEEK3 } from "./content/week3";
+import { WEEK4 } from "./content/week4";
+import { WEEK5 } from "./content/week5";
+
 export type SessionContent = {
   objective: string;
   before: string[]; // bring or have ready
@@ -11,7 +17,7 @@ export type SessionContent = {
   facilitator: string[];
 };
 
-export const SESSIONS: Record<string, SessionContent> = {
+const SESSION_ONE: Record<string, SessionContent> = {
   s01: {
     objective: "Use Copilot as a builder: turn your pain point into a clear prompt, choose the right Copilot mode and model, and scaffold a running Next.js app by the end of the hour.",
     before: [
@@ -108,5 +114,7 @@ export const SESSIONS: Record<string, SessionContent> = {
     ],
   },
 };
+
+export const SESSIONS: Record<string, SessionContent> = { ...SESSION_ONE, ...WEEK1, ...WEEK2, ...WEEK3, ...WEEK4, ...WEEK5 };
 
 export const getSession = (id: string) => SESSIONS[id];
