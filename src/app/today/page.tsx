@@ -153,7 +153,7 @@ async function MyWeek() {
             {EVENTS.map((e) => (
               <tr key={e.id} className="border-b border-line align-top">
                 <td className="w-28 py-1 pr-3 text-muted">{formatDate(e.date)}</td>
-                <td className="pr-3">{e.title}</td>
+                <td className="pr-3">{SESSIONS[e.id] ? <Link href={`/sessions/${e.id}`} className="link">{e.title}</Link> : e.title}</td>
                 <td>{status(e)}</td>
               </tr>
             ))}
