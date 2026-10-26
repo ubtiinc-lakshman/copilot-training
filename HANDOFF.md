@@ -2,7 +2,7 @@
 
 Last updated: Mon Oct 26, 2026. **Read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
 
-**State at the end of Oct 26 (everything pushed; `main` = `origin/main` at `38c01b3`, plus this handoff commit; production seeds run: 217 pain points for weeks 1-5 and a 36-person roster in Neon).** Session 1 is Tue Oct 27. Still to do: click through the live site (see "Open / next" at the bottom).
+**State at the end of Oct 26: everything is pushed (`main` = `origin/main`), production is seeded (217 pain points for weeks 1-5, 36-person roster), the 36 participants are invited to Entra, and every page uses the new theme. Session 1 is Tue Oct 27.** Done today: roster and add/remove on the progress page, pain points for weeks 2-5, pain-point assignment limited to the roster, header with account menu, `/profile`, theme polish. NOT browser-verified after the last deploys: the account menu, `/profile`, the roster add/remove, and the 403 for non-roster users. Next session: start with "Open / next" at the bottom.
 
 ## What this is
 
@@ -126,7 +126,9 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 
 Open Claude Code in `D:\UBTI_IP\Copilot_Training` and say:
 
-> Read HANDOFF.md and README.md. Today is Day N of the training. Check that `/days/N` is ready for tomorrow's session, then continue with <next step>.
+> Read HANDOFF.md and README.md. Today is <date>, session N of the weekly program. Check that `/sessions/sNN` and the week's pain points are ready, then continue with <next step>.
+
+Sessions run Tue/Wed/Thu (in person) with Friday and Monday calls; see `src/program/calendar.ts` for dates and `docs/APP-BUILD-PLAN.md` for the plan.
 
 ## Weekly app program (added Oct 26)
 
