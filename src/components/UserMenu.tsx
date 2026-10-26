@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { connection } from "next/server";
 import { cookies } from "next/headers";
 import { auth, isFacilitator, signOut } from "@/auth";
 import { isParticipantView } from "@/lib/viewMode";
@@ -7,6 +8,7 @@ const nav = "rounded-lg px-3 py-1.5 text-muted transition hover:bg-brand-soft ho
 
 // Top bar: brand, navigation, who is signed in, sign out. Renders nothing when signed out (login page).
 export default async function UserMenu() {
+  await connection(); // auth() uses random bytes, so render per request, not at build
   const user = (await auth())?.user;
   if (!user) return null;
   const facilitator = isFacilitator(user.email);
