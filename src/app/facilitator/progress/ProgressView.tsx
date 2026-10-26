@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { WEEKS, trackedEvents } from "@/program/calendar";
 import { todayISO } from "@/lib/schedule";
 
-type Person = { email: string; name: string };
+type Person = { email: string; name: string; team: string | null; github_id: string | null };
 type Completion = { email: string; activity: string; note: string | null; completed_at: string };
 type Assignment = { email: string; week: number; title: string; category: string; assigned_at: string };
 type Submission = { email: string; week: number; url: string; challenge: string; solution: string; copilot: string; submitted_at: string };
@@ -15,6 +15,18 @@ const short = (id: string) => (id.startsWith("s") ? `S${Number(id.slice(1))}` : 
 export default function ProgressView() {
   const [data, setData] = useState<Data | null>(null);
   const [error, setError] = useState("");
+
+  const [form, setForm] = useState({ name: "", email: "", team: "", github: "" });
+  const [rosterMsg, setRosterMsg] = useState("");
+  const [tick, setTick] = useState(0);
+
+  const rosterCall = async (method: "POST" | "DELETE", body: object) => {
+    const res = await fetch("/api/roster", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    const json = await res.json();
+    setRosterMsg(res.ok ? "" : json.error ?? "Failed");
+    if (res.ok) setTick((t) => t + 1);
+    return res.ok;
+  };
 
   useEffect(() => {
     let live = true;
@@ -33,7 +45,7 @@ export default function ProgressView() {
       live = false;
       clearInterval(t);
     };
-  }, []);
+  }, [tick]);
 
   if (error) return <p className="text-rose-600">{error}</p>;
   if (!data) return <p className="text-muted">Loading...</p>;
@@ -70,12 +82,49 @@ export default function ProgressView() {
     <div className="space-y-10">
       <div className="flex flex-wrap items-center gap-3 text-sm text-muted">
         <span>
-          {data.people.length} participants have used the site. Updates every 30 seconds. People who have not signed in yet are not listed.
+          {data.people.length} participants on the roster. Updates every 30 seconds. Anyone not on the roster is left out of this page.
         </span>
         <button className="btn-ghost !px-3 !py-1" onClick={csv}>
           Export CSV
         </button>
       </div>
+
+      <section>
+        <h2 className="mb-2 text-xl font-bold">Participants ({data.people.length})</h2>
+        <form
+          className="mb-3 flex flex-wrap items-end gap-2 text-sm"
+          onSubmit={async (e) => {
+            e.preventDefault();
+            if (await rosterCall("POST", form)) setForm({ name: "", email: "", team: "", github: "" });
+          }}
+        >
+          {(["name", "email", "team", "github"] as const).map((k) => (
+            <input key={k} className="input" placeholder={k === "github" ? "GitHub ID" : k[0].toUpperCase() + k.slice(1)} value={form[k]} required={k === "name" || k === "email"} onChange={(e) => setForm({ ...form, [k]: e.target.value })} />
+          ))}
+          <button className="btn-primary !px-3 !py-1">Add / update</button>
+          {rosterMsg && <span className="text-rose-600">{rosterMsg}</span>}
+        </form>
+        <details className="text-sm">
+          <summary className="cursor-pointer">Show the roster</summary>
+          <table className="mt-2 w-full">
+            <tbody>
+              {data.people.map((p) => (
+                <tr key={p.email} className="border-b border-line">
+                  <td className="py-1 pr-4 font-semibold">{p.name}</td>
+                  <td className="pr-4">{p.email}</td>
+                  <td className="pr-4">{p.team}</td>
+                  <td className="pr-4">{p.github_id}</td>
+                  <td>
+                    <button className="link" onClick={() => confirm(`Remove ${p.name} from the roster? Their saved work is kept.`) && rosterCall("DELETE", { email: p.email })}>
+                      Remove
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </details>
+      </section>
 
       {latest && (
         <section>

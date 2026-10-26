@@ -35,4 +35,12 @@ export const PROGRAM_TABLES: string[] = [
     submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (email, week)
   )`,
+  // The 36 participants. The progress page lists exactly these people; facilitators add and remove rows there.
+  `CREATE TABLE IF NOT EXISTS roster (
+    email TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    team TEXT,
+    github_id TEXT,
+    added_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
 ];

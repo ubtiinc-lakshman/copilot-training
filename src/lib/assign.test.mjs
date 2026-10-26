@@ -68,7 +68,7 @@ test("the database itself refuses to give one pain point to two people", async (
 });
 
 // ---- the rest of the weekly program's SQL (src/lib/program.ts) ----
-import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress } from "./program.ts";
+import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress, addToRoster, removeFromRoster } from "./program.ts";
 
 async function withAttendanceTables(pg) {
   // loadProgress also reads the older results/attendance tables created by db.ts
@@ -108,16 +108,23 @@ test("participants only see their own activity", async () => {
   assert.deepEqual((await loadMine(sql, "a@x.com")).completions.map((c) => c.activity), ["s01"]);
 });
 
-test("the facilitator view lists everyone who did anything, with their pain point and submission", async () => {
+test("the facilitator view lists only the roster, matched case-insensitively; remove hides but keeps work", async () => {
   const { pg, sql } = await setup();
   await withAttendanceTables(pg);
+  await addToRoster(sql, { name: "Asha", email: "A@x.com" });
+  await addToRoster(sql, { name: "Ravi", email: "b@x.com", team: "RPA", github: "ravi-g" });
   await assignPainPoint(sql, "a@x.com", "Asha", 1);
+  await assignPainPoint(sql, "boss@x.com", "Boss", 1); // facilitator test click: not on the roster
   await markComplete(sql, { email: "b@x.com", name: "Ravi" }, "s01", "note");
   await saveSubmission(sql, { email: "a@x.com", name: "Asha" }, { week: 1, url: "https://a.vercel.app/", challenge: "c", solution: "s", copilot: "k" });
-  const p = await loadProgress(sql);
+  let p = await loadProgress(sql);
   assert.deepEqual(p.people.map((x) => x.name), ["Asha", "Ravi"]);
   assert.equal(p.assignments.length, 1);
   assert.match(p.assignments[0].title, /^W1 problem/);
   assert.equal(p.submissions.length, 1);
   assert.equal(p.completions.length, 1);
+  await removeFromRoster(sql, "B@X.com");
+  p = await loadProgress(sql);
+  assert.deepEqual(p.people.map((x) => x.name), ["Asha"]);
+  assert.equal(p.completions.length, 0);
 });

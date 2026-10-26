@@ -31,17 +31,27 @@ export async function loadMine(sql: Sql, email: string) {
   return { completions, submissions, assignments };
 }
 
-// Everything every participant has done: for the facilitator page.
+export type RosterInput = { name: string; email: string; team?: string | null; github?: string | null };
+
+export async function addToRoster(sql: Sql, p: RosterInput) {
+  await sql`INSERT INTO roster (email, name, team, github_id) VALUES (${p.email.trim().toLowerCase()}, ${p.name.trim()}, ${p.team?.trim() || null}, ${p.github?.trim() || null})
+    ON CONFLICT (email) DO UPDATE SET name = EXCLUDED.name, team = EXCLUDED.team, github_id = EXCLUDED.github_id`;
+}
+
+// Removing a person only hides them from the progress page; their saved work stays in the database.
+export async function removeFromRoster(sql: Sql, email: string) {
+  await sql`DELETE FROM roster WHERE email = ${email.trim().toLowerCase()}`;
+}
+
+// Everything the roster's participants have done: for the facilitator page. Anyone not on the roster (facilitators, testers) is left out.
 export async function loadProgress(sql: Sql) {
   const [people, completions, assignments, submissions] = await Promise.all([
-    sql`SELECT email, max(name) AS name FROM (
-          SELECT email, name FROM attendance UNION ALL SELECT email, name FROM completions UNION ALL
-          SELECT email, name FROM assignments UNION ALL SELECT email, name FROM submissions UNION ALL SELECT email, name FROM results
-        ) t GROUP BY email ORDER BY max(name)`,
-    sql`SELECT email, activity, note, completed_at FROM completions`,
-    sql`SELECT a.email, a.week, a.assigned_at, p.id AS pain_point_id, p.data->>'title' AS title, p.data->>'category' AS category
-        FROM assignments a JOIN painpoints p ON p.id = a.pain_point_id`,
-    sql`SELECT email, week, url, challenge, solution, copilot, submitted_at FROM submissions ORDER BY submitted_at DESC`,
+    sql`SELECT email, name, team, github_id FROM roster ORDER BY lower(name)`,
+    sql`SELECT lower(email) AS email, activity, note, completed_at FROM completions WHERE lower(email) IN (SELECT email FROM roster)`,
+    sql`SELECT lower(a.email) AS email, a.week, a.assigned_at, p.id AS pain_point_id, p.data->>'title' AS title, p.data->>'category' AS category
+        FROM assignments a JOIN painpoints p ON p.id = a.pain_point_id WHERE lower(a.email) IN (SELECT email FROM roster)`,
+    sql`SELECT lower(email) AS email, week, url, challenge, solution, copilot, submitted_at FROM submissions
+        WHERE lower(email) IN (SELECT email FROM roster) ORDER BY submitted_at DESC`,
   ]);
   return { people, completions, assignments, submissions };
 }
