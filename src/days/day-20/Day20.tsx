@@ -3,6 +3,7 @@ import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { RubricScorer, LevelGate } from "../day-10/Capstone";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const success = [
   "The automation runs against the real feature, live, not a canned demo",
@@ -22,6 +23,8 @@ export default function Day20() {
       <Section title="Plan (35 min)">
         <CodeBlock label="src/days/day-20/CAPSTONE.md">{readDayFile(20, "CAPSTONE.md")}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={20} />
 
       <Section title="Success criteria">
         <ChecklistTracker id="day-20-success" items={success} />

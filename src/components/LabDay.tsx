@@ -2,6 +2,7 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
+import LabTaskStatus from "@/components/LabTaskStatus";
 import { readDayFile } from "@/lib/readDayFile";
 
 export type LabSection = {
@@ -59,6 +60,8 @@ export default function LabDay({ cfg }: { cfg: DayConfig }) {
           )}
         </Section>
       ))}
+
+      <LabTaskStatus day={cfg.day} />
 
       {cfg.checklist && (
         <Section title={cfg.checklist.title}>

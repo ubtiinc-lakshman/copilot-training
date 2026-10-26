@@ -3,6 +3,7 @@ import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { RubricScorer, LevelGate } from "../day-10/Capstone";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const success = [
   "All 4 tasks (plan, scaffold, implement and test, review and present) were completed and demonstrated live",
@@ -22,6 +23,8 @@ export default function Day30() {
       <Section title="The four tasks (35 min)">
         <CodeBlock label="src/days/day-30/CAPSTONE.md">{readDayFile(30, "CAPSTONE.md")}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={30} />
 
       <Section title="Success criteria">
         <ChecklistTracker id="day-30-success" items={success} />

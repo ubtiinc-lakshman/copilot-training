@@ -2,6 +2,7 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import DecisionLog from "@/components/DecisionLog";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 export default function Day03() {
   return (
@@ -39,6 +40,8 @@ export default function Day03() {
           <li>Edit one suggestion, then repeat for the other four.</li>
         </ol>
       </Section>
+
+      <LabTaskStatus day={3} />
 
       <Section title="Decision log (for the peer review)">
         <DecisionLog />

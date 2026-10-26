@@ -3,6 +3,7 @@ import PromptBuilder from "./PromptBuilder";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 export default function Day05() {
   const seeds = readDayFile(5, "vague-prompts.md");
@@ -31,6 +32,8 @@ export default function Day05() {
         <PromptBuilder />
         <CodeBlock label="Seed prompts and a worked example (src/days/day-05/vague-prompts.md)">{seeds}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={5} />
 
       <Section title="Assignment (due before Day 6)">
         <ul className="ml-5 list-disc">

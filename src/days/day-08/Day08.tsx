@@ -3,6 +3,7 @@ import PhoneTester from "./PhoneTester";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const reflection = `Language / framework I tried:
 What Copilot got right:
@@ -37,6 +38,8 @@ export default function Day08() {
       <Section title="Lab: QA">
         <CodeBlock label="src/days/day-08/login-scenario.md">{scenario}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={8} />
 
       <Section title="Reflection template (your assignment)">
         <CodeBlock>{reflection}</CodeBlock>

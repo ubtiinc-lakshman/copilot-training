@@ -1,5 +1,6 @@
 import OrderPlayground from "./OrderPlayground";
 import Quiz from "@/components/Quiz";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const agenda = [
   ["Concept", "What Copilot is and is not; where it fits in the 7-phase AI Enabled Development Guide; the five AI agents the org uses"],
@@ -60,6 +61,8 @@ export default function Day01() {
         <pre className="mt-2 overflow-x-auto rounded bg-zinc-900 p-3 text-sm text-zinc-100">{prompt}</pre>
         <p className="mt-2 text-sm">Compare the summary to the real code. If it missed or invented something, write your own 3-sentence version.</p>
       </section>
+
+      <LabTaskStatus day={1} />
 
       <section>
         <h2 className="text-xl font-semibold">Assignment (due before Day 2)</h2>

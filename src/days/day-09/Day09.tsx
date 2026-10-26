@@ -3,6 +3,7 @@ import Quiz from "@/components/Quiz";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const checklist = [
   "Hardcoded secrets (keys, tokens, passwords in code)",
@@ -40,6 +41,8 @@ export default function Day09() {
           </CodeBlock>
         ))}
       </Section>
+
+      <LabTaskStatus day={9} />
 
       <Section title="Written test (10 questions, pass mark 70%)">
         <Quiz day={9} passPercent={70} />

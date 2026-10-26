@@ -2,6 +2,7 @@ import { Section, CodeBlock, Callout } from "@/components/Section";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const commands = [
   ["/explain", "Narrates what selected code or an error means. Changes nothing."],
@@ -50,6 +51,8 @@ export default function Day04() {
         <CodeBlock>{"/explain\n[paste the failing test's stack trace]\n\nIs this most likely a real defect, a flaky test, or bad test data?\nWhat evidence in the trace points that way?"}</CodeBlock>
         <p className="text-sm">Do NOT touch the fix. Write the diagnosis, with evidence, for a Dev to act on.</p>
       </Section>
+
+      <LabTaskStatus day={4} />
 
       <Section title="Assignment (due before Day 5)">
         <ul className="ml-5 list-disc">

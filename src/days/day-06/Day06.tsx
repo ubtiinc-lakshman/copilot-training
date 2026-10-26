@@ -3,6 +3,7 @@ import ChecklistTracker from "@/components/ChecklistTracker";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const coverage = [
   "Every public function / test has a description",
@@ -39,6 +40,8 @@ export default function Day06() {
         <CodeBlock label="src/days/day-06/rateLimiter.test.js">{tests}</CodeBlock>
         <CodeBlock>{"# Context\nThis test file has no descriptions, only assertions.\n# Task\nGenerate a Given-When-Then description above each test case.\n# Requirements\n- Match the description exactly to what the assertions actually check\n- Flag any test whose name doesn't match its assertions"}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={6} />
 
       <Section title="Documentation-coverage check">
         <ChecklistTracker id="day-06-coverage" items={coverage} />

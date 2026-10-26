@@ -17,7 +17,7 @@ export default async function LabTaskStatus({ day }: { day: number }) {
     }
   }
   return (
-    <section className="card mt-10 p-5">
+    <section className="card p-5">
       <h2 className="text-lg font-bold">Lab task</h2>
       <p className="text-sm text-muted">Finished the lab for this lesson? Mark it so your facilitator can see your progress. You can undo it.</p>
       <LabDone id={`lab-${day}`} label="Mark lab task as completed" initialDone={done} initialNote={note} />

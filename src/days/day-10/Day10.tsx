@@ -3,6 +3,7 @@ import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { RubricScorer, LevelGate } from "./Capstone";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const success = [
   "Feature runs and does what it claims",
@@ -35,6 +36,8 @@ export default function Day10() {
         </ol>
         <CodeBlock>{"# Context\nBuilding a small CLI tool: [feature description]\n# Task\nScaffold the implementation.\n# Requirements\n- [functional requirement 1]\n- [functional requirement 2]\n# Additional Info\n[language/runtime, no external dependencies]"}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={10} />
 
       <Section title="Success criteria">
         <ChecklistTracker id="day-10-success" items={success} />

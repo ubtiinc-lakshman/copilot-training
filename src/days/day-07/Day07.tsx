@@ -3,6 +3,7 @@ import ChecklistTracker from "@/components/ChecklistTracker";
 import Quiz from "@/components/Quiz";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
 import { readDayFile } from "@/lib/readDayFile";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const reviewer = [
   "A reviewer could act without asking a clarifying question",
@@ -54,6 +55,8 @@ export default function Day07() {
         </table>
         <CodeBlock>{"# Observed\nPassword reset email is never received for some users.\n# Expected\nEvery valid reset request receives the email within 2 minutes.\n# Steps to Reproduce\n1. Request reset for a user with a Gmail address created via SSO\n2. Wait 5 minutes\n# Task\nDraft a bug report with severity, environment, and suspected component."}</CodeBlock>
       </Section>
+
+      <LabTaskStatus day={7} />
 
       <Section title="Reviewer checklist">
         <ChecklistTracker id="day-07-reviewer" items={reviewer} />

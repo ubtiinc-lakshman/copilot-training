@@ -9,7 +9,6 @@ import { auth } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
 import { isLessonOpen } from "@/lib/schedule";
 import CheckIn from "@/components/CheckIn";
-import LabTaskStatus from "@/components/LabTaskStatus";
 
 export function generateStaticParams() {
   return DAYS.map((d) => ({ day: String(d.day) }));
@@ -54,8 +53,6 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
           and register it in <code>src/days/showcases.tsx</code>.
         </p>
       )}
-
-      <LabTaskStatus day={entry.day} />
 
       {getTrackTask(entry.day) && (
         <p className="mt-10 card border-dashed px-4 py-3 text-sm">

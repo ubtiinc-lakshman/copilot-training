@@ -1,6 +1,7 @@
 import { Section, CodeBlock, Callout } from "@/components/Section";
 import ChecklistTracker from "@/components/ChecklistTracker";
 import FacilitatorOnly from "@/components/FacilitatorOnly";
+import LabTaskStatus from "@/components/LabTaskStatus";
 
 const checklist = [
   "GitHub Copilot extension installed in the IDE you use for real work",
@@ -58,6 +59,8 @@ export default function Day02() {
           <li>Note any difference. Paste one answer into <code>src/days/day-02/utc.js</code>, then remove <code>todo</code> in the test.</li>
         </ol>
       </Section>
+
+      <LabTaskStatus day={2} />
 
       <Section title="Assignment (due before Day 3)">
         <ul className="ml-5 list-disc">
