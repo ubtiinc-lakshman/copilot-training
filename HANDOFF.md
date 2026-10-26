@@ -125,3 +125,20 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 Open Claude Code in `D:\UBTI_IP\Copilot_Training` and say:
 
 > Read HANDOFF.md and README.md. Today is Day N of the training. Check that `/days/N` is ready for tomorrow's session, then continue with <next step>.
+
+## Weekly app program (added Oct 26)
+
+The training changed to one app per week (plan: `docs/APP-BUILD-PLAN.md`, announcement draft: `docs/ANNOUNCEMENT-DRAFT.md`). The 30-day content is now the self-learning library. New code:
+
+| Path | Purpose |
+|---|---|
+| `src/program/calendar.ts` | 16 sessions, 5 Friday calls, 5 Monday submissions, finale, weekly required features |
+| `src/lib/schema.ts`, `src/lib/program.ts`, `src/lib/assign.ts` | Tables (`completions`, `painpoints`, `assignments`, `submissions`), all their SQL, random assignment |
+| `src/app/today/page.tsx`, `src/components/ProgramActions.tsx` | Participant "My week" page (lab complete button, pain point, submission form, progress) |
+| `src/app/facilitator/progress/` | Facilitator tracking page |
+| `src/app/api/{activity,painpoint,submission,progress}/route.ts` | The endpoints |
+| `data/painpoints.json`, `scripts/seed-painpoints.mjs` | Pain-point bank (git-ignored, week 1 = 44 written) |
+| `src/lib/assign.test.mjs` | `npm run test:site`: 10 tests on in-memory Postgres (PGlite) |
+
+Status: built, type-checked, linted, SQL tested. NOT yet browser-checked, NOT yet seeded into production, and not pushed unless the git log says so. To go live: push to `main` (Vercel auto-deploys), run the seed command from the README, then sign in and click through `/today` and `/facilitator/progress`.
+Open: weeks 2-5 pain points (about 44 each, tagged by that week's required feature), quizzes for the new sessions (the old day quizzes do not match the new topics), who counts as a participant before they sign in (the progress page only lists people who have used the site).

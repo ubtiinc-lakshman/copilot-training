@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless";
+import { PROGRAM_TABLES } from "@/lib/schema";
 
 // Neon Postgres over HTTP (DATABASE_URL, set by the Vercel Neon integration).
 const sql = neon(process.env.DATABASE_URL ?? "");
@@ -25,6 +26,7 @@ export function db() {
       first_seen TIMESTAMPTZ NOT NULL DEFAULT now(),
       PRIMARY KEY (email, day)
     )`,
+    ...PROGRAM_TABLES.map((ddl) => sql.query(ddl)),
   ]).catch((e) => {
     ready = undefined;
     throw e;

@@ -10,6 +10,14 @@ export default async function UserMenu() {
   const participantView = isFacilitator(user.email) && (await isParticipantView());
   return (
     <header className="flex flex-wrap items-center justify-end gap-4 border-b border-zinc-200 px-6 py-2 text-sm dark:border-zinc-800">
+      <Link href="/today" className="font-semibold text-blue-600 hover:underline">
+        My week
+      </Link>
+      {isFacilitator(user.email) && (
+        <Link href="/facilitator/progress" className="text-blue-600 hover:underline">
+          Progress
+        </Link>
+      )}
       {isFacilitator(user.email) && (
         <Link href="/facilitator/results" className="text-blue-600 hover:underline">
           Results

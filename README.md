@@ -73,6 +73,17 @@ Everyone signs in with their Microsoft work account (Auth.js, single Entra tenan
 3. Project env vars: `AUTH_SECRET` (`npx auth secret`), `AUTH_MICROSOFT_ENTRA_ID_ID`, `AUTH_MICROSOFT_ENTRA_ID_SECRET`, `AUTH_MICROSOFT_ENTRA_ID_TENANT_ID`, `FACILITATOR_EMAILS`.
 4. Deploy. Note: `?facilitator=1` still reveals answer keys to any signed-in participant (convenience only).
 
+## Weekly app program: My week, pain points, submissions
+
+The 5-week app-build program (see `docs/APP-BUILD-PLAN.md`) is tracked on the site.
+
+- `/today` ("My week"): today's session or call, the lab with an **I completed this lab** button (optional note, can be undone), this week's pain point, the Monday submission form, and a progress list for every session, call and submission.
+- **Give me my pain point:** random pick for the current week. The database guarantees nobody shares one and nobody repeats one. A second click shows the same one.
+- `/facilitator/progress`: who completed what (updates every 30 seconds), the latest activity and who has not done it, pain points given, every submission with its challenge and solution, CSV export.
+- Calendar: `src/program/calendar.ts` (sessions, calls, submissions, weekly required features). Change dates or labs there.
+- **The pain-point bank is not in the repo.** It lives in `data/painpoints.json` (git-ignored) and in the Neon table `painpoints`. Validate: `node scripts/seed-painpoints.mjs --check`. Load: `npx vercel env run -e production -- node scripts/seed-painpoints.mjs` (never deletes; assigned pain points stay assigned). Week 1 (44) is written; weeks 2-5 still need to be added to the file before each Monday.
+- Tests for the assignment and tracking SQL (run on an in-memory Postgres, not Neon): `npm run test:site`.
+
 ## Adding a day
 
 1. Create `src/days/day-NN/` with the day's code, tests (`*.test.js`) and a `DayNN.tsx` showcase.

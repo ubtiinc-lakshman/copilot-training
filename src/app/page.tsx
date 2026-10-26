@@ -51,6 +51,14 @@ export default function Home() {
         Developers &amp; QA track. 30 sessions, Oct 21 to Dec 1, 2026. One folder per day in <code>src/days</code>.
       </p>
 
+      <p className="mt-4 rounded border border-blue-300 bg-blue-50 px-4 py-3 text-blue-950">
+        <b>New: build a real app every week.</b> Today&apos;s lab, your pain point and your submissions are on{" "}
+        <Link href="/today" className="font-semibold underline">
+          My week
+        </Link>
+        . The 30-day lessons below are the self-learning library.
+      </p>
+
       <p className="mt-4 rounded border border-zinc-200 px-4 py-3 text-sm dark:border-zinc-800">
         Optional: build one Next.js app alongside the training (Days 2-10).{" "}
         <Link href="/track" className="font-semibold text-blue-600 hover:underline">
