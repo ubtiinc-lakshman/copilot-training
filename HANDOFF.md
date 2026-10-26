@@ -1,6 +1,12 @@
 # Handoff: GitHub Copilot Training repo
 
-Last updated: Fri Oct 23, 2026 (Day 3 of 30). All 30 days are built, committed, pushed and deployed. Read this first, then `README.md`.
+Last updated: Mon Oct 26, 2026. **Read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
+
+**State at the end of Oct 26 (local `main` is ahead of `origin/main`, NOT pushed; production seeds NOT run):**
+1. `git push origin main` (auto-deploys production). A push and seed attempt was blocked by the permission classifier; the user must run them or add an allow rule. Check `git status -sb` and `git log origin/main..` for what is unpushed.
+2. `npx vercel env run -e production -- node scripts/seed-painpoints.mjs` (adds 44 week-1 rows; without it nobody can get a pain point).
+3. `npx vercel env run -e production -- node scripts/seed-quizzes.mjs` (re-upserts every quiz in `data/quizzes.json`, including session quizzes 101-115).
+Session 1 is Tue Oct 27, so these three come first.
 
 ## What this is
 
@@ -140,5 +146,32 @@ The training changed to one app per week (plan: `docs/APP-BUILD-PLAN.md`, announ
 | `data/painpoints.json`, `scripts/seed-painpoints.mjs` | Pain-point bank (git-ignored, week 1 = 44 written) |
 | `src/lib/assign.test.mjs` | `npm run test:site`: 10 tests on in-memory Postgres (PGlite) |
 
-Status: built, type-checked, linted, SQL tested. NOT yet browser-checked, NOT yet seeded into production, and not pushed unless the git log says so. To go live: push to `main` (Vercel auto-deploys), run the seed command from the README, then sign in and click through `/today` and `/facilitator/progress`.
-Open: weeks 2-5 pain points (about 44 each, tagged by that week's required feature), quizzes for the new sessions (the old day quizzes do not match the new topics), who counts as a participant before they sign in (the progress page only lists people who have used the site).
+Also added after the first version of this section:
+
+| Path | Purpose |
+|---|---|
+| `src/app/page.tsx` | Home = program dashboard: today card, progress ring (labs and calls done), five app cards with pain point, submission status, sessions (titles link to session pages), "Go deeper" library links |
+| `src/app/library/page.tsx` | The 30 lessons (self-learning). All 30 are unlocked: `isLessonOpen()` in `src/lib/schedule.ts` always returns true. Weekly events still use date-gated `isOpen` |
+| `src/app/sessions/[id]/page.tsx`, `src/program/sessions.ts`, `src/program/content/week1-5.ts` | Session pages for s01-s15: objective, before you come, teach, demo, lab, quiz, share, homework, facilitator notes (shown only to acting facilitators). Content is data; add or edit text there |
+| Quiz numbering | Session quizzes are quiz day 100 + session number (101 = s01 ... 115 = s15), stored in the same `quizzes` table and graded by `/api/results`. They open on the session date (`quizOpen` in `schedule.ts`). Answers live only in the git-ignored `data/quizzes.json` and Neon |
+| `calendar.ts` `libraryFor(id)` | Maps each session to library days for "Go deeper" links |
+| Library lab tracking (added by another session) | `LabTaskStatus` on each lesson saves `lab-<day>` completions; Results page shows them |
+| UI | Brand tokens and `@utility` classes in `src/app/globals.css` (`card`, `btn-primary`, `btn-ghost`, `input`, `chip-*`, `link`). Sticky top bar in `UserMenu` |
+
+Status: built, type-checked, linted on the new files, SQL tested (`npm run test:site`, `npm test`), `next build` passes. NOT browser-checked after sign-in (the Entra values are not available locally), NOT seeded in production, not pushed. Local `.env.local` now has the pulled Neon values plus a throwaway `AUTH_SECRET`; real sign-in locally still needs the Entra vars, which Vercel will not hand out (marked Secret).
+
+Gotchas learned:
+- Anything calling `auth()` in a server component needs `await connection()` first (Cache Components), or prerender fails with the `crypto.getRandomValues()` error. Done in `UserMenu` and the day, progress and results pages.
+- Bash heredocs with apostrophes fail here; use the Write tool or a script file. Read a file with the Read tool before Write/Edit (a Bash `cat` does not count).
+- Tailwind 4: custom component classes must be `@utility`, not `@layer components`, if they are used inside `@apply`.
+- Never `git add -A` or `git add src`. Uncommitted edits that are not Claude's: `.gitignore`, `src/days/day-03/*`, `src/days/day-04/*`, `instructions.md`, `skills-lock.json`. Leftover local diff in `src/app/login/page.tsx` is harmless (revert it); `DecisionLog.tsx` has a harmless class change from the redesign.
+- Known lint error, not ours: `setState` in effect in `ChecklistTracker`.
+
+Open / next, in order:
+1. Push and run the two seeds (top of this file). Sign in on the live site, click through `/`, `/today`, `/sessions/s01`, the quiz, the pain point button, `/facilitator/progress`. Remember a facilitator test click uses one of the 8 spare week-1 pain points.
+2. Pain points for weeks 2-5 (about 44 each, tagged by the week's required feature: 2 login/per-user data, 3 files, 4 email/webhook/job, 5 dashboard or AI, security-reviewed). Week 2 opens Mon Nov 2. Add to `data/painpoints.json` and run the seed script.
+3. Roster of the 36 participants (the progress page lists only people who have used the site). Invite them to the Entra tenant.
+4. Decide the finale (Tue Dec 1): it has an event but no session page.
+5. Admin answers still needed: GitHub Copilot credits (four questions in `docs/APP-BUILD-PLAN.md`), Vercel and Supabase accounts and licensing, email provider (s10), AI provider and key (s13), whether MCP and Copilot code review are enabled (s08, s12), data-residency or security approval, Cloudflare as fallback, network check from the conference room.
+6. The product steps in the session content (Supabase, Vercel, MCP settings) were written from general knowledge and not tested on the real accounts; test the exact steps the day before each session.
+7. Reroll policy for pain points (default: no reroll). Certification rule: at least 80% attendance, at least 4 of 5 apps deployed and passing, quiz average at least 70%.
