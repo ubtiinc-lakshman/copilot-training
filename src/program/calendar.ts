@@ -74,3 +74,10 @@ export const nextEvent = (date: string) => EVENTS.find((e) => e.date >= date);
 
 // Events a participant marks done (labs, calls, finale). Submissions have their own form.
 export const trackedEvents = EVENTS.filter((e) => e.kind !== "submit");
+
+// Library lessons (the 30-day content, by day number) that match each session, for "go deeper" links.
+const LIBRARY: Record<string, number[]> = {
+  s01: [5, 3, 4], s02: [9, 7], s03: [26], s04: [24, 9], s05: [12, 4], s06: [13], s07: [21], s08: [14, 22],
+  s09: [18], s10: [18], s11: [22, 27], s12: [15, 16], s13: [26], s14: [24, 9], s15: [25], finale: [28, 29],
+};
+export const libraryFor = (id: string): number[] => LIBRARY[id] ?? [];

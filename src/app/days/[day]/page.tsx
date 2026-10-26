@@ -72,8 +72,8 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 export default function DayPage({ params }: { params: Promise<{ day: string }> }) {
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
-        All days
+      <Link href="/library" className="text-sm text-blue-600 hover:underline">
+        Library
       </Link>
       <Suspense fallback={<p className="mt-6 text-zinc-500">Loading...</p>}>
         <DayContent params={params} />

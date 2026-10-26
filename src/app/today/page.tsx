@@ -7,9 +7,9 @@ import { loadMine } from "@/lib/program";
 import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
 import { todayISO } from "@/lib/schedule";
-import { formatDate } from "@/days/registry";
+import { DAYS, formatDate } from "@/days/registry";
 import type { PainPoint } from "@/lib/assign";
-import { EVENTS, WEEKS, currentWeek, eventsOn, getWeek, nextEvent, type ProgramEvent } from "@/program/calendar";
+import { EVENTS, WEEKS, currentWeek, eventsOn, getWeek, libraryFor, nextEvent, type ProgramEvent } from "@/program/calendar";
 import { LabDone, PainPointCard, PainPointView, SubmissionForm, type SubmissionData } from "@/components/ProgramActions";
 
 export const metadata = { title: "My week" };
@@ -43,6 +43,19 @@ async function MyWeek() {
       {e.lab && (
         <p className="text-sm">
           <b>Your lab:</b> {e.lab}
+        </p>
+      )}
+      {libraryFor(e.id).length > 0 && (
+        <p className="text-sm text-zinc-600">
+          Go deeper:{" "}
+          {libraryFor(e.id).map((n, i) => (
+            <span key={n}>
+              {i > 0 && ", "}
+              <Link href={`/days/${n}`} className="text-blue-600 underline">
+                Day {n}: {DAYS.find((d) => d.day === n)?.title}
+              </Link>
+            </span>
+          ))}
         </p>
       )}
       {e.kind === "submit" ? (
@@ -144,7 +157,7 @@ async function MyWeek() {
 
       <p className="text-sm text-zinc-500">
         Earlier Copilot lessons (the 30-day library) are still available for self-learning:{" "}
-        <Link href="/" className="text-blue-600 underline">
+        <Link href="/library" className="text-blue-600 underline">
           open the library
         </Link>
         .

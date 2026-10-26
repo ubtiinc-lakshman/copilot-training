@@ -8,8 +8,8 @@ export const metadata = { title: "Optional app track: Order Desk" };
 export default function TrackPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-6 py-10">
-      <Link href="/" className="text-sm text-blue-600 hover:underline">
-        All days
+      <Link href="/library" className="text-sm text-blue-600 hover:underline">
+        Library
       </Link>
       <h1 className="mb-2 mt-4 text-3xl font-bold">Optional app track: Order Desk</h1>
       <p className="mb-4 rounded bg-amber-100 px-3 py-2 text-sm font-semibold text-amber-900">Not required. The standalone day labs are the training; this is for people who want to build a real app alongside.</p>
