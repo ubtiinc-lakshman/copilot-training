@@ -14,10 +14,13 @@ async function post(url: string, body?: unknown) {
 }
 
 // The action that says "I completed this lab / call". Optional note: what you built or what blocked you.
-export function LabDone({ id, label, initialDone, initialNote }: { id: string; label: string; initialDone: boolean; initialNote: string }) {
+// With `proof` (weekly session labs) it also asks for a screenshot of the git commit, made on a branch other than main.
+export function LabDone({ id, label, initialDone, initialNote, proof, hasProof }: { id: string; label: string; initialDone: boolean; initialNote: string; proof?: boolean; hasProof?: boolean }) {
   const router = useRouter();
   const [done, setDone] = useState(initialDone);
   const [note, setNote] = useState(initialNote);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploaded, setUploaded] = useState(!!hasProof);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,6 +28,18 @@ export function LabDone({ id, label, initialDone, initialNote }: { id: string; l
     setBusy(true);
     setError("");
     try {
+      if (nextDone && proof) {
+        if (file) {
+          const form = new FormData();
+          form.set("id", id);
+          form.set("file", file);
+          const res = await fetch("/api/proof", { method: "POST", body: form });
+          if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? "The screenshot could not be uploaded");
+          setUploaded(true);
+        } else if (!uploaded) {
+          throw new Error("Upload a screenshot of your git commit first");
+        }
+      }
       await post("/api/activity", { id, done: nextDone, note });
       setDone(nextDone);
       router.refresh();
@@ -37,6 +52,24 @@ export function LabDone({ id, label, initialDone, initialNote }: { id: string; l
 
   return (
     <div className="mt-3 space-y-2">
+      {proof && !done && (
+        <div className="space-y-2 rounded-xl border border-line bg-brand-soft p-4 text-sm">
+          <p className="font-semibold">Proof of your work: a screenshot of your git commit</p>
+          <ol className="ml-5 list-decimal space-y-1">
+            <li>
+              Work on a branch, <b>not main</b> (we update main). Create it once: <code>git switch -c lab-{id}</code>
+            </li>
+            <li>
+              Commit your lab work: <code>git add . &amp;&amp; git commit -m &quot;what you did&quot;</code>, then <code>git push -u origin lab-{id}</code>
+            </li>
+            <li>
+              Take a screenshot of <code>git log --oneline -3</code> (or the commit on GitHub) so the branch name and your commit are visible.
+            </li>
+          </ol>
+          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+          {uploaded && !file && <p className="text-xs text-muted">A screenshot is already uploaded. Choose another to replace it.</p>}
+        </div>
+      )}
       {!done && (
         <input className={field} value={note} onChange={(e) => setNote(e.target.value)} placeholder="Optional: what you built, or what blocked you" />
       )}
@@ -44,6 +77,11 @@ export function LabDone({ id, label, initialDone, initialNote }: { id: string; l
         <p className="flex flex-wrap items-center gap-3 text-sm">
           <span className="chip-done">Completed</span>
           {note && <span className="text-muted">{note}</span>}
+          {proof && (
+            <a className="link text-xs" href={`/api/proof?id=${id}`} target="_blank" rel="noreferrer">
+              View my screenshot
+            </a>
+          )}
           <button className="text-xs text-muted underline" onClick={() => act(false)} disabled={busy}>
             Undo
           </button>
@@ -109,10 +147,10 @@ export function PainPointCard({ initial, open, opensOn }: { initial: PainPoint |
 
 export type SubmissionData = { url: string; challenge: string; solution: string; copilot: string };
 
-export function SubmissionForm({ week, initial, due }: { week: number; initial: SubmissionData | null; due: string }) {
+export function SubmissionForm({ week, initial }: { week: number; initial: SubmissionData | null }) {
   const router = useRouter();
   const [f, setF] = useState<SubmissionData>(initial ?? { url: "", challenge: "", solution: "", copilot: "" });
-  const [state, setState] = useState<{ kind: "idle" | "saved" | "error"; text: string }>({ kind: initial ? "saved" : "idle", text: initial ? "Submitted. You can update it until the review." : "" });
+  const [state, setState] = useState<{ kind: "idle" | "saved" | "error"; text: string }>({ kind: initial ? "saved" : "idle", text: initial ? "Submitted. You can update it any time." : "" });
   const [busy, setBusy] = useState(false);
   const set = (k: keyof SubmissionData) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => setF({ ...f, [k]: e.target.value });
 
@@ -141,8 +179,8 @@ export function SubmissionForm({ week, initial, due }: { week: number; initial: 
           onClick={async () => {
             setBusy(true);
             try {
-              const r = await post("/api/submission", { week, ...f });
-              setState({ kind: "saved", text: r.late ? `Submitted (after the ${due} deadline).` : "Submitted." });
+              await post("/api/submission", { week, ...f });
+              setState({ kind: "saved", text: week < 5 ? `Submitted. Level ${week + 1} is now open.` : "Submitted. You have finished all five levels." });
               router.refresh();
             } catch (e) {
               setState({ kind: "error", text: (e as Error).message });

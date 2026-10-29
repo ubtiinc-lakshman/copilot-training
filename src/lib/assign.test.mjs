@@ -68,7 +68,7 @@ test("the database itself refuses to give one pain point to two people", async (
 });
 
 // ---- the rest of the weekly program's SQL (src/lib/program.ts) ----
-import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress, addToRoster, removeFromRoster, isOnRoster } from "./program.ts";
+import { markComplete, undoComplete, saveSubmission, loadMine, loadProgress, addToRoster, removeFromRoster, isOnRoster, loadLevel, hasProof, saveProof, getProof } from "./program.ts";
 
 async function withAttendanceTables(pg) {
   // loadProgress also reads the older results/attendance tables created by db.ts
@@ -134,4 +134,25 @@ test("roster membership check is case-insensitive", async () => {
   await addToRoster(sql, { name: "Asha", email: "A@x.com" });
   assert.equal(await isOnRoster(sql, "a@X.com"), true);
   assert.equal(await isOnRoster(sql, "boss@x.com"), false);
+});
+
+test("levels: week N opens when week N-1 is submitted", async () => {
+  const { sql } = await setup();
+  const submit = (email, week) => sql`INSERT INTO submissions (email, name, week, url, challenge, solution, copilot) VALUES (${email}, 'N', ${week}, 'https://a.vercel.app', 'c', 's', 'p')`;
+  assert.equal(await loadLevel(sql, "a@x.com"), 1);
+  await submit("a@x.com", 1);
+  assert.equal(await loadLevel(sql, "a@x.com"), 2);
+  await submit("a@x.com", 3); // skipping week 2 does not unlock week 4
+  assert.equal(await loadLevel(sql, "a@x.com"), 2);
+  for (const w of [2, 4, 5]) await submit("a@x.com", w);
+  assert.equal(await loadLevel(sql, "a@x.com"), 5);
+});
+
+test("a lab screenshot is stored per person and lab, and replaced on re-upload", async () => {
+  const { sql } = await setup();
+  assert.equal(await hasProof(sql, "a@x.com", "s03"), false);
+  await saveProof(sql, "a@x.com", "s03", "image/png", "AAAA");
+  await saveProof(sql, "a@x.com", "s03", "image/jpeg", "BBBB");
+  assert.deepEqual(await getProof(sql, "a@x.com", "s03"), { mime: "image/jpeg", data: "BBBB" });
+  assert.equal(await hasProof(sql, "b@x.com", "s03"), false);
 });

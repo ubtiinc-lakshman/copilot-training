@@ -1,9 +1,8 @@
 import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
-import { todayISO } from "@/lib/schedule";
 import { getWeek } from "@/program/calendar";
-import { saveSubmission } from "@/lib/program";
+import { loadLevel, saveSubmission } from "@/lib/program";
 import type { Sql } from "@/lib/assign";
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -17,7 +16,8 @@ export async function POST(request: Request) {
   const week = Number(body.week);
   const info = getWeek(week);
   if (!info) return Response.json({ error: "Unknown week" }, { status: 400 });
-  if (todayISO() < info.assignOpens && !(await actingFacilitator(user.email))) return Response.json({ error: "This week has not started" }, { status: 403 });
+  const sql = (await db()) as unknown as Sql;
+  if (week > (await loadLevel(sql, user.email)) && !(await actingFacilitator(user.email))) return Response.json({ error: `Submit your week ${week - 1} app first` }, { status: 403 });
 
   let url: URL;
   try {
@@ -32,6 +32,6 @@ export async function POST(request: Request) {
   const copilot = text(body.copilot, 2000);
   if (!challenge || !solution || !copilot) return Response.json({ error: "Fill in the challenge, how you solved it, and how you used Copilot" }, { status: 400 });
 
-  await saveSubmission((await db()) as unknown as Sql, user, { week, url: url.href, challenge, solution, copilot });
-  return Response.json({ ok: true, late: todayISO() > info.due });
+  await saveSubmission(sql, user, { week, url: url.href, challenge, solution, copilot });
+  return Response.json({ ok: true });
 }

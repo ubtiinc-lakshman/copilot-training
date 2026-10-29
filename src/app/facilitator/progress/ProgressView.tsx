@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { WEEKS, trackedEvents } from "@/program/calendar";
-import { todayISO } from "@/lib/schedule";
 
 type Person = { email: string; name: string; team: string | null; github_id: string | null };
 type Completion = { email: string; activity: string; note: string | null; completed_at: string };
@@ -50,11 +49,10 @@ export default function ProgressView() {
   if (error) return <p className="text-rose-600">{error}</p>;
   if (!data) return <p className="text-muted">Loading...</p>;
 
-  const today = todayISO();
   const doneSet = new Set(data.completions.map((c) => `${c.email}|${c.activity}`));
   const note = (email: string, id: string) => data.completions.find((c) => c.email === email && c.activity === id)?.note;
-  const opened = trackedEvents.filter((e) => e.date <= today);
-  const dueWeeks = WEEKS.filter((w) => w.assignOpens <= today);
+  const opened = trackedEvents; // the weekly program is self-paced, so every step is shown
+  const dueWeeks = WEEKS;
   const subOf = (email: string, week: number) => data.submissions.find((s) => s.email === email && s.week === week);
   const pointOf = (email: string, week: number) => data.assignments.find((a) => a.email === email && a.week === week);
 
@@ -167,7 +165,17 @@ export default function ProgressView() {
                   </td>
                   {opened.map((e) => (
                     <td key={e.id} className="px-2 text-center" title={note(p.email, e.id) ?? ""}>
-                      {doneSet.has(`${p.email}|${e.id}`) ? <span className="text-green-600">&#10003;</span> : <span className="text-line">-</span>}
+                      {doneSet.has(`${p.email}|${e.id}`) ? (
+                        e.kind === "session" ? (
+                          <a className="text-green-600" href={`/api/proof?id=${e.id}&email=${encodeURIComponent(p.email)}`} target="_blank" rel="noreferrer" title="Open the git commit screenshot">
+                            &#10003;
+                          </a>
+                        ) : (
+                          <span className="text-green-600">&#10003;</span>
+                        )
+                      ) : (
+                        <span className="text-line">-</span>
+                      )}
                     </td>
                   ))}
                   {dueWeeks.map((w) => {

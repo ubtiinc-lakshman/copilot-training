@@ -3,9 +3,10 @@ import { connection } from "next/server";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { db } from "@/lib/db";
+import { hasProof } from "@/lib/program";
+import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
-import { formatDate } from "@/days/registry";
 import { getEvent, libraryFor } from "@/program/calendar";
 import { getSession } from "@/program/sessions";
 import { DAYS } from "@/days/registry";
@@ -35,12 +36,14 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
   const facilitator = await actingFacilitator(user?.email);
   let done = false;
   let note = "";
+  let proofSaved = false;
   if (user) {
     try {
       const sql = await db();
       const rows = await sql`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${id}`;
       done = rows.length > 0;
       note = (rows[0]?.note as string | null) ?? "";
+      proofSaved = await hasProof(sql as unknown as Sql, user.email, id);
     } catch {
       // The content still shows if the status cannot be read; the button just starts unchecked.
     }
@@ -50,7 +53,7 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
   return (
     <>
       <p className="mt-4 text-sm text-muted">
-        Week {event.week} | {formatDate(event.date)} | In person, 60 min: teach 15, demo 10, lab 25, quiz 5, share 5
+        Week {event.week} | Self-paced, about 60 min: teach 15, demo 10, lab 25, quiz 5, share 5
       </p>
       <h1 className="mb-2 mt-1 text-3xl font-extrabold tracking-tight">
         Session {Number(id.slice(1))}: {event.title}
@@ -78,11 +81,11 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
           <List items={content.demo} ordered />
         </Section>
 
-        <Section title="Lab (25 min): on your own app">
+        <Section title="Lab (25 min): on your own app, on a branch">
           <List items={content.lab.steps} ordered />
           <p className="pt-2 text-sm font-semibold">You are done when:</p>
           <List items={content.lab.doneWhen} />
-          <LabDone id={id} label="I completed this lab" initialDone={done} initialNote={note} />
+          <LabDone id={id} label="I completed this lab" initialDone={done} initialNote={note} proof hasProof={proofSaved} />
         </Section>
 
         <Section title="Quiz (5 min)">

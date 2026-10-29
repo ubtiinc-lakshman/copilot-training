@@ -9,6 +9,15 @@ export const PROGRAM_TABLES: string[] = [
     completed_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     PRIMARY KEY (email, activity)
   )`,
+  // Screenshot of the git commit (on the participant's own branch) that proves a session lab was done. Image stored as base64 text.
+  `CREATE TABLE IF NOT EXISTS lab_proofs (
+    email TEXT NOT NULL,
+    activity TEXT NOT NULL,
+    mime TEXT NOT NULL,
+    data TEXT NOT NULL,
+    uploaded_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    PRIMARY KEY (email, activity)
+  )`,
   // The pain-point bank. Loaded by scripts/seed-painpoints.mjs from data/painpoints.json (never in the public repo).
   `CREATE TABLE IF NOT EXISTS painpoints (
     id TEXT PRIMARY KEY,

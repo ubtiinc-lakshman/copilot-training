@@ -2,58 +2,39 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import Link from "next/link";
 import { db } from "@/lib/db";
-import { loadMine } from "@/lib/program";
+import { levelOf, loadMine } from "@/lib/program";
 import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
-import { todayISO } from "@/lib/schedule";
-import { DAYS, formatDate } from "@/days/registry";
+import { DAYS } from "@/days/registry";
 import { SESSIONS } from "@/program/sessions";
-import { EVENTS, WEEKS, currentWeek, eventsOn, libraryFor, nextEvent, trackedEvents } from "@/program/calendar";
+import { EVENTS, WEEKS, libraryFor, trackedEvents } from "@/program/calendar";
 
 const KIND = { session: "Session", call: "Live call", finale: "Finale", submit: "Submit" } as const;
 
 async function Dashboard() {
-  await connection(); // depends on today's date and the signed-in user
+  await connection(); // depends on the signed-in user
   const user = await currentUser();
-  const today = todayISO();
   const mine = user ? await loadMine((await db()) as unknown as Sql, user.email) : null;
   const done = new Set((mine?.completions ?? []).map((c) => c.activity as string));
   const submitted = new Set((mine?.submissions ?? []).map((s) => s.week as number));
   const titles = new Map((mine?.assignments ?? []).map((a) => [a.week as number, (a.data as { title: string }).title]));
 
-  const week = currentWeek(today);
-  const todays = eventsOn(today);
-  const next = nextEvent(today);
+  const week = levelOf(submitted); // the level you are on: submit its app to open the next
   const doneCount = trackedEvents.filter((e) => done.has(e.id)).length;
   const pct = Math.round((doneCount / trackedEvents.length) * 100);
 
-  const state = (id: string, date: string) =>
-    done.has(id) ? (
-      <span className="chip-done">Done</span>
-    ) : date === today ? (
-      <span className="chip-today">Today</span>
-    ) : date < today ? (
-      <span className="chip-late">Not done</span>
-    ) : (
-      <span className="chip-idle">{formatDate(date)}</span>
-    );
+  const state = (id: string, eventWeek: number) =>
+    done.has(id) ? <span className="chip-done">Done</span> : eventWeek <= week ? <span className="chip-today">To do</span> : <span className="chip-idle">Locked</span>;
 
   return (
     <>
       <div className="mt-8 grid gap-4 md:grid-cols-[1fr_auto]">
         <Link href="/today" className="relative overflow-hidden rounded-2xl p-6 text-white shadow-lg transition hover:shadow-xl" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
-          <p className="text-sm/6 opacity-80">{formatDate(today)}</p>
-          {todays.length > 0 ? (
-            <>
-              <p className="mt-1 text-2xl font-bold">{todays.map((e) => e.title).join(" + ")}</p>
-              <p className="mt-3 inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm font-semibold">Open today&apos;s lab &rarr;</p>
-            </>
-          ) : (
-            <>
-              <p className="mt-1 text-2xl font-bold">Nothing scheduled today</p>
-              {next && <p className="mt-2 text-sm opacity-90">Next up: {next.title} on {formatDate(next.date)}</p>}
-            </>
-          )}
+          <p className="text-sm/6 opacity-80">Your level</p>
+          <p className="mt-1 text-2xl font-bold">
+            Level {week}: {WEEKS[week - 1].feature}
+          </p>
+          <p className="mt-3 inline-flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm font-semibold">Continue &rarr;</p>
         </Link>
 
         <div className="card flex items-center gap-4 p-6">
@@ -79,7 +60,7 @@ async function Dashboard() {
       <div className="space-y-4">
         {WEEKS.map((w) => {
           const evs = EVENTS.filter((e) => e.week === w.week && e.kind !== "submit" && e.kind !== "finale");
-          const started = today >= w.assignOpens;
+          const started = w.week <= week;
           const current = w.week === week;
           return (
             <section key={w.week} className={`card p-5 ${current ? "!border-brand ring-2 ring-brand/20" : ""} ${!started ? "opacity-80" : ""}`}>
@@ -90,13 +71,11 @@ async function Dashboard() {
                   </span>
                   <div>
                     <h3 className="font-bold leading-tight">{w.feature}</h3>
-                    <p className="text-xs text-muted">
-                      {formatDate(w.assignOpens)} &rarr; due {formatDate(w.due)}
-                    </p>
+                    <p className="text-xs text-muted">Level {w.week}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  {current && <span className="chip-brand">This week</span>}
+                  {current && <span className="chip-brand">Your level</span>}
                   {submitted.has(w.week) ? <span className="chip-done">Submitted</span> : <span className="chip-idle">Not submitted</span>}
                 </div>
               </div>
@@ -111,7 +90,7 @@ async function Dashboard() {
                     Get your pain point &rarr;
                   </Link>
                 ) : (
-                  <span className="text-muted">Pain point is assigned on {formatDate(w.assignOpens)}</span>
+                  <span className="text-muted">Opens when you submit level {w.week - 1}</span>
                 )}
               </p>
 
@@ -141,7 +120,7 @@ async function Dashboard() {
                         </span>
                       )}
                     </span>
-                    {state(e.id, e.date)}
+                    {state(e.id, e.week)}
                   </li>
                 ))}
               </ul>

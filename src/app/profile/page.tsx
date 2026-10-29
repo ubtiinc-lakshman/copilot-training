@@ -4,11 +4,9 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, isFacilitator } from "@/auth";
 import { db } from "@/lib/db";
-import { loadMine } from "@/lib/program";
+import { levelOf, loadMine } from "@/lib/program";
 import { initialsOf, loadProfile } from "@/lib/profile";
 import type { Sql } from "@/lib/assign";
-import { todayISO } from "@/lib/schedule";
-import { formatDate } from "@/days/registry";
 import { WEEKS, trackedEvents } from "@/program/calendar";
 
 export const metadata = { title: "My profile" };
@@ -46,11 +44,11 @@ async function Profile() {
   const sql = (await db()) as unknown as Sql;
   const [mine, profile] = await Promise.all([loadMine(sql, email), loadProfile(sql, email)]);
 
-  const today = todayISO();
   const done = new Set(mine.completions.map((c) => c.activity as string));
-  const opened = trackedEvents.filter((e) => e.date <= today);
-  const attendedEvents = opened.filter((e) => done.has(e.id)).length;
   const subs = new Map(mine.submissions.map((s) => [s.week as number, s]));
+  const level = levelOf(subs.keys()); // the weekly program is self-paced: levels open as you submit
+  const opened = trackedEvents.filter((e) => e.week <= level);
+  const attendedEvents = opened.filter((e) => done.has(e.id)).length;
   const titles = new Map(mine.assignments.map((a) => [a.week as number, (a.data as { title: string }).title]));
   const facilitator = isFacilitator(email);
 
@@ -108,22 +106,20 @@ async function Profile() {
           {WEEKS.map((w) => {
             const s = subs.get(w.week);
             const title = titles.get(w.week);
-            const started = w.assignOpens <= today;
+            const started = w.week <= level;
             return (
               <li key={w.week} className="flex flex-wrap items-center gap-3 py-3 text-sm">
                 <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-brand-soft font-bold text-brand">{w.week}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{title ?? (started ? "Pain point not taken yet" : "Opens " + formatDate(w.assignOpens))}</p>
-                  <p className="text-xs text-muted">{w.feature}. Due {formatDate(w.due)}.</p>
+                  <p className="truncate font-semibold">{title ?? (started ? "Pain point not taken yet" : "Opens when you submit level " + (w.week - 1))}</p>
+                  <p className="text-xs text-muted">{w.feature}.</p>
                 </div>
                 {s ? (
                   <a className="chip-done" href={s.url as string} target="_blank" rel="noreferrer">Submitted</a>
-                ) : w.due < today ? (
-                  <span className="chip-late">Overdue</span>
                 ) : started ? (
                   <span className="chip-today">In progress</span>
                 ) : (
-                  <span className="chip-idle">Upcoming</span>
+                  <span className="chip-idle">Locked</span>
                 )}
               </li>
             );
