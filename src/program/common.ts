@@ -5,16 +5,16 @@ import type { SessionContent } from "./sessions";
 
 export type CommonDay = { id: string; day: number; date: string; title: string; length: string; gate?: boolean };
 
-// Full days, Mon-Fri back to back (Nov 2-6, then Nov 9-11); the weekly app program is now self-paced.
+// Full days, Mon-Fri back to back (Nov 2-6, then Nov 10-12; Nov 9 skipped for Diwali, to be confirmed); the weekly app program is now self-paced.
 export const COMMON_DAYS: CommonDay[] = [
   { id: "c0", day: 0, date: "2026-11-02", title: "Concepts and terminology", length: "Full day" },
   { id: "c1", day: 1, date: "2026-11-03", title: "Copilot fundamentals", length: "Full day" },
   { id: "c2", day: 2, date: "2026-11-04", title: "Prompt and context engineering", length: "Full day" },
   { id: "c3", day: 3, date: "2026-11-05", title: "Copilot for day-to-day engineering work", length: "Full day" },
   { id: "c4", day: 4, date: "2026-11-06", title: "Security, privacy and responsible use", length: "Full day" },
-  { id: "c5", day: 5, date: "2026-11-09", title: "Advanced Copilot and agentic working", length: "Full day" },
-  { id: "c6", day: 6, date: "2026-11-10", title: "Guided hands-on: one business problem", length: "Full day" },
-  { id: "c7", day: 7, date: "2026-11-11", title: "Common level gate", length: "Full day", gate: true },
+  { id: "c5", day: 5, date: "2026-11-10", title: "Advanced Copilot and agentic working", length: "Full day" },
+  { id: "c6", day: 6, date: "2026-11-11", title: "Guided hands-on: one business problem", length: "Full day" },
+  { id: "c7", day: 7, date: "2026-11-12", title: "Common level gate", length: "Full day", gate: true },
 ];
 
 export const getCommonDay = (id: string) => COMMON_DAYS.find((d) => d.id === id);
