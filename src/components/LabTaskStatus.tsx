@@ -9,7 +9,8 @@ export default async function LabTaskStatus({ day }: { day: number }) {
   let note = "";
   if (user) {
     try {
-      const rows = await (await db())`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${`lab-${day}`}`;
+      const sql = await db();
+      const rows = await sql`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${`lab-${day}`}`;
       done = rows.length > 0;
       note = (rows[0]?.note as string | null) ?? "";
     } catch {

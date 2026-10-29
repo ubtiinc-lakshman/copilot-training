@@ -32,15 +32,13 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
   const facilitator = await actingFacilitator(user?.email);
   let done = false;
   let note = "";
-  let debug = "";
   if (user) {
     try {
-      const rows = await (await db())`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${id}`;
+      const sql = await db();
+      const rows = await sql`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${id}`;
       done = rows.length > 0;
       note = (rows[0]?.note as string | null) ?? "";
-      debug = `rows=${rows.length} email=${user.email}`;
-    } catch (e) {
-      debug = `ERR ${String(e)}`;
+    } catch {
       // The content still shows if the status cannot be read; the button just starts unchecked.
     }
   }
@@ -90,8 +88,6 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
         <Section title="Homework and going deeper">
           <List items={content.homework} />
         </Section>
-
-        {facilitator && <p className="text-xs text-muted">debug: {debug}</p>}
 
         {facilitator && (
           <aside className="rounded-2xl border border-amber-300 bg-amber-50 p-5 text-sm text-amber-950">

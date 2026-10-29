@@ -15,7 +15,8 @@ async function Days() {
   const done = new Set<string>();
   if (user) {
     try {
-      const rows = await (await db())`SELECT activity FROM completions WHERE email = ${user.email} AND activity LIKE 'c_'`;
+      const sql = await db();
+      const rows = await sql`SELECT activity FROM completions WHERE email = ${user.email} AND activity LIKE 'c_'`;
       rows.forEach((r) => done.add(r.activity as string));
     } catch {
       // The list still shows without completion marks.

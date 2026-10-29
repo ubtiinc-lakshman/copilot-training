@@ -37,7 +37,8 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
   let note = "";
   if (user) {
     try {
-      const rows = await (await db())`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${id}`;
+      const sql = await db();
+      const rows = await sql`SELECT note FROM completions WHERE email = ${user.email} AND activity = ${id}`;
       done = rows.length > 0;
       note = (rows[0]?.note as string | null) ?? "";
     } catch {
