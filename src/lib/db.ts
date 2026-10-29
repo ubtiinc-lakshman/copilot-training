@@ -2,7 +2,9 @@ import { neon } from "@neondatabase/serverless";
 import { PROGRAM_TABLES } from "@/lib/schema";
 
 // Neon Postgres over HTTP (DATABASE_URL, set by the Vercel Neon integration).
-const sql = neon(process.env.DATABASE_URL ?? "");
+// Preview deployments use their own Neon branch (PREVIEW_DATABASE_URL) and never fall back to the production database.
+const preview = process.env.VERCEL_ENV === "preview";
+const sql = neon((preview ? process.env.PREVIEW_DATABASE_URL : process.env.DATABASE_URL) ?? "");
 
 let ready: Promise<unknown> | undefined;
 // Tables are created on first use, once per server instance.
