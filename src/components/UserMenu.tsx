@@ -17,6 +17,7 @@ export default async function UserMenu() {
   const participantView = facilitator && (await isParticipantView());
   const items: NavItem[] = [
     { href: "/", label: "Home" },
+    { href: "/common", label: "Common days" },
     { href: "/today", label: "My week" },
     { href: "/library", label: "Library" },
     ...(facilitator

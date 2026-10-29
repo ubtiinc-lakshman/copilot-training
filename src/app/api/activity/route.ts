@@ -3,6 +3,7 @@ import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
 import { isOpen } from "@/lib/schedule";
 import { getEvent } from "@/program/calendar";
+import { getCommonDay } from "@/program/common";
 import { DAYS } from "@/days/registry";
 import { markComplete, undoComplete } from "@/lib/program";
 import type { Sql } from "@/lib/assign";
@@ -15,7 +16,7 @@ export async function POST(request: Request) {
   const body = await request.json().catch(() => ({}));
   // "lab-N" is the lab task of library lesson N (lessons are always open); anything else is a weekly program activity.
   const lesson = /^lab-(\d+)$/.exec(String(body.id));
-  const event = lesson ? (DAYS.some((d) => d.day === Number(lesson[1])) ? { id: lesson[0], date: "" } : undefined) : getEvent(String(body.id));
+  const event = lesson ? (DAYS.some((d) => d.day === Number(lesson[1])) ? { id: lesson[0], date: "" } : undefined) : (getCommonDay(String(body.id)) ?? getEvent(String(body.id)));
   if (!event || ("kind" in event && event.kind === "submit")) return Response.json({ error: "Unknown activity" }, { status: 400 });
   if (!lesson && !isOpen(event.date) && !(await actingFacilitator(user.email))) return Response.json({ error: "This activity has not opened yet" }, { status: 403 });
 

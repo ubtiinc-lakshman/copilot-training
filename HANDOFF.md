@@ -1,6 +1,6 @@
 # Handoff: GitHub Copilot Training repo
 
-Last updated: Mon Oct 26, 2026. **Read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
+Last updated: Tue Oct 27, 2026. **NEW (Oct 27): a team-specific track syllabus is drafted and waiting on Flossy and the Director. Read "Team tracks syllabus (Oct 27)" at the very bottom first, then the weekly program section.** Older note: read the "Weekly app program" section at the bottom first: the training changed on Oct 26 to one app per week, and most sections above describe the older 30-day format (now the self-learning library).** Then `README.md`.
 
 **State at the end of Oct 26: everything is pushed (`main` = `origin/main`), production is seeded (217 pain points for weeks 1-5, 36-person roster), the 36 participants are invited to Entra, and every page uses the new theme. Session 1 is Tue Oct 27.** Done today: roster and add/remove on the progress page, pain points for weeks 2-5, pain-point assignment limited to the roster, header with account menu, `/profile`, theme polish. NOT browser-verified after the last deploys: the account menu, `/profile`, the roster add/remove, and the 403 for non-roster users. Next session: start with "Open / next" at the bottom.
 
@@ -176,3 +176,39 @@ Open / next, in order:
 5. Admin answers still needed: GitHub Copilot credits (four questions in `docs/APP-BUILD-PLAN.md`), Vercel and Supabase accounts and licensing, email provider (s10), AI provider and key (s13), whether MCP and Copilot code review are enabled (s08, s12), data-residency or security approval, Cloudflare as fallback, network check from the conference room.
 6. The product steps in the session content (Supabase, Vercel, MCP settings) were written from general knowledge and not tested on the real accounts; test the exact steps the day before each session.
 7. Reroll policy for pain points (default: no reroll). Certification rule: at least 80% attendance, at least 4 of 5 apps deployed and passing, quiz average at least 70%.
+
+## Team tracks syllabus (Oct 27) - WAITING ON FLOSSY, then the Director
+
+Flossy asked for training specific to each team's day-to-day work. Her plan, `Downloads\GitHub_Copilot_Common_and_Department_Wise_Training_Plan_Updated.docx`, is Day 0 + 5 common days + 2 hands-on/gate days + 3 workshop days and 2 hands-on days per team + 1-week project + 1 demo day, for five teams: Application Development, QA, Power BI, Fabric/Data, AI. The gap analysis is `Downloads\Copilot Training Plan vs Prompt Engineering Program Gap Summary.pdf` (the Prompt Engineering program covers about 30-40% of the common content; nothing Copilot-specific).
+
+What was made (nothing committed, nothing pushed):
+- `Downloads\GitHub Copilot Training - Updated Syllabus for Director.docx`: the Director-facing syllabus (A4). One delegated track per team, in the portal session format (objective, lab, done-when). NOT rendered or visually checked (no LibreOffice or pdftoppm on this machine); open it in Word first. It was built by a throwaway script in the session scratchpad, so edit the docx directly or ask for a rebuild from `tracks.ts`.
+- `src/program/tracks.ts` (untracked): the same content as typed data. `COMMON` (Days 0-7) and `TRACKS` (5 tracks, each with 5 sessions `dev-1`..`dev-5`, `qa-`, `powerbi-`, `fabric-`, `ai-`, modules, capstone, project, reuse, build, `delegate`). Not imported anywhere, `tsc --noEmit` passes. Existing calendar, pages and tables are untouched.
+
+Proposed schedule (illustrative, in chat only, NOT yet in the docx or calendar.ts). Holidays checked against the Chennai 2026 list: Dec 25 (Fri), Jan 15 Pongal (Thu), Dec 31 floating; Jan 26 is a Monday.
+- Common Day 0-3 Dec 8-10, Days 4-6 Dec 15-17, Day 7 gate Tue Dec 22, break Dec 25 - Jan 4.
+- Wave 1 (Dev, QA, AI): track days 1-3 Jan 5-7, days 4-5 Jan 12-14, project Jan 19-23, demo Tue Jan 27.
+- Wave 2 (Power BI, Fabric; content built last): days 1-3 Jan 20-22, days 4-5 Jan 27-28, project Feb 1-5, demo Tue Feb 9.
+- Weekly-program graduates could do Day 0 plus the Day 7 gate instead of Days 1-6.
+
+THE OPEN DECISION (confirm with Flossy, then the Director): replace the curriculum, or add to it?
+- **A. Replace**: tracks become the curriculum; the current weekly app program becomes the Application Development track, unchanged. Recommended, introduced at the Dec 1 finale rather than mid-flight (week 1 is already running with 36 invited people). Needs the longer schedule above, or an early start for non-developer teams from Nov 3 with separate facilitators.
+- **B. Keep app building as main** and add a track session on the same Tue/Wed/Thu days. Fits Oct 27 - Dec 1 (15 session days cover Day 0-7 + 5 track days), but doubles daily load and is a poor fit for Power BI and Fabric people.
+- Deciding fact: which teams are on the 36-person roster? If only dev, QA and AI, B is realistic. If any Power BI or Fabric, A is better. Check `data/roster.json` team field (git-ignored) or the roster table.
+
+After the decision:
+1. Rewrite docx sections 2 (what stays), 3 (structure) and add a "Proposed schedule" section to match the chosen option; fill in the delegate per team (all "TBC").
+2. Portal: add an optional `track` field to events in `src/program/calendar.ts`, put the dated track events there, show each participant only their team's events (team comes from the roster), add `/tracks/[id]` pages, track-session completion in `completions` (ids already `dev-1` style), gate as quiz day 200. Do not change the existing 16 sessions.
+3. Draft lab text in `tracks.ts` is a first pass from Flossy's module lists; each team's delegate should review their track.
+
+Still open from before and needed by the Director: Copilot credits and licences, MCP and Copilot code review enabled, Fabric environment and sample data (Fabric track), Power BI access and datasets, pass marks (proposed 70% gate, 80% attendance), session length per day, which teams and how many people each.
+
+The earlier "Open / next" list (browser click-through of the live site, skim weeks 2-5 pain points before Nov 2, confirm sign-ins) still applies and was not done in this session.
+
+## Common days are the main program (Oct 29)
+
+Decision: the common GitHub Copilot days (0-7) are the main program; the weekly app program is now SELF-PACED (no live sessions; dates are a suggested pace). Team tracks are OUT of scope for now (Oct 29): the Director doc covers common days only; `tracks.ts` stays as unused draft.
+
+- `src/program/common.ts` (new): the 8 days with dates (FULL days, Mon-Fri: Nov 2-6 then Nov 9-11) and full page content. Pages: `/common`, `/common/c0` ... `/common/c7`; completion stored in `completions` as `c0`..`c7` (accepted by `/api/activity`). Home page leads with Common days; weekly dashboard retitled "Self-paced"; nav has "Common days" before "My week".
+- Draft schedule and the Director doc: `Downloads\GitHub Copilot Training - Program Plan for Director.docx` (tracks wave 1 track week Nov 16-20, project Nov 23-27, demo Nov 30; wave 2 Jan 18 - Feb 1; tentative). Not yet reviewed with Flossy. Review was planned for Oct 30.
+- NOT done: not pushed or deployed, not browser-checked; Day 7 gate has no quiz or scoring; Progress/Results pages ignore common days; Day 6 brief + data and Day 7 tasks + rubric unwritten; track pages (`tracks.ts` still unwired). The weekly calendar still date-gates labs and the pain-point weeks; if self-paced should mean "always open", change `isOpen` use in `/api/activity` and `/today`.

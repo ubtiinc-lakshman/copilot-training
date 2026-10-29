@@ -156,17 +156,31 @@ async function Dashboard() {
 export default function Home() {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <p className="chip-brand">Oct 27 &ndash; Dec 1, 2026</p>
+      <p className="chip-brand">GitHub Copilot Training</p>
       <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
-        Build a real app <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>every week</span>
+        Learn Copilot{" "}
+        <span className="bg-clip-text text-transparent" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
+          together
+        </span>
       </h1>
-      <p className="mt-3 max-w-2xl text-muted">Each session teaches one skill. You use it straight away on your own app, deploy it, and submit it on Monday.</p>
+      <p className="mt-3 max-w-2xl text-muted">Eight common days for everyone. The weekly app builds and the library are there to practise on your own time.</p>
+
+      <Link href="/common" className="card-link mt-8 flex items-center justify-between gap-4 p-6">
+        <div>
+          <p className="text-lg font-bold">Common GitHub Copilot days (main program)</p>
+          <p className="text-sm text-muted">Eight shared days for all teams, full days, Mon-Fri from Nov 2: terms, prompts, security, agents, and a practical gate.</p>
+        </div>
+        <span className="text-2xl text-brand">&rarr;</span>
+      </Link>
+
+      <h2 className="mt-12 text-2xl font-bold tracking-tight">Self-paced: build an app every week</h2>
+      <p className="mt-1 max-w-2xl text-sm text-muted">Optional practice. Each lab teaches one skill that you use on your own app, deploy, and submit. Dates are a suggested pace; there are no live sessions.</p>
 
       <Suspense fallback={<p className="mt-10 text-muted">Loading...</p>}>
         <Dashboard />
       </Suspense>
 
-      <Link href="/library" className="card-link mt-12 flex items-center justify-between gap-4 p-6">
+      <Link href="/library" className="card-link mt-6 flex items-center justify-between gap-4 p-6">
         <div>
           <p className="text-lg font-bold">Self-learning library</p>
           <p className="text-sm text-muted">30 Copilot lessons with labs and quizzes, plus the optional Order Desk app track.</p>
