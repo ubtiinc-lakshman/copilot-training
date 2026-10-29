@@ -22,9 +22,9 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: npx tsc --noEmit
       - run: npm test
       - run: npm run test:site
+      # next build also type-checks (it generates the LayoutProps/PageProps types first, which plain tsc cannot).
       - run: npm run build
         env:
           # Dummy values: the build only needs them to exist, nothing connects to them.
