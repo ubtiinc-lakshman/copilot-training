@@ -19,12 +19,6 @@ export default async function UserMenu() {
     { href: "/", label: "Courses" },
     { href: "/courses/copilot", label: "GitHub Copilot" },
     { href: "/courses/prompt-engineering", label: "Prompt Engineering" },
-    ...(facilitator
-      ? [
-          { href: "/facilitator/progress", label: "Progress" },
-          { href: "/facilitator/results", label: "Results" },
-        ]
-      : []),
   ];
   const name = user.name ?? user.email ?? "";
   return (
