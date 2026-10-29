@@ -5,7 +5,7 @@ import type { SessionContent } from "./sessions";
 
 export type CommonDay = { id: string; day: number; date: string; title: string; length: string; gate?: boolean };
 
-// Full days, Mon-Fri back to back (Nov 2-6, then Nov 10-12; Nov 9 skipped for Diwali, to be confirmed); the weekly app program is now self-paced.
+// Full days, Mon-Fri back to back (Nov 2-6, then Nov 10-12; Nov 9 is a holiday (Diwali, confirmed Oct 29); other dates still proposed, leadership is planning); the weekly app program is now self-paced.
 export const COMMON_DAYS: CommonDay[] = [
   { id: "c0", day: 0, date: "2026-11-02", title: "Concepts and terminology", length: "Full day" },
   { id: "c1", day: 1, date: "2026-11-03", title: "Copilot fundamentals", length: "Full day" },
