@@ -64,7 +64,7 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
               <div key={t.title} className="space-y-2">
                 <h3 className="font-semibold">{t.title}</h3>
                 <List items={t.points} />
-                {t.example && <CodeBlock label="Example prompt">{t.example}</CodeBlock>}
+                {t.example && <CodeBlock label="Example">{t.example}</CodeBlock>}
               </div>
             ))}
           </div>
