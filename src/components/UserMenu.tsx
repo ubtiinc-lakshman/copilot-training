@@ -16,10 +16,9 @@ export default async function UserMenu() {
   const facilitator = isFacilitator(user.email);
   const participantView = facilitator && (await isParticipantView());
   const items: NavItem[] = [
-    { href: "/", label: "Home" },
-    { href: "/common", label: "Common days" },
-    { href: "/today", label: "My week" },
-    { href: "/library", label: "Library" },
+    { href: "/", label: "Courses" },
+    { href: "/courses/copilot", label: "GitHub Copilot" },
+    { href: "/courses/prompt-engineering", label: "Prompt Engineering" },
     ...(facilitator
       ? [
           { href: "/facilitator/progress", label: "Progress" },
@@ -35,7 +34,7 @@ export default async function UserMenu() {
           <span className="grid h-8 w-8 place-items-center rounded-lg text-xs text-white" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
             AI
           </span>
-          <span className="hidden sm:inline">Copilot Training</span>
+          <span className="hidden sm:inline">IC Training Center</span>
         </Link>
         <nav className="flex min-w-0 flex-1 items-center gap-1 overflow-x-auto">
           <NavLinks items={items} />
@@ -49,7 +48,7 @@ export default async function UserMenu() {
           </div>
           <div className="border-t border-line pt-1">
             <Link href="/profile" className={item}>My profile</Link>
-            <Link href="/today" className={item}>My week</Link>
+            <Link href="/courses/copilot/today" className={item}>My week</Link>
             {facilitator && (
               <form
                 action={async () => {

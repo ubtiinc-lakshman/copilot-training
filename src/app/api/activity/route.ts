@@ -30,7 +30,7 @@ export async function POST(request: Request) {
     await undoComplete(sql, user.email, id);
     return Response.json({ done: false });
   }
-  if (weekly?.kind === "session" && !(await hasProof(sql, user.email, id))) return Response.json({ error: "Upload a screenshot of your git commit first" }, { status: 400 });
+  if ((lesson || weekly?.kind === "session") && !(await hasProof(sql, user.email, id))) return Response.json({ error: "Upload a screenshot of your git commit first" }, { status: 400 });
   const note = typeof body.note === "string" && body.note.trim() ? body.note.trim().slice(0, 500) : null;
   await markComplete(sql, user, id, note);
   return Response.json({ done: true, note });

@@ -103,7 +103,7 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
 export default function CommonDayPage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <Link href="/common" className="link text-sm">
+      <Link href="/courses/copilot/common" className="link text-sm">
         Common days
       </Link>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>

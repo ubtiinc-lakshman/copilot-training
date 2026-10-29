@@ -39,8 +39,11 @@ export async function GET() {
   const sql = await db();
   const rows = (await sql`SELECT id, created_at, day, email, name, score, total, percent FROM results ORDER BY id DESC`) as ResultRow[];
   const attendance = (await sql`SELECT email, name, day FROM attendance`) as AttendanceRow[];
-  const labs = ((await sql`SELECT email, name, activity, note, completed_at FROM completions WHERE activity LIKE 'lab-%'`) as (Omit<LabRow, "day"> & { activity: string })[]).map(
+  const labs = ((await sql`SELECT c.email, c.name, c.activity, c.note, c.completed_at,
+      EXISTS (SELECT 1 FROM lab_proofs p WHERE p.email = c.email AND p.activity = c.activity) AS proof
+    FROM completions c WHERE c.activity LIKE 'lab-%'`) as (Omit<LabRow, "day"> & { activity: string })[]).map(
     ({ activity, ...r }) => ({ ...r, day: Number(activity.slice(4)) }),
   );
-  return Response.json({ rows, attendance, labs });
+  const roster = (await sql`SELECT lower(email) AS email, name FROM roster ORDER BY lower(name)`) as { email: string; name: string }[];
+  return Response.json({ rows, attendance, labs, roster });
 }

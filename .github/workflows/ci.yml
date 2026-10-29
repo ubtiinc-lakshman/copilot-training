@@ -1,0 +1,34 @@
+name: CI
+
+# Checks that must pass before code moves along stage -> main. Vercel does the deploying:
+# stage and PRs get a Preview deployment, main gets Production.
+on:
+  push:
+    branches: [stage, main]
+  pull_request:
+    branches: [stage, main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx tsc --noEmit
+      - run: npm test
+      - run: npm run test:site
+      - run: npm run build
+        env:
+          # Dummy values: the build only needs them to exist, nothing connects to them.
+          AUTH_SECRET: ci-build-only
+          AUTH_MICROSOFT_ENTRA_ID_ID: 00000000-0000-0000-0000-000000000000
+          AUTH_MICROSOFT_ENTRA_ID_SECRET: ci-build-only
+          AUTH_MICROSOFT_ENTRA_ID_TENANT_ID: 00000000-0000-0000-0000-000000000000

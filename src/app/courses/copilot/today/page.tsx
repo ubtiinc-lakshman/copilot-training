@@ -46,7 +46,7 @@ async function MyWeek() {
         </p>
       )}
       {SESSIONS[e.id] && (
-        <Link href={`/sessions/${e.id}`} className="btn-primary">
+        <Link href={`/courses/copilot/sessions/${e.id}`} className="btn-primary">
           Open session content
         </Link>
       )}
@@ -56,7 +56,7 @@ async function MyWeek() {
           {libraryFor(e.id).map((n, i) => (
             <span key={n}>
               {i > 0 && ", "}
-              <Link href={`/days/${n}`} className="link">
+              <Link href={`/courses/copilot/days/${n}`} className="link">
                 Day {n}: {DAYS.find((d) => d.day === n)?.title}
               </Link>
             </span>
@@ -135,7 +135,7 @@ async function MyWeek() {
             {EVENTS.map((e) => (
               <tr key={e.id} className="border-b border-line align-top">
                 <td className="w-28 py-1 pr-3 text-muted">Level {e.week}</td>
-                <td className="pr-3">{SESSIONS[e.id] ? <Link href={`/sessions/${e.id}`} className="link">{e.title}</Link> : e.title}</td>
+                <td className="pr-3">{SESSIONS[e.id] ? <Link href={`/courses/copilot/sessions/${e.id}`} className="link">{e.title}</Link> : e.title}</td>
                 <td>{status(e)}</td>
               </tr>
             ))}
@@ -145,7 +145,7 @@ async function MyWeek() {
 
       <p className="text-sm text-muted">
         Earlier Copilot lessons (the 30-day library) are still available for self-learning:{" "}
-        <Link href="/library" className="link">
+        <Link href="/courses/copilot/library" className="link">
           open the library
         </Link>
         .

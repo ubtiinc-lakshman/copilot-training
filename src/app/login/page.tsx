@@ -27,7 +27,7 @@ export default function LoginPage({ searchParams }: { searchParams: Promise<{ fr
         <span className="mx-auto grid h-12 w-12 place-items-center rounded-2xl text-lg font-bold text-white" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
           AI
         </span>
-        <h1 className="mt-5 text-2xl font-bold">GitHub Copilot Training</h1>
+        <h1 className="mt-5 text-2xl font-bold">IC Training Center</h1>
         <p className="mt-2 text-sm text-muted">Build a real app every week. Sign in with your UBTI Microsoft account.</p>
         <Suspense>
           <SignInForm searchParams={searchParams} />

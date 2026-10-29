@@ -58,7 +58,7 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
       {getTrackTask(entry.day) && (
         <p className="mt-10 card border-dashed px-4 py-3 text-sm">
           Optional app track, Day {entry.day}: {getTrackTask(entry.day)!.title}.{" "}
-          <Link href={`/track#day-${entry.day}`} className="link">
+          <Link href={`/courses/copilot/track#day-${entry.day}`} className="link">
             See the task
           </Link>
         </p>
@@ -66,13 +66,13 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 
       <nav className="mt-12 grid gap-3 text-sm sm:grid-cols-2">
         {prev ? (
-          <Link href={`/days/${prev.day}`} className="card-link p-4">
+          <Link href={`/courses/copilot/days/${prev.day}`} className="card-link p-4">
             <span className="text-xs text-muted">Previous</span>
             <span className="block font-semibold">Day {prev.day}: {prev.title}</span>
           </Link>
         ) : <span />}
         {next && (
-          <Link href={`/days/${next.day}`} className="card-link p-4 text-right sm:col-start-2">
+          <Link href={`/courses/copilot/days/${next.day}`} className="card-link p-4 text-right sm:col-start-2">
             <span className="text-xs text-muted">Next</span>
             <span className="block font-semibold">Day {next.day}: {next.title}</span>
           </Link>
@@ -85,7 +85,7 @@ async function DayContent({ params }: { params: Promise<{ day: string }> }) {
 export default function DayPage({ params }: { params: Promise<{ day: string }> }) {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <Link href="/library" className="link text-sm">
+      <Link href="/courses/copilot/library" className="link text-sm">
         Library
       </Link>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>

@@ -8,7 +8,7 @@ export const metadata = { title: "Optional app track: Order Desk" };
 export default function TrackPage() {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <Link href="/library" className="text-sm link">
+      <Link href="/courses/copilot/library" className="text-sm link">
         Library
       </Link>
       <h1 className="mb-3 mt-4 text-3xl font-extrabold tracking-tight">Optional app track: Order Desk</h1>

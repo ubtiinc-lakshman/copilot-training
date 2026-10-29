@@ -27,7 +27,7 @@ async function Days() {
     <ul className="mt-6 space-y-3">
       {COMMON_DAYS.map((d) => (
         <li key={d.id}>
-          <Link href={`/common/${d.id}`} className="card-link flex items-center justify-between gap-4 p-5">
+          <Link href={`/courses/copilot/common/${d.id}`} className="card-link flex items-center justify-between gap-4 p-5">
             <div>
               <p className="text-xs text-muted">
                 Day {d.day} | {formatDate(d.date)} | {d.length}

@@ -100,7 +100,7 @@ async function Profile() {
       <section className="card p-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-xl font-bold">My apps</h2>
-          <Link href="/today" className="link text-sm">Go to My week</Link>
+          <Link href="/courses/copilot/today" className="link text-sm">Go to My week</Link>
         </div>
         <ul className="divide-y divide-line">
           {WEEKS.map((w) => {

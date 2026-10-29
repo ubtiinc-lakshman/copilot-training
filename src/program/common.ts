@@ -1,5 +1,5 @@
 // Common GitHub Copilot days 0-7 (all five teams together). Approved by the Director on Oct 29; dates are a draft for review.
-// Pages: /common and /common/c0 ... /common/c7. Completion is stored in `completions` under the id (c0 ... c7).
+// Pages: /courses/copilot/common and /courses/copilot/common/c0 ... c7. Completion is stored in `completions` under the id (c0 ... c7).
 // Content mirrors `COMMON` in tracks.ts (the syllabus) with the detail participants and facilitators need.
 import type { SessionContent } from "./sessions";
 

@@ -104,7 +104,7 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
               {libraryFor(id).map((n, i) => (
                 <span key={n}>
                   {i > 0 && ", "}
-                  <Link href={`/days/${n}`} className="link">
+                  <Link href={`/courses/copilot/days/${n}`} className="link">
                     Day {n}: {DAYS.find((d) => d.day === n)?.title}
                   </Link>
                 </span>
@@ -127,7 +127,7 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
 export default function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   return (
     <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <Link href="/today" className="link text-sm">
+      <Link href="/courses/copilot/today" className="link text-sm">
         My week
       </Link>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>

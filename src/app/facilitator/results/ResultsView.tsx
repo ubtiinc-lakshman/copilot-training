@@ -19,6 +19,7 @@ export default function ResultsView() {
   const [rows, setRows] = useState<ResultRow[] | null>(null);
   const [attendance, setAttendance] = useState<AttendanceRow[]>([]);
   const [labs, setLabs] = useState<LabRow[]>([]);
+  const [roster, setRoster] = useState<{ email: string; name: string }[]>([]);
   const [refreshing, setRefreshing] = useState(true); // true during the first load too
   const [error, setError] = useState("");
   const [updatedAt, setUpdatedAt] = useState(0);
@@ -41,6 +42,7 @@ export default function ResultsView() {
       setRows(data.rows);
       setAttendance(data.attendance);
       setLabs(data.labs ?? []);
+      setRoster(data.roster ?? []);
       setUpdatedAt(Date.now());
       setError("");
     } catch (e) {
@@ -99,6 +101,9 @@ export default function ResultsView() {
     .sort((a, b) => a.p.name.localeCompare(b.p.name));
 
   const allStats = [...people.values()];
+  // Attendance counts roster members only (facilitators and testers are left out); roster members who never signed in show as absent.
+  const rosterPeople = roster.map((r) => people.get(r.email) ?? { email: r.email, name: r.name, scores: new Map(), attended: new Set<number>(), labs: new Map() });
+  const rosterRows = rosterPeople.filter((p) => `${p.name} ${p.email}`.toLowerCase().includes(query.toLowerCase()));
   const avgs = allStats.map((p) => [...p.scores.values()]).filter((v) => v.length).map((v) => v.reduce((a, b) => a + b, 0) / v.length);
   const overallAvg = avgs.length ? Math.round(avgs.reduce((a, b) => a + b, 0) / avgs.length) : null;
   const onTrack = everyone.filter((s) => s.status === "On track").length;
@@ -270,7 +275,7 @@ export default function ResultsView() {
       {people.size > 0 && (
         <section>
           <h2 className="mb-2 text-xl font-bold">Lab tasks</h2>
-          <p className="mb-2 text-xs text-muted">A tick means the participant marked that lesson&apos;s lab task as completed. Hover for their note.</p>
+          <p className="mb-2 text-xs text-muted">A tick means the participant marked that lesson&apos;s lab task as completed. Hover for their note; click a tick to open their commit screenshot. The bottom row counts completions per day.</p>
           <div className="overflow-x-auto">
             <table className="text-sm">
               <thead>
@@ -290,7 +295,15 @@ export default function ResultsView() {
                       const l = p.labs.get(d.day);
                       return (
                         <td key={d.day} className="px-1 text-center" title={l ? `${new Date(l.completed_at).toLocaleString()}${l.note ? ` - ${l.note}` : ""}` : "Not completed"}>
-                          {l ? <span className="text-green-600">✓</span> : <span className="text-line">·</span>}
+                          {l?.proof ? (
+                            <a className="text-green-600" href={`/api/proof?id=lab-${d.day}&email=${encodeURIComponent(p.email)}`} target="_blank" rel="noreferrer">
+                              ✓
+                            </a>
+                          ) : l ? (
+                            <span className="text-green-600">✓</span>
+                          ) : (
+                            <span className="text-line">·</span>
+                          )}
                         </td>
                       );
                     })}
@@ -298,16 +311,27 @@ export default function ResultsView() {
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-line font-semibold">
+                  <td className="py-1 pr-4">Completed per day</td>
+                  {DAYS.map((d) => (
+                    <td key={d.day} className="px-1 text-center">
+                      {allStats.filter((p) => p.labs.has(d.day)).length}
+                    </td>
+                  ))}
+                  <td className="px-2 text-center">{labs.length}</td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </section>
       )}
 
       {/* attendance matrix */}
-      {people.size > 0 && openDays.length > 0 && (
+      {rosterPeople.length > 0 && openDays.length > 0 && (
         <section>
           <h2 className="mb-2 text-xl font-bold">Attendance</h2>
-          <p className="mb-2 text-xs text-muted">A dot means the participant opened that day&apos;s page while signed in.</p>
+          <p className="mb-2 text-xs text-muted">A dot means the participant opened that day&apos;s page while signed in. Roster members only ({rosterPeople.length}).</p>
           <div className="overflow-x-auto">
             <table className="text-sm">
               <thead>
@@ -316,10 +340,11 @@ export default function ResultsView() {
                   {openDays.map((d) => (
                     <th key={d} className="px-1 text-center text-xs font-normal text-muted">{d}</th>
                   ))}
+                  <th className="px-2 text-center text-xs font-normal text-muted">Days</th>
                 </tr>
               </thead>
               <tbody>
-                {stats.map(({ p }) => (
+                {rosterRows.map((p) => (
                   <tr key={p.email} className="border-t border-line">
                     <td className="py-1 pr-4">{p.name}</td>
                     {openDays.map((d) => (
@@ -327,9 +352,21 @@ export default function ResultsView() {
                         {p.attended.has(d) ? <span className="text-green-600">●</span> : <span className="text-line">○</span>}
                       </td>
                     ))}
+                    <td className="px-2 text-center font-semibold">{openDays.filter((d) => p.attended.has(d)).length}</td>
                   </tr>
                 ))}
               </tbody>
+              <tfoot>
+                <tr className="border-t-2 border-line font-semibold">
+                  <td className="py-1 pr-4">Participants present</td>
+                  {openDays.map((d) => (
+                    <td key={d} className="px-1 text-center">
+                      {rosterPeople.filter((p) => p.attended.has(d)).length}
+                    </td>
+                  ))}
+                  <td className="px-2 text-center text-xs font-normal text-muted">of {rosterPeople.length}</td>
+                </tr>
+              </tfoot>
             </table>
           </div>
         </section>

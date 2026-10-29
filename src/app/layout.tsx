@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "GitHub Copilot Training",
-  description: "Developers & QA track: day-wise labs and showcases",
+  title: "IC Training Center",
+  description: "Self-paced courses from the Innovation Center: content, labs, tasks, quizzes and assessments",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

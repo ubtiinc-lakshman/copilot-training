@@ -9,10 +9,12 @@ export type NavItem = { href: string; label: string };
 // Top navigation links with the current section highlighted.
 export function NavLinks({ items }: { items: NavItem[] }) {
   const path = usePathname();
+  // The most specific matching link is the active one, so "/courses/copilot" is not lit on "/courses/copilot/library".
+  const best = items.filter((n) => path === n.href || (n.href !== "/" && path.startsWith(n.href + "/"))).sort((a, b) => b.href.length - a.href.length)[0];
   return (
     <>
       {items.map((n) => {
-        const active = n.href === "/" ? path === "/" : path.startsWith(n.href);
+        const active = n === best;
         return (
           <Link
             key={n.href}

@@ -23,8 +23,9 @@ export function LabDone({ id, label, initialDone, initialNote, proof, hasProof }
   const [uploaded, setUploaded] = useState(!!hasProof);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const branch = id.startsWith("lab-") ? id : `lab-${id}`; // library ids are already "lab-N"
 
-  const act = async (nextDone: boolean) => {
+  const act =async (nextDone: boolean) => {
     setBusy(true);
     setError("");
     try {
@@ -57,10 +58,10 @@ export function LabDone({ id, label, initialDone, initialNote, proof, hasProof }
           <p className="font-semibold">Proof of your work: a screenshot of your git commit</p>
           <ol className="ml-5 list-decimal space-y-1">
             <li>
-              Work on a branch, <b>not main</b> (we update main). Create it once: <code>git switch -c lab-{id}</code>
+              Work on a branch, <b>not main</b> (we update main). Create it once: <code>git switch -c {branch}</code>
             </li>
             <li>
-              Commit your lab work: <code>git add . &amp;&amp; git commit -m &quot;what you did&quot;</code>, then <code>git push -u origin lab-{id}</code>
+              Commit your lab work: <code>git add . &amp;&amp; git commit -m &quot;what you did&quot;</code>, then <code>git push -u origin {branch}</code>
             </li>
             <li>
               Take a screenshot of <code>git log --oneline -3</code> (or the commit on GitHub) so the branch name and your commit are visible.
@@ -77,7 +78,7 @@ export function LabDone({ id, label, initialDone, initialNote, proof, hasProof }
         <p className="flex flex-wrap items-center gap-3 text-sm">
           <span className="chip-done">Completed</span>
           {note && <span className="text-muted">{note}</span>}
-          {proof && (
+          {proof && uploaded && (
             <a className="link text-xs" href={`/api/proof?id=${id}`} target="_blank" rel="noreferrer">
               View my screenshot
             </a>

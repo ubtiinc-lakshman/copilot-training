@@ -6,6 +6,7 @@ import type { Given } from "@/lib/grade";
 import type { PublicQuestion } from "@/lib/quizzes";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
+type Attempt = { created_at: string; score: number; total: number; percent: number };
 
 export default function Quiz({ day, passPercent }: { day: number; passPercent?: number }) {
   const facilitator = useFacilitator();
@@ -17,18 +18,40 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
   const [save, setSave] = useState<SaveState>("idle");
   const [message, setMessage] = useState("");
 
+  const [attempts, setAttempts] = useState<Attempt[]>([]);
+
   useEffect(() => {
+    // The last attempt's answers and result are restored until the person starts a new attempt.
+    const mine = fetch(`/api/results/mine?day=${day}`).then((r) => (r.ok ? r.json() : null)).catch(() => null);
     fetch(`/api/quiz/${day}`)
       .then((r) => (r.ok ? r.json() : Promise.reject(new Error("Quiz not available"))))
-      .then((d) => {
+      .then(async (d) => {
+        const m = await mine;
+        const last = m?.latest;
         setQuestions(d.questions);
-        setGiven(d.questions.map(() => undefined));
+        setAttempts(m?.attempts ?? []);
+        if (last) {
+          const a = m.attempts[0] as Attempt;
+          setGiven(last.answers);
+          setOutcome({ score: a.score, total: a.total, percent: a.percent, correct: last.correct });
+          setSubmitted(true);
+        } else {
+          setGiven(d.questions.map(() => undefined));
+        }
       })
       .catch((e) => {
         setSave("error");
         setMessage(e.message);
       });
   }, [day]);
+
+  const newAttempt = () => {
+    setGiven(questions!.map(() => undefined));
+    setOutcome(null);
+    setSubmitted(false);
+    setSave("idle");
+    setMessage("");
+  };
 
   const set = (i: number, v: Given) => setGiven((g) => g.map((x, j) => (j === i ? v : x)));
 
@@ -44,6 +67,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
       if (!res.ok) throw new Error(data.error ?? "Save failed");
       setOutcome(data);
       setSubmitted(true);
+      setAttempts((a) => [{ created_at: new Date().toISOString(), score: data.score, total: data.total, percent: data.percent }, ...a]);
       setSave("saved");
       setMessage("Result saved.");
     } catch (e) {
@@ -57,6 +81,19 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
 
   return (
     <div className="space-y-4">
+      {attempts.length > 0 && (
+        <div className="card p-4 text-sm">
+          <p className="font-semibold">Your attempts ({attempts.length})</p>
+          <ul className="mt-1 space-y-0.5">
+            {attempts.map((a, i) => (
+              <li key={a.created_at + i} className={i === 0 ? "font-semibold" : "text-muted"}>
+                Attempt {attempts.length - i}: {a.score}/{a.total} ({a.percent}%) - {new Date(a.created_at).toLocaleString()}
+                {i === 0 && submitted ? " (shown below)" : ""}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {questions.map((q, i) => (
         <div key={q.q} className="card p-5">
           <p className="font-semibold">
@@ -65,7 +102,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
           {q.type === "mcq" &&
             q.options?.map((o, oi) => (
               <label key={o} className="mt-1 block text-sm">
-                <input type="radio" name={`q${i}`} className="mr-2" checked={given[i] === oi} onChange={() => set(i, oi)} />
+                <input type="radio" name={`q${i}`} className="mr-2" checked={given[i] === oi} disabled={submitted} onChange={() => set(i, oi)} />
                 {o}
               </label>
             ))}
@@ -73,7 +110,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
             <div className="mt-1 flex gap-4 text-sm">
               {[true, false].map((v) => (
                 <label key={String(v)}>
-                  <input type="radio" name={`q${i}`} className="mr-2" checked={given[i] === v} onChange={() => set(i, v)} />
+                  <input type="radio" name={`q${i}`} className="mr-2" checked={given[i] === v} disabled={submitted} onChange={() => set(i, v)} />
                   {v ? "True" : "False"}
                 </label>
               ))}
@@ -82,6 +119,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
           {q.type === "short" && (
             <input
               className="input mt-2"
+              disabled={submitted}
               value={String(given[i] ?? "")}
               onChange={(e) => set(i, e.target.value)}
             />
@@ -95,9 +133,15 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
         </div>
       ))}
       <div className="flex flex-wrap items-center gap-4">
-        <button className="btn-primary" onClick={submit} disabled={save === "saving"}>
-          Check answers
-        </button>
+        {submitted ? (
+          <button className="btn-ghost" onClick={newAttempt}>
+            Start a new attempt
+          </button>
+        ) : (
+          <button className="btn-primary" onClick={submit} disabled={save === "saving"}>
+            Check answers
+          </button>
+        )}
         {submitted && (
           <span className="font-semibold">
             Score: {score}/{total} ({percent}%)

@@ -2,6 +2,7 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
 import { getEvent } from "@/program/calendar";
+import { DAYS } from "@/days/registry";
 import { getProof, loadLevel, saveProof } from "@/lib/program";
 import type { Sql } from "@/lib/assign";
 
@@ -17,13 +18,14 @@ export async function POST(request: Request) {
   const id = String(form?.get("id") ?? "");
   const file = form?.get("file");
   const event = getEvent(id);
-  if (event?.kind !== "session") return Response.json({ error: "Unknown lab" }, { status: 400 });
+  const lesson = /^lab-(\d+)$/.exec(id); // library lesson lab
+  if (lesson ? !DAYS.some((d) => d.day === Number(lesson[1])) : event?.kind !== "session") return Response.json({ error: "Unknown lab" }, { status: 400 });
   if (!(file instanceof File)) return Response.json({ error: "Choose a screenshot" }, { status: 400 });
   if (!TYPES.includes(file.type)) return Response.json({ error: "Upload a PNG, JPG or WebP image" }, { status: 400 });
   if (file.size > MAX_BYTES) return Response.json({ error: "The image is over 3 MB. Crop the screenshot to the commit." }, { status: 400 });
 
   const sql = (await db()) as unknown as Sql;
-  if (event.week > (await loadLevel(sql, user.email)) && !(await actingFacilitator(user.email))) {
+  if (event && event.week > (await loadLevel(sql, user.email)) && !(await actingFacilitator(user.email))) {
     return Response.json({ error: `Submit your week ${event.week - 1} app first` }, { status: 403 });
   }
   await saveProof(sql, user.email, id, file.type, Buffer.from(await file.arrayBuffer()).toString("base64"));
