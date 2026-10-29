@@ -229,7 +229,7 @@
 `- Leftover test data in production: a 20x20 test image for lakshman.s on s01 in `lab_proofs`.
 `
 `### Gotchas learned
-`- In production, `await (await db())\`...\`` throws a TypeError that the page's try/catch swallowed, so completed labs never showed after a reload. Use `const sql = await db();` then `sql\`...\``. Fixed on the common, session and library pages; use the same form in new code.
+- In production, the one-line form `await (await db())` followed by a template literal throws a TypeError that the page's try/catch swallowed, so completed labs never showed after a reload. Use `const sql = await db();` and then call `sql` with the template on its own line. Fixed on the common, session and library pages; use the same form in new code.
 `- Bash heredocs with apostrophes fail on this machine ("unexpected EOF"); a failed call can still have run its earlier lines. Write script files with the Write tool.
 `- Word keeps a lock on an open docx: saving over it fails with a permission error, so save under a new name.
 `- The auto-mode classifier blocks reading the production database from a script. Check production behaviour through the signed-in site or API instead.
