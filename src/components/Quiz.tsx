@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useFacilitator } from "@/lib/facilitator";
 import type { Given } from "@/lib/grade";
 import type { PublicQuestion } from "@/lib/quizzes";
 
@@ -9,7 +8,6 @@ type SaveState = "idle" | "saving" | "saved" | "error";
 type Attempt = { created_at: string; score: number; total: number; percent: number };
 
 export default function Quiz({ day, passPercent }: { day: number; passPercent?: number }) {
-  const facilitator = useFacilitator();
   // Questions come from the server without answers; grading happens there too.
   const [questions, setQuestions] = useState<PublicQuestion[] | null>(null);
   const [given, setGiven] = useState<Given[]>([]);
@@ -129,7 +127,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
               {outcome?.correct[i] ? "Correct" : "Not correct"}
             </p>
           )}
-          {facilitator && q.answer && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-950">Answer: {q.answer}</p>}
+          {q.answer && <p className="mt-2 rounded bg-amber-50 p-2 text-xs text-amber-950">Answer: {q.answer}</p>}
         </div>
       ))}
       <div className="flex flex-wrap items-center gap-4">

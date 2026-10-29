@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { connection } from "next/server";
-import { auth, isFacilitator } from "@/auth";
+import { auth } from "@/auth";
+import { actingFacilitator } from "@/lib/viewMode";
 import { NavLinks } from "@/components/HeaderClient";
 
 const ITEMS = [
@@ -8,6 +9,7 @@ const ITEMS = [
   { href: "/courses/copilot/common", label: "Common days" },
   { href: "/courses/copilot/today", label: "My week" },
   { href: "/courses/copilot/library", label: "Library" },
+  { href: "/courses/copilot/me", label: "My progress" },
 ];
 const FACILITATOR_ITEMS = [
   { href: "/courses/copilot/progress", label: "Progress" },
@@ -17,7 +19,7 @@ const FACILITATOR_ITEMS = [
 // Progress and Results only appear for facilitators.
 async function CourseLinks() {
   await connection(); // auth() uses random bytes, so render per request, not at build
-  const facilitator = isFacilitator((await auth())?.user?.email);
+  const facilitator = await actingFacilitator((await auth())?.user?.email);
   return <NavLinks items={facilitator ? [...ITEMS, ...FACILITATOR_ITEMS] : ITEMS} />;
 }
 
