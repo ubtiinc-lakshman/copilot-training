@@ -42,7 +42,6 @@ export default async function UserMenu() {
           </div>
           <div className="border-t border-line pt-1">
             <Link href="/profile" className={item}>My profile</Link>
-            <Link href="/courses/copilot/today" className={item}>My week</Link>
             {facilitator && (
               <form
                 action={async () => {

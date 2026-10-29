@@ -8,6 +8,7 @@ const ITEMS = [
   { href: "/courses/copilot/common", label: "Common days" },
   { href: "/courses/copilot/today", label: "My week" },
   { href: "/courses/copilot/library", label: "Library" },
+  { href: "/courses/copilot/me", label: "My progress" },
 ];
 const FACILITATOR_ITEMS = [
   { href: "/courses/copilot/progress", label: "Progress" },

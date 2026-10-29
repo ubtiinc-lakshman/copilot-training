@@ -258,9 +258,11 @@ The site is now the **IC Training Center**: a catalog of self-paced courses (con
 | `/courses/copilot` | Copilot overview (the old home dashboard). Sub-pages: `common`, `common/[id]`, `today`, `library`, `days/[day]`, `sessions/[id]`, `track`, `progress`, `results` |
 | `src/app/courses/copilot/layout.tsx` | Course sub-nav. Progress and Results appear only for facilitators |
 | `/courses/prompt-engineering` | Placeholder page |
-| `/profile`, `/login`, `/api/*` | Platform-wide, not course-specific. API routes did not move |
+| `/profile` | Platform-wide: identity header, then one card per course (Copilot: common days, library labs, Copilot quiz average, lessons opened; others: coming soon) |
+| `/courses/copilot/me` | Copilot-only "My progress": weekly apps, sessions done, certification meters (80% sessions, 4 of 5 apps, 70% quiz average), My apps list |
+| `/login`, `/api/*` | Platform-wide, not course-specific. API routes did not move |
 | `next.config.ts` `redirects()` | Old URLs (`/common`, `/days/5`, `/sessions/s02`, `/today`, `/library`, `/track`, `/facilitator/progress`, `/facilitator/results`) redirect to the new ones (temporary, 307) |
-| Top bar (`UserMenu.tsx`) | Courses, GitHub Copilot, Prompt Engineering, account menu |
+| Top bar (`UserMenu.tsx`) | Courses, GitHub Copilot, Prompt Engineering, account menu (My profile, View as participant for facilitators, Sign out; "My week" is only in the Copilot sub-nav) |
 
 Facilitator Progress and Results are Copilot-only (they use the 30 lessons and the weekly program). A second course gets its own inside its folder.
 
@@ -282,7 +284,7 @@ Facilitator Progress and Results are Copilot-only (they use the 30 lessons and t
 - On `stage` (pushed): everything above, last commit `e738e66`. `main` and Production are unchanged since the Oct 29 redeploy (new Entra registration, same code as `bc7f012`).
 - Verified: `next build`, `npm test` (40 pass), `npm run test:site` (13 pass), CI green on `stage`, stage sign-in redirects with the new client ID, redirects checked on a production build.
 - NOT verified in a browser: the catalog, the course sub-nav, library lab screenshot upload, quiz attempts and restored answers, the Results changes, Progress/Results as facilitator and as participant, and that stage writes go to the Preview database (submit something on stage and confirm it is absent on production).
-- `scripts/local-env.ps1` was written and syntax-checked but not run end to end (it needs the hidden `PREVIEW_DATABASE_URL` prompt).
+- Local review: `scripts/local-env.ps1` was run, `npm run dev` works and sign-in works locally (confirmed Oct 30). `loadProfile` counts only quizzes numbered below 200 (the Copilot course); give each new course its own quiz-number range.
 
 ### Open / next
 1. Review locally (`scripts\local-env.ps1`, `npm run dev`), then open a PR to `stage`; after checking the stage site, PR `stage` -> `main` to release.

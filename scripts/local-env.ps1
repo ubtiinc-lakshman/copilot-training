@@ -24,7 +24,7 @@ $new = Read-Env $file
 $out = foreach ($k in $new.Keys) {
   if ("$k=" -match $noise) { continue }
   $v = $new[$k]
-  if ($secretKeys -contains $k) { $v = $old[$k]; if (-not $v) { $v = $null } }
+  if ($secretKeys -contains $k) { $v = $old[$k]; if (-not $v -or $v -eq "[SENSITIVE]") { $v = $null } }
   "${k}=$v"
 }
 
@@ -32,8 +32,10 @@ $out = foreach ($k in $new.Keys) {
 $have = @{}
 foreach ($l in $out) { $have[($l -split "=", 2)[0]] = ($l -split "=", 2)[1] }
 $extra = foreach ($k in $secretKeys) {
-  if (-not $have[$k]) {
-    $val = if ($hidden -contains $k) { [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Read-Host "$k (hidden)" -AsSecureString))) } else { Read-Host $k }
+  if (-not $have[$k] -or $have[$k] -eq "[SENSITIVE]") {
+    do {
+      $val = if ($hidden -contains $k) { [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((Read-Host "$k (hidden)" -AsSecureString))) } else { Read-Host $k }
+    } while (-not $val -or -not $val.Trim())
     "${k}=$($val.Trim())"
   }
 }
