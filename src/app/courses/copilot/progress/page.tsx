@@ -2,14 +2,15 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { connection } from "next/server";
-import { auth, isFacilitator } from "@/auth";
+import { auth } from "@/auth";
+import { actingFacilitator } from "@/lib/viewMode";
 import ProgressView from "./ProgressView";
 
 export const metadata = { title: "Program progress (facilitator)" };
 
 async function FacilitatorOnly() {
   await connection(); // auth() uses random bytes, so render per request, not at build
-  if (!isFacilitator((await auth())?.user?.email)) redirect("/courses/copilot");
+  if (!(await actingFacilitator((await auth())?.user?.email))) redirect("/courses/copilot");
   return <ProgressView />;
 }
 

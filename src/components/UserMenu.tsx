@@ -38,7 +38,7 @@ export default async function UserMenu() {
           <div className="px-3 pb-2 pt-1">
             <p className="truncate font-semibold">{name}</p>
             <p className="truncate text-xs text-muted">{user.email}</p>
-            <span className={`${facilitator ? "chip-brand" : "chip-idle"} mt-2`}>{facilitator ? "Facilitator" : "Participant"}</span>
+            <span className={`${facilitator && !participantView ? "chip-brand" : "chip-idle"} mt-2`}>{facilitator && !participantView ? "Facilitator" : "Participant"}</span>
           </div>
           <div className="border-t border-line pt-1">
             <Link href="/profile" className={item}>My profile</Link>

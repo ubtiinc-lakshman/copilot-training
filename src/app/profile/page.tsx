@@ -2,7 +2,8 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { auth, isFacilitator } from "@/auth";
+import { auth } from "@/auth";
+import { actingFacilitator } from "@/lib/viewMode";
 import { db } from "@/lib/db";
 import { loadMine } from "@/lib/program";
 import { initialsOf, loadProfile } from "@/lib/profile";
@@ -33,7 +34,7 @@ async function Profile() {
   const done = new Set(mine.completions.map((c) => c.activity as string));
   const commonDone = COMMON_DAYS.filter((d) => done.has(d.id)).length;
   const labsDone = DAYS.filter((d) => done.has(`lab-${d.day}`)).length;
-  const facilitator = isFacilitator(email);
+  const facilitator = await actingFacilitator(email);
 
   return (
     <div className="space-y-6">
