@@ -52,7 +52,7 @@ Troubleshooting: `EADDRINUSE` means port 3000 is taken (stop the other server or
 
 ## Facilitator mode
 
-Add `?facilitator=1` to any day URL (e.g. `/days/9?facilitator=1`) to show answer keys, demo scripts and the Day 10 rubric. Convenience only, not security: do not deploy publicly with the keys in the payload.
+Facilitators (not in participant view) see answer keys, demo scripts and the Day 10 rubric on the day pages. Use "View as participant" in the account menu to see what participants see. The text is rendered on the server only for facilitators.
 
 ## Status
 
@@ -71,7 +71,7 @@ Everyone signs in with their Microsoft work account (Auth.js, single Entra tenan
 1. Entra admin center: App registrations, New registration, single tenant. Redirect URI (Web): `https://<your-site>/api/auth/callback/microsoft-entra-id` (and `http://localhost:3000/api/auth/callback/microsoft-entra-id` for local). Create a client secret.
 2. Vercel: import the repo, then Storage, add Neon (sets `DATABASE_URL`).
 3. Project env vars: `AUTH_SECRET` (`npx auth secret`), `AUTH_MICROSOFT_ENTRA_ID_ID`, `AUTH_MICROSOFT_ENTRA_ID_SECRET`, `AUTH_MICROSOFT_ENTRA_ID_TENANT_ID`, `FACILITATOR_EMAILS`.
-4. Deploy. Note: `?facilitator=1` still reveals answer keys to any signed-in participant (convenience only).
+4. Deploy. Facilitator-only text is rendered on the server only for facilitators (FACILITATOR_EMAILS).
 
 ## Weekly app program: My week, pain points, submissions
 

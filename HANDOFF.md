@@ -64,7 +64,7 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 
 - **Day folder pattern:** `src/days/day-NN/` plus a `DayNN.tsx` registered in `showcases.tsx`. Lab files are plain JS (CommonJS) so `node --test` runs them with no build step.
 - **Stubs and seeds:** unfinished lab functions have `{ todo: ... }` tests so `npm test` stays green. Intentional failures live in `*.seeded.js`, run only by `npm run test:seeded`.
-- **Facilitator mode:** `?facilitator=1` on any page shows keys and demo scripts. Convenience only; the keys are in the page payload, so do not deploy publicly.
+- **Facilitator mode (changed Oct 30):** no URL flag any more. `FacilitatorOnly` is a server component: answer keys and demo scripts render only for a real facilitator who is not in participant view, so participants never receive the text. `?facilitator=1` does nothing. "View as participant" (account menu) hides facilitator content, the Progress and Results links and pages, and the role chips.
 - **Login and storage:** Auth.js v5 with Microsoft Entra (single tenant), `src/auth.ts` and `src/proxy.ts` gate the whole site. Sign-in works in production. Quiz results, attendance and quizzes live in Neon Postgres (`src/lib/db.ts`, tables auto-created). Facilitators = `FACILITATOR_EMAILS` (set in Vercel).
 - **New day (Levels 2-3 pattern):** lab files in `src/days/day-NN/`, a `DayNN.tsx` that passes a config object to `LabDay` (or a custom page for capstones), register in `showcases.tsx`, add the quiz to `data/quizzes.json` and re-seed.
 - **Capstone scoring:** `RubricScorer` and `LevelGate` live in `src/days/day-10/Capstone.tsx` and are reused on Days 20 and 30.
@@ -96,7 +96,7 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 2. **Sign-in works (confirmed by the user). Not yet browser-verified:** quiz load/submit from the DB (Days 1-29), the participant-view toggle, the locked-day message and the home-page "Opens" badges, the new results page, Flossy's facilitator access, and every Day 11-30 page.
 3. **Attendance** = opened the day page while signed in (not session presence).
 4. **Old quiz answers are in public git history** (assessments.ts, commits before 91b9a9c). Removing them needs a history rewrite and force-push; not done. Treat Days 1-9 quizzes as exposed.
-5. **Facilitator-only text** (demo scripts, answer keys inside `FacilitatorOnly` blocks) is still in the public source; `?facilitator=1` reveals it to any signed-in participant. `LAB.md` files not checked for solutions.
+5. **Facilitator-only text** is now gated on the server (see Decisions), but the same text still sits in the public repo source and git history (demo scripts, answer keys inside `FacilitatorOnly` blocks); `LAB.md` files not checked for solutions.
 5b. Neon has its own backups; `data/quizzes.json` is local only. The Day 12/15/24/25 facilitator notes (bug answers) are also in the public source.
 6. `/days/99` returns 200 with the not-found content instead of a 404.
 7. **App track:** seed files were not run inside a real Order Desk app. The Day 4 order route gives a TypeScript error on `next build` (works in dev). `check-prereqs.mjs` was only run on this machine. Vitest needs Node 22.12+.
