@@ -330,7 +330,7 @@ export const COMMON_CONTENT: Record<string, SessionContent> = {
     homework: ["Passed: you have completed the common days.", "Below the pass mark: a short retake with your facilitator."],
     facilitator: [
       "Pass mark 7 of 10 is a proposal until the Director confirms it. Keep the answer key out of the public repo (see HANDOFF gap 4 and 5).",
-      "Tasks and scoring guide are in the facilitator doc (not in this repo, because it contains the answers): GitHub Copilot Training - Day 7 Gate Tasks and Scoring (Facilitator).docx. Hand out Part A on the day.",
+      "Tasks and scoring guide are in the facilitator doc (not in this repo, because it contains the answers): GitHub Copilot Training - Day 7 Gate - B Facilitator Scoring Guide.docx. Hand out file A (participant handout) on the day.",
       "Record scores in the Results export; nothing is automated yet.",
     ],
   },
