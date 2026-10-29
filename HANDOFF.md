@@ -124,9 +124,9 @@ Needs Node 22.13+ (built and tested on 24.14; Node 22 not tried). A dev server m
 
 Open Claude Code in `D:\UBTI_IP\Copilot_Training` and say:
 
-> Read HANDOFF.md and README.md. Today is <date>, session N of the weekly program. Check that `/sessions/sNN` and the week's pain points are ready, then continue with <next step>.
+> Read HANDOFF.md ("Current state (Oct 30)" at the bottom first) and README.md. Today is <date>. Work on a feature branch, review locally with the Preview config, and open a PR to `stage`; never push straight to `stage` or `main`. Continue with <next step>.
 
-Sessions run Tue/Wed/Thu (in person) with Friday and Monday calls; see `src/program/calendar.ts` for dates and `docs/APP-BUILD-PLAN.md` for the plan.
+The weekly program is self-paced now (no live sessions); see `src/program/calendar.ts` and `docs/APP-BUILD-PLAN.md` for its content. The eight common days start Mon Nov 2.
 
 ## Weekly app program (added Oct 26)
 
@@ -280,18 +280,26 @@ Facilitator Progress and Results are Copilot-only (they use the 30 lessons and t
 - **Database:** Preview uses its own Neon branch. `src/lib/db.ts` reads `PREVIEW_DATABASE_URL` when `VERCEL_ENV=preview` and never falls back to the production `DATABASE_URL`. Production uses `DATABASE_URL`. The preview branch was created from production data on Oct 30 and is not kept in sync.
 - **Local review uses the Preview configuration:** `scripts/local-env.ps1` runs `vercel env pull --environment preview` into `.env.local` (old file saved as `.env.local.bak`), drops Vercel system variables, keeps `VERCEL_ENV=preview`, and re-fills the six Secret values Vercel never returns (the three Entra values, `AUTH_SECRET`, `FACILITATOR_EMAILS`, `PREVIEW_DATABASE_URL`) from the old file or a hidden prompt. So `npm run dev` writes to the Preview database, not production. Run it after cloning or when Preview variables change. `.env.local` stays git-ignored.
 
+### Facilitator content and "View as participant" (changed Oct 30)
+- `?facilitator=1` is gone. `src/components/FacilitatorOnly.tsx` is a server component: answer keys and demo scripts render only for a real facilitator who is not in participant view, so participants never receive the text (checked: absent from prerendered pages and client bundles). `src/lib/facilitator.ts` was deleted; the quiz shows an answer line only when `/api/quiz` sends it.
+- "View as participant" (cookie `view-as`, helper `actingFacilitator` in `src/lib/viewMode.ts`) now hides facilitator content, the Progress and Results links and pages (they redirect to the course overview), and the role chips. Use `actingFacilitator`, not `isFacilitator`, for anything a participant must not see. The Progress, Results and roster API routes still use the real role on purpose.
+- The same text is still in the public repo source and git history (known gap 5 above).
+
 ### State at the end of Oct 30
-- On `stage` (pushed): everything above, last commit `e738e66`. `main` and Production are unchanged since the Oct 29 redeploy (new Entra registration, same code as `bc7f012`).
-- Verified: `next build`, `npm test` (40 pass), `npm run test:site` (13 pass), CI green on `stage`, stage sign-in redirects with the new client ID, redirects checked on a production build.
-- NOT verified in a browser: the catalog, the course sub-nav, library lab screenshot upload, quiz attempts and restored answers, the Results changes, Progress/Results as facilitator and as participant, and that stage writes go to the Preview database (submit something on stage and confirm it is absent on production).
-- Local review: `scripts/local-env.ps1` was run, `npm run dev` works and sign-in works locally (confirmed Oct 30). `loadProfile` counts only quizzes numbered below 200 (the Copilot course); give each new course its own quiz-number range.
+- **stage:** PR #1 merged (`9e2ba62`): course catalog and moved Copilot pages, library lab proof, quiz attempts, Results changes, profile rework, facilitator gating, `local-env.ps1`, handoff. CI green, Preview deployed (Ready). This handoff update is a separate PR to `stage`.
+- **main / Production:** unchanged since the Oct 29 redeploy (new Entra registration, code from `bc7f012`). None of the Oct 29-30 work is live yet. Releasing it = PR `stage` -> `main`. Participants will see new behavior at that point: library labs need a screenshot, `?facilitator=1` stops working, old URLs redirect.
+- **Verified:** `next build`, `npm test` (40 pass), `npm run test:site` (13 pass), CI green; stage and local sign-in use the new client ID; local sign-in works (confirmed by the user); redirects checked on a production build; facilitator text absent from the build output.
+- **NOT verified signed in on the stage site:** the catalog and sub-nav, library lab screenshot upload, quiz attempts and restored answers, the Results changes (completed-per-day row, roster-only attendance), `/profile` and `/courses/copilot/me`, participant view hiding everything, and that stage writes go to the Preview database (submit something on stage and confirm it is absent on production).
+- `loadProfile` counts only quizzes numbered below 200 (the Copilot course); give each new course its own quiz-number range.
 
 ### Open / next
-1. Review locally (`scripts\local-env.ps1`, `npm run dev`), then open a PR to `stage`; after checking the stage site, PR `stage` -> `main` to release.
-2. Get the Prompt Engineering material (documents/slides) and decide its module layout; convert to portal pages with labs, quizzes and an assessment. Progress/Results are not course-generic yet.
+1. Check the stage site (list above), then open a PR `stage` -> `main` to release. Decide first whether to announce the changes to participants.
+2. Get the Prompt Engineering material (Word, PowerPoint, PDF files from the earlier training) and decide its module layout; convert it to portal pages with content, labs, tasks, quizzes and an assessment under `src/app/courses/prompt-engineering/`. Progress and Results are not course-generic yet.
 3. Login page still says "Build a real app every week", which only fits the Copilot course.
-4. Everything in the Oct 29 "Open / next" list still applies (Flossy and the Director's feedback, licences and credits, Day 6 brief and Day 7 gate review).
-5. Uncommitted work that is not ours, leave it: `src/days/day-03/*`, `src/days/day-04/*`, `src/days/day-06/*`, new Go/Rust files in `src/days/day-08/`, `.gitignore`, `Notes.txt`, `instructions.md`, `skills-lock.json`. Never `git add -A` or `git add src`; add specific paths.
+4. Decide on the public repo (private, or move facilitator text out of the source); `PREVIEW_DATABASE_URL` copy of production data is a point-in-time snapshot.
+5. Everything in the Oct 29 "Open / next" list still applies (Flossy and the Director's feedback, licences and credits, Day 6 brief and Day 7 gate review, Nov 2 start of the common days).
+6. Branch cleanup: delete `chore/handoff-local-preview` (merged) locally and on GitHub if wanted.
+7. Uncommitted work that is not ours, leave it: `src/days/day-03/*`, `src/days/day-04/*`, `src/days/day-06/*`, new Go/Rust files in `src/days/day-08/`, `.gitignore`, `Notes.txt`, `instructions.md`, `skills-lock.json`. Never `git add -A` or `git add src`; add specific paths.
 
 ### Gotchas learned (Oct 30)
 - Stale type errors after moving routes: delete `.next/dev` and `.next/types`, then rebuild. A running dev server also blocks moving folders (Windows lock); stop it first.
