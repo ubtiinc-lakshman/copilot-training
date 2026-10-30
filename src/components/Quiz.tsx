@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { Given } from "@/lib/grade";
 import type { PublicQuestion } from "@/lib/quizzes";
+import { LinesSkeleton } from "@/components/Skeleton";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 type Attempt = { created_at: string; score: number; total: number; percent: number };
@@ -74,7 +75,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
     }
   };
 
-  if (!questions) return <p className="text-sm text-muted">{save === "error" ? message : "Loading quiz..."}</p>;
+  if (!questions) return save === "error" ? <p className="text-sm text-rose-600">{message}</p> : <LinesSkeleton lines={5} />;
   const { score, total, percent } = outcome ?? { score: 0, total: questions.length, percent: 0 };
 
   return (
@@ -136,7 +137,7 @@ export default function Quiz({ day, passPercent }: { day: number; passPercent?: 
             Start a new attempt
           </button>
         ) : (
-          <button className="btn-primary" onClick={submit} disabled={save === "saving"}>
+          <button className="btn-primary" onClick={submit} disabled={save === "saving"} aria-busy={save === "saving"}>
             Check answers
           </button>
         )}

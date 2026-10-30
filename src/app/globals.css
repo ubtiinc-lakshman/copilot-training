@@ -97,3 +97,33 @@ html[data-course-scrolled] .course-nav { top: 0; }
 @media (min-width: 1024px) {
   html[data-course-scrolled] .course-side { top: 16px; }
 }
+
+/* Loading: a shimmering placeholder (components/Skeleton.tsx) and a spinner on a button that is busy (aria-busy="true"). */
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.skeleton {
+  border-radius: 0.5rem;
+  background: linear-gradient(90deg, var(--line) 25%, color-mix(in srgb, var(--line) 40%, transparent) 50%, var(--line) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s linear infinite;
+}
+button[aria-busy="true"]::before {
+  content: "";
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.5em;
+  vertical-align: -0.12em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 9999px;
+  animation: spin 0.7s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
+  button[aria-busy="true"]::before { animation-duration: 2s; }
+}

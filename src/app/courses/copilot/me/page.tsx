@@ -8,6 +8,7 @@ import { levelOf, loadMine } from "@/lib/program";
 import { loadProfile } from "@/lib/profile";
 import type { Sql } from "@/lib/assign";
 import { WEEKS, trackedEvents } from "@/program/calendar";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "My progress | GitHub Copilot" };
 
@@ -106,7 +107,7 @@ export default function MyProgressPage() {
   return (
     <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
       <h1 className="mb-6 text-3xl font-bold">My progress</h1>
-      <Suspense fallback={<p className="text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Progress />
       </Suspense>
     </main>

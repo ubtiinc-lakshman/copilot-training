@@ -5,6 +5,7 @@ import { connection } from "next/server";
 import { auth } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
 import ProgressView from "./ProgressView";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Program progress (facilitator)" };
 
@@ -21,7 +22,7 @@ export default function ProgressPage() {
         GitHub Copilot
       </Link>
       <h1 className="mb-6 mt-4 text-3xl font-bold">Program progress</h1>
-      <Suspense fallback={<p className="text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <FacilitatorOnly />
       </Suspense>
     </main>

@@ -22,7 +22,7 @@ export default function EnrollButton({ track, label, email, confirmText }: { tra
 
   return (
     <span className="inline-flex flex-col items-start gap-1">
-      <button className={email ? "btn-ghost" : "btn-primary"} disabled={busy} onClick={go}>
+      <button className={email ? "btn-ghost" : "btn-primary"} disabled={busy} aria-busy={busy} onClick={go}>
         {label}
       </button>
       {error && <span className="text-xs text-rose-600">{error}</span>}

@@ -13,6 +13,7 @@ import { DAYS } from "@/days/registry";
 import { Section, CodeBlock } from "@/components/Section";
 import { LabDone } from "@/components/ProgramActions";
 import Quiz from "@/components/Quiz";
+import { PageSkeleton } from "@/components/Skeleton";
 
 const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => {
   const Tag = ordered ? "ol" : "ul";
@@ -130,7 +131,7 @@ export default function SessionPage({ params }: { params: Promise<{ id: string }
       <Link href="/courses/copilot/today" className="link text-sm">
         Weekly apps
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <SessionContent params={params} />
       </Suspense>
     </main>

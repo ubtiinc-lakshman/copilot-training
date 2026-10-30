@@ -10,6 +10,7 @@ import { loadPeProgress } from "@/lib/peDb";
 import type { Sql } from "@/lib/assign";
 import PeReview from "@/components/PeReview";
 import { allUnits } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Progress | Prompt Engineering" };
 
@@ -81,7 +82,7 @@ export default function ProgressPage() {
       </Link>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Progress</h1>
       <p className="text-muted">Every participant who has submitted a lab or taken a quiz. Review each lab: approve it, or send it back with feedback (the unit does not count until it is resubmitted). Labs waiting for review are listed first.</p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Progress />
       </Suspense>
     </main>

@@ -6,6 +6,7 @@ import { currentUser } from "@/lib/user";
 import { todayISO, isOpen } from "@/lib/schedule";
 import { formatDate } from "@/days/registry";
 import { COMMON_DAYS } from "@/program/common";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Common Copilot days" };
 
@@ -49,7 +50,7 @@ export default function CommonPage() {
       <p className="mt-2 max-w-2xl text-muted">
         Eight days for all teams (Dev, QA, Power BI, Fabric/Data, AI): shared terms, fundamentals, prompts and context, everyday engineering work, security, agentic working, one guided problem and a practical gate. They run as full days, Monday to Friday, from Nov 2.
       </p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Days />
       </Suspense>
       <p className="mt-6 max-w-2xl text-sm text-muted">

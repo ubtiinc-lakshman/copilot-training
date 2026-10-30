@@ -9,6 +9,7 @@ import { loadPeState } from "@/lib/peDb";
 import type { Sql } from "@/lib/assign";
 import { COURSES } from "@/courses";
 import { LEVELS } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Prompt Engineering | IC Training Center" };
 
@@ -68,7 +69,7 @@ export default function PromptEngineeringPage() {
           <li>Level 2 has one track per team; do the one that matches your work. Never paste secrets or customer data into any prompt.</li>
         </ul>
       </div>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Levels />
       </Suspense>
     </main>

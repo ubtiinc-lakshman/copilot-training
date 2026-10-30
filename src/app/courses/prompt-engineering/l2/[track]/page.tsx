@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import PeUnit from "@/components/PeUnit";
 import { TRACKS, getTrack, trackUnit } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const generateStaticParams = () => TRACKS.map((t) => ({ track: t.id }));
 
@@ -18,7 +19,7 @@ export default function TrackPage({ params }: { params: Promise<{ track: string 
       <Link href="/courses/prompt-engineering/l2" className="link text-sm">
         Level 2 tracks
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Track params={params} />
       </Suspense>
     </main>

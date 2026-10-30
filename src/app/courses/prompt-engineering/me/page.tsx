@@ -7,6 +7,7 @@ import { peQuizOf, peUnitDone } from "@/lib/pe";
 import { loadPeState } from "@/lib/peDb";
 import type { Sql } from "@/lib/assign";
 import { allUnits } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "My progress | Prompt Engineering" };
 
@@ -63,7 +64,7 @@ export default function MePage() {
         Prompt Engineering
       </Link>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight">My progress</h1>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Progress />
       </Suspense>
     </main>

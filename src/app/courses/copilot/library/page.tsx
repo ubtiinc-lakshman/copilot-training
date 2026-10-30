@@ -4,6 +4,7 @@ import Link from "next/link";
 import { DAYS, LEVELS, formatDate } from "@/days/registry";
 import { SHOWCASES } from "@/days/showcases";
 import { isLessonOpen } from "@/lib/schedule";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Self-learning library" };
 
@@ -67,7 +68,7 @@ export default function Library() {
         </Link>
       </p>
 
-      <Suspense fallback={<p className="mt-10 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <DayList />
       </Suspense>
     </main>

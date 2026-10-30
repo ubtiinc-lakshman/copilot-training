@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { DocView } from "@/components/Docs";
+import { PageSkeleton } from "@/components/Skeleton";
 
 async function Doc({ params }: { params: Promise<{ slug: string }> }) {
   return <DocView course="copilot" slug={(await params).slug} base="/courses/copilot/docs" />;
@@ -12,7 +13,7 @@ export default function CopilotDocPage({ params }: { params: Promise<{ slug: str
       <Link href="/courses/copilot/docs" className="link text-sm">
         Documents
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Doc params={params} />
       </Suspense>
     </main>
