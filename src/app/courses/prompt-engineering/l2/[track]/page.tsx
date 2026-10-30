@@ -14,7 +14,7 @@ async function Track({ params }: { params: Promise<{ track: string }> }) {
 
 export default function TrackPage({ params }: { params: Promise<{ track: string }> }) {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/prompt-engineering/l2" className="link text-sm">
         Level 2 tracks
       </Link>

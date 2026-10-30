@@ -126,9 +126,9 @@ async function SessionContent({ params }: { params: Promise<{ id: string }> }) {
 
 export default function SessionPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/copilot/today" className="link text-sm">
-        My week
+        Weekly apps
       </Link>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
         <SessionContent params={params} />

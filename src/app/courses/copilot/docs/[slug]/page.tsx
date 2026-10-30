@@ -8,7 +8,7 @@ async function Doc({ params }: { params: Promise<{ slug: string }> }) {
 
 export default function CopilotDocPage({ params }: { params: Promise<{ slug: string }> }) {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/copilot/docs" className="link text-sm">
         Documents
       </Link>

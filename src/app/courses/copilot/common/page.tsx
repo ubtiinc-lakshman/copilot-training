@@ -44,14 +44,17 @@ async function Days() {
 
 export default function CommonPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
-      <h1 className="text-3xl font-extrabold tracking-tight">Common GitHub Copilot days</h1>
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
+      <h1 className="text-3xl font-extrabold tracking-tight">Stage 1: Common days</h1>
       <p className="mt-2 max-w-2xl text-muted">
         Eight days for all teams (Dev, QA, Power BI, Fabric/Data, AI): shared terms, fundamentals, prompts and context, everyday engineering work, security, agentic working, one guided problem and a practical gate. They run as full days, Monday to Friday, from Nov 2.
       </p>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
         <Days />
       </Suspense>
+      <p className="mt-6 max-w-2xl text-sm text-muted">
+        After the Day 7 gate, <Link href="/courses/copilot/tracks" className="link">Stage 2: your team track</Link> opens (Dev, QA, Power BI, Fabric or AI), then the self-paced weekly apps.
+      </p>
     </main>
   );
 }

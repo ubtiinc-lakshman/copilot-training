@@ -14,8 +14,8 @@ export async function savePeSubmission(sql: Sql, user: User, unit: string, field
 // A person's submissions and the quizzes they passed (best attempt >= the pass mark), and the level those give.
 export async function loadPeState(sql: Sql, email: string) {
   const [subs, quizzes] = await Promise.all([
-    sql`SELECT unit, fields, submitted_at, status, feedback FROM pe_submissions WHERE email = ${email}`,
-    sql`SELECT day, max(percent) AS best FROM results WHERE email = ${email} AND day >= ${PE_QUIZ_MIN} GROUP BY day`,
+    sql`SELECT unit, fields, submitted_at, status, feedback FROM pe_submissions WHERE email = ${email} AND unit NOT LIKE 'gt-%'`,
+    sql`SELECT day, max(percent) AS best FROM results WHERE email = ${email} AND day >= ${PE_QUIZ_MIN} AND day < 400 GROUP BY day`,
   ]);
   const passed = quizzes.filter((q) => Number(q.best) >= PE_PASS_PERCENT).map((q) => Number(q.day));
   const best = Object.fromEntries(quizzes.map((q) => [Number(q.day), Number(q.best)]));
@@ -31,8 +31,8 @@ export async function loadPeLevel(sql: Sql, email: string) {
 // Everyone's work, for the facilitator page.
 export async function loadPeProgress(sql: Sql) {
   const [subs, quizzes] = await Promise.all([
-    sql`SELECT lower(email) AS email, name, unit, fields, submitted_at, status, feedback FROM pe_submissions ORDER BY (status = 'pending') DESC, submitted_at DESC`,
-    sql`SELECT lower(email) AS email, day, max(percent) AS best FROM results WHERE day >= ${PE_QUIZ_MIN} GROUP BY lower(email), day`,
+    sql`SELECT lower(email) AS email, name, unit, fields, submitted_at, status, feedback FROM pe_submissions WHERE unit NOT LIKE 'gt-%' ORDER BY (status = 'pending') DESC, submitted_at DESC`,
+    sql`SELECT lower(email) AS email, day, max(percent) AS best FROM results WHERE day >= ${PE_QUIZ_MIN} AND day < 400 GROUP BY lower(email), day`,
   ]);
   return { subs, quizzes };
 }

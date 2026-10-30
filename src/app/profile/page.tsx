@@ -113,7 +113,7 @@ async function Profile() {
 
 export default function ProfilePage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-8">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
       <Suspense fallback={<p className="text-muted">Loading...</p>}>
         <Profile />
       </Suspense>

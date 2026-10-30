@@ -80,7 +80,7 @@ export const COMMON_CONTENT: Record<string, SessionContent> = {
     facilitator: [
       "Mixed audience: keep every example short and let people name their own artifact (code, test case, query, report, notebook).",
       "Check sign-in to Copilot at the start. Anyone without a licence tells you now, not on Day 1.",
-      "This day has no quiz. Completion is the button on the page.",
+      "A short quiz closes the day (pass mark 70%). Completion is still the button on the page.",
     ],
   },
   c1: {

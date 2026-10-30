@@ -21,7 +21,7 @@ const SESSION_ONE: Record<string, SessionContent> = {
   s01: {
     objective: "Use Copilot as a builder: turn your pain point into a clear prompt, choose the right Copilot mode and model, and scaffold a running Next.js app by the end of the hour.",
     before: [
-      "Your pain point (get it on My week, first thing).",
+      "Your pain point (get it on Weekly apps, first thing).",
       "VS Code with GitHub Copilot and Copilot Chat installed and signed in. Check: open Chat and ask it anything.",
       "Node.js 22 or newer. Check: run node -v in a terminal.",
       "An empty folder for your app, for example copilot-app-1.",
@@ -85,7 +85,7 @@ const SESSION_ONE: Record<string, SessionContent> = {
     ],
     lab: {
       steps: [
-        "Open My week and read your pain point. Write the one-sentence version in a file called NOTES.md in your project folder.",
+        "Open Weekly apps and read your pain point. Write the one-sentence version in a file called NOTES.md in your project folder.",
         "In Chat, write your own Goal / Context / Constraints / Output prompt for your app. Ask for a plan only: pages, components and the data it needs. Do not accept it blindly; change at least one thing.",
         "Create the app: npx create-next-app@latest copilot-app-1 (TypeScript, Tailwind, ESLint, App Router, src directory).",
         "Run npm run dev and open the default page in your browser.",
@@ -100,14 +100,14 @@ const SESSION_ONE: Record<string, SessionContent> = {
       ],
     },
     share:
-      "Two or three people share one prompt that worked and one thing Copilot got wrong. Then everyone clicks 'I completed this lab' on My week and takes the 5-question quiz.",
+      "Two or three people share one prompt that worked and one thing Copilot got wrong. Then everyone clicks 'I completed this lab' on Weekly apps and takes the 5-question quiz.",
     homework: [
       "Keep building your page until it covers every item in 'Your app must'.",
       "Tomorrow (Wed Oct 28) we put it on GitHub and Vercel, so make sure it still runs with npm run dev.",
       "Library, if you want more: Day 5 (prompt engineering), Day 3 (inline suggestions), Day 4 (Copilot Chat).",
     ],
     facilitator: [
-      "Pain point goes out at the start. If someone has not got one, check the bank has rows (seed) and that they are on My week, not the library.",
+      "Pain point goes out at the start. If someone has not got one, check the bank has rows (seed) and that they are on Weekly apps, not the library.",
       "Typical blockers: Node older than 22, Copilot not signed in, corporate proxy blocking npx. Have a colleague pair up rather than debug alone.",
       "Do not let anyone start Supabase or login yet. Week 1 is one page, saved data, no login, and the saving comes on Thursday.",
       "Credits are not yet allocated. If people hit limits, tell them to switch to the default model and write shorter prompts.",

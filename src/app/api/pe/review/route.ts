@@ -1,6 +1,7 @@
 import { auth, isFacilitator } from "@/auth";
 import { db } from "@/lib/db";
 import { peUnitIds } from "@/lib/pe";
+import { isGtUnit } from "@/lib/gt";
 import { reviewPeSubmission } from "@/lib/peDb";
 import type { Sql } from "@/lib/assign";
 
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
   const unit = String(body.unit);
   const status = body.status;
   const feedback = typeof body.feedback === "string" && body.feedback.trim() ? body.feedback.trim().slice(0, 2000) : null;
-  if (typeof body.email !== "string" || !peUnitIds.includes(unit)) return Response.json({ error: "Unknown submission" }, { status: 400 });
+  if (typeof body.email !== "string" || !(peUnitIds.includes(unit) || isGtUnit(unit))) return Response.json({ error: "Unknown submission" }, { status: 400 });
   if (status !== "approved" && status !== "changes") return Response.json({ error: "Status must be approved or changes" }, { status: 400 });
   if (status === "changes" && !feedback) return Response.json({ error: "Say what needs to change" }, { status: 400 });
 

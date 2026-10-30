@@ -54,7 +54,7 @@ export async function DocView({ course, slug }: { course: string; slug: string }
       <p className="mt-4 text-sm text-muted">
         {doc.section} {doc.audience === "facilitator" && <span className="chip-late ml-2">Facilitators only</span>}
       </p>
-      <div className="card mt-3 p-6">
+      <div className="card mt-3 max-w-4xl p-6">
         <Markdown source={doc.body} />
       </div>
     </>

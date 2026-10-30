@@ -30,6 +30,33 @@ export function NavLinks({ items }: { items: NavItem[] }) {
   );
 }
 
+// Course menu: groups of links, vertical on wide screens (left sidebar) and a scrolling strip on narrow ones.
+// The most specific matching link across all groups is the active one.
+export function SideNavLinks({ groups }: { groups: { label?: string; items: NavItem[] }[] }) {
+  const path = usePathname();
+  const all = groups.flatMap((g) => g.items);
+  const best = all.filter((n) => path === n.href || path.startsWith(n.href + "/")).sort((a, b) => b.href.length - a.href.length)[0];
+  return (
+    <div className="flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5 lg:overflow-visible">
+      {groups.map((g, gi) => (
+        <div key={g.label ?? gi} className="flex shrink-0 gap-1 lg:mt-4 lg:flex-col lg:gap-0.5 lg:first:mt-0">
+          {g.label && <p className="hidden px-3 pb-1 text-[11px] font-semibold uppercase tracking-wide text-muted lg:block">{g.label}</p>}
+          {g.items.map((n) => (
+            <Link
+              key={n.href}
+              href={n.href}
+              aria-current={n === best ? "page" : undefined}
+              className={`whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition ${n === best ? "bg-brand-soft text-brand" : "text-muted hover:bg-brand-soft hover:text-brand"}`}
+            >
+              {n.label}
+            </Link>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // Avatar button with a dropdown. The panel content is rendered on the server and passed in as children.
 export function AccountMenu({ initials, children }: { initials: string; children: ReactNode }) {
   const ref = useRef<HTMLDetailsElement>(null);

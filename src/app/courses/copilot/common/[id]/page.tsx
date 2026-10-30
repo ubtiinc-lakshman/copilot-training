@@ -6,9 +6,11 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
 import { formatDate } from "@/days/registry";
-import { COMMON_CONTENT, getCommonDay } from "@/program/common";
+import { COMMON_CONTENT, COMMON_DAYS, getCommonDay } from "@/program/common";
 import { Section, CodeBlock } from "@/components/Section";
 import { LabDone } from "@/components/ProgramActions";
+import Quiz from "@/components/Quiz";
+import { COMMON_QUIZ_MIN } from "@/lib/schedule";
 
 const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => {
   const Tag = ordered ? "ol" : "ul";
@@ -42,6 +44,10 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
       // The content still shows if the status cannot be read; the button just starts unchecked.
     }
   }
+
+  const at = COMMON_DAYS.findIndex((d) => d.id === id);
+  const prev = COMMON_DAYS[at - 1];
+  const next = COMMON_DAYS[at + 1];
 
   return (
     <>
@@ -81,6 +87,18 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
           <LabDone id={id} label={day.gate ? "I took the gate" : "I completed this lab"} initialDone={done} initialNote={note} />
         </Section>
 
+        <Section title={day.gate ? "Day 7 check (pass mark 70%)" : "Quiz (pass mark 70%)"}>
+          <p className="text-sm text-muted">A short check on today. You can retake it. {day.gate ? "It comes in addition to the practical gate tasks." : "It does not replace the lab."}</p>
+          <Quiz day={COMMON_QUIZ_MIN + day.day} passPercent={70} />
+        </Section>
+
+        {day.gate && (
+          <Section title="What comes next: your team track">
+            <p className="text-sm">When you have taken the gate and marked it complete above, Stage 2 opens: pick the track for your team (Application Development, QA, Power BI, Fabric or AI). Each has five sessions with a lab, then a quiz.</p>
+            <Link href="/courses/copilot/tracks" className="link text-sm">Go to the team tracks</Link>
+          </Section>
+        )}
+
         <Section title="Share">
           <p className="text-sm">{content.share}</p>
         </Section>
@@ -95,6 +113,15 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
             <List items={content.facilitator} />
           </aside>
         )}
+
+        <nav className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-4 text-sm" aria-label="Next and previous day">
+          {prev ? <Link href={`/courses/copilot/common/${prev.id}`} className="link">&larr; Day {prev.day}: {prev.title}</Link> : <span />}
+          {next ? (
+            <Link href={`/courses/copilot/common/${next.id}`} className="btn-primary">Next: Day {next.day} &rarr;</Link>
+          ) : (
+            <Link href="/courses/copilot/tracks" className="btn-primary">Next: Stage 2, your team track &rarr;</Link>
+          )}
+        </nav>
       </div>
     </>
   );
@@ -102,9 +129,9 @@ async function DayContent({ params }: { params: Promise<{ id: string }> }) {
 
 export default function CommonDayPage({ params }: { params: Promise<{ id: string }> }) {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/copilot/common" className="link text-sm">
-        Common days
+        Stage 1: Common days
       </Link>
       <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
         <DayContent params={params} />

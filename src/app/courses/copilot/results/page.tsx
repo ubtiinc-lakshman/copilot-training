@@ -16,7 +16,7 @@ async function FacilitatorOnly() {
 
 export default function ResultsPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/copilot" className="text-sm link">
         GitHub Copilot
       </Link>

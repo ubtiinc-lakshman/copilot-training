@@ -54,7 +54,7 @@ async function Levels() {
 export default function PromptEngineeringPage() {
   const course = COURSES.find((c) => c.id === "prompt-engineering")!;
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/" className="link text-sm">
         All courses
       </Link>
