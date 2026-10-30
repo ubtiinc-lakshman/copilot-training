@@ -91,6 +91,9 @@ body {
 
 /* Course pages: the main header slides up once scrolled and the course menu moves to the top (see ScrollChrome). */
 .site-header { transition: transform 0.2s ease; }
-.course-nav { transition: top 0.2s ease; }
+.course-nav, .course-side { transition: top 0.2s ease; }
 html[data-course-scrolled] .site-header { transform: translateY(-100%); }
 html[data-course-scrolled] .course-nav { top: 0; }
+@media (min-width: 1024px) {
+  html[data-course-scrolled] .course-side { top: 16px; }
+}

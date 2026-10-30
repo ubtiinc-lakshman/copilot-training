@@ -3,7 +3,7 @@ import { COURSES } from "@/courses";
 
 export default function CatalogPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <p className="chip-brand">IC Training Center</p>
       <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
         Learn at your{" "}

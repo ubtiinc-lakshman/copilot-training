@@ -41,6 +41,10 @@ addDir("1_MASTER_PROGRAM", { audience: "facilitator", section: "Runbooks", only:
 addDir("2_FACILITATOR_GUIDES", { audience: "facilitator", section: "Facilitator guides" });
 addDir("6_DELIVERY_CHECKLISTS", { audience: "facilitator", section: "Delivery checklists" });
 addFile(path.join(src, "5_REFERENCE_MATERIALS/Facilitator_QA_Guide.md"), { audience: "facilitator", section: "Runbooks" });
+// Docs folder: the Day 7 gate. Both are facilitator-only (the handout would show the tasks before the day; the scoring guide has the answers).
+// The three "for Director" plans in that folder are deliberately not loaded.
+addFile(path.resolve("data/copilot-converted/day-7-gate-a-participant-handout.md"), { audience: "facilitator", section: "Day 7 gate", title: "Day 7 gate: participant handout" });
+addFile(path.resolve("data/copilot-converted/day-7-gate-b-facilitator-scoring-guide.md"), { audience: "facilitator", section: "Day 7 gate", title: "Day 7 gate: facilitator scoring guide" });
 
 if (process.env.DRY) {
   for (const d of docs) console.log(d.audience.padEnd(11), d.section.padEnd(20), d.slug, d.body.length);

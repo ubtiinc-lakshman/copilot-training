@@ -10,3 +10,7 @@ export const isOpen = (date: string, now = new Date()) => todayISO(now) >= date;
 export const quizOpen = (day: number, sessionDate?: string) => day <= 100 || !!sessionDate;
 
 export const isLessonOpen = () => true;
+
+// Quizzes 200-207 belong to the Common days 0-7 (200 + day number). A participant can take one from the date of that day.
+export const COMMON_QUIZ_MIN = 200;
+export const commonQuizDay = (quiz: number) => (quiz >= COMMON_QUIZ_MIN && quiz <= COMMON_QUIZ_MIN + 7 ? quiz - COMMON_QUIZ_MIN : undefined);

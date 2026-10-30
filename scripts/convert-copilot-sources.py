@@ -103,7 +103,13 @@ class Handbook(HTMLParser):
             self.buf.append(data if self.pre else html.unescape(data))
 
 
-for name, target in [("AI Enabled Development Guide.docx", "ai-enabled-development-guide.md"), ("GitHub Copilot Training Program.docx", "github-copilot-training-program.md")]:
+for name, target in [
+    ("AI Enabled Development Guide.docx", "ai-enabled-development-guide.md"),
+    ("GitHub Copilot Training Program.docx", "github-copilot-training-program.md"),
+    # Docs folder. The three "for Director" plans are deliberately not converted.
+    ("Docs/GitHub Copilot Training - Day 7 Gate - A Participant Handout.docx", "day-7-gate-a-participant-handout.md"),
+    ("Docs/GitHub Copilot Training - Day 7 Gate - B Facilitator Scoring Guide.docx", "day-7-gate-b-facilitator-scoring-guide.md"),
+]:
     (out / target).write_text(docx_to_md(src / name), encoding="utf-8")
     print("converted", name)
 

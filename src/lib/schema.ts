@@ -75,5 +75,12 @@ export const PROGRAM_TABLES: string[] = [
     body TEXT NOT NULL
   )`,
   // Which course a document belongs to ("prompt-engineering" or "copilot"; the table name is from when it held only Prompt Engineering).
+  // Which Copilot team track a person is on (chosen by them once, or set by a facilitator). One row per person.
+  `CREATE TABLE IF NOT EXISTS gt_enrollment (
+    email TEXT PRIMARY KEY,
+    track TEXT NOT NULL,
+    set_by TEXT NOT NULL,
+    set_at TIMESTAMPTZ NOT NULL DEFAULT now()
+  )`,
   `ALTER TABLE pe_docs ADD COLUMN IF NOT EXISTS course TEXT NOT NULL DEFAULT 'prompt-engineering'`,
 ];

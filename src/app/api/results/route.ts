@@ -3,10 +3,13 @@ import { actingFacilitator } from "@/lib/viewMode";
 import { db, type AttendanceRow, type LabRow, type ResultRow } from "@/lib/db";
 import { gradeQuiz, isCorrect, type Given } from "@/lib/grade";
 import { getQuiz } from "@/lib/quizzes";
-import { quizOpen } from "@/lib/schedule";
+import { commonQuizDay, isOpen, quizOpen } from "@/lib/schedule";
+import { getCommonDay } from "@/program/common";
 import { getEvent } from "@/program/calendar";
 import { PE_QUIZ_MIN, peLevelOfQuiz } from "@/lib/pe";
 import { loadPeLevel } from "@/lib/peDb";
+import { GT_QUIZ_MIN, gtTrackOfQuiz } from "@/lib/gt";
+import { isEnrolledIn } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 
 // POST: a signed-in participant submits quiz answers. The score is recomputed here, never trusted from the browser.
@@ -23,7 +26,13 @@ export async function POST(request: Request) {
   const day = Number(body.day);
   const questions = await getQuiz(day);
   if (!questions) return Response.json({ error: "No quiz for that day" }, { status: 400 });
-  if (day >= PE_QUIZ_MIN) {
+  const commonDay = commonQuizDay(day);
+  if (commonDay !== undefined) {
+    if (!(await actingFacilitator(user.email)) && !isOpen(getCommonDay(`c${commonDay}`)!.date)) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
+  } else if (day > GT_QUIZ_MIN && day < GT_QUIZ_MIN + 100) {
+    const track = gtTrackOfQuiz(day);
+    if (!(await actingFacilitator(user.email)) && (!track || !(await isEnrolledIn((await db()) as unknown as Sql, user.email.toLowerCase(), track)))) return Response.json({ error: "This is not your track" }, { status: 403 });
+  } else if (day >= PE_QUIZ_MIN) {
     if (!(await actingFacilitator(user.email)) && peLevelOfQuiz(day) > (await loadPeLevel((await db()) as unknown as Sql, user.email.toLowerCase()))) return Response.json({ error: "This level has not opened yet" }, { status: 403 });
   } else if (!quizOpen(day, day > 100 ? getEvent(`s${String(day - 100).padStart(2, "0")}`)?.date : undefined) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   if (!Array.isArray(body.answers) || body.answers.length !== questions.length) {

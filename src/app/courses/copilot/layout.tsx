@@ -1,44 +1,39 @@
-import { Suspense } from "react";
-import { connection } from "next/server";
-import { auth } from "@/auth";
-import { actingFacilitator } from "@/lib/viewMode";
-import { NavLinks } from "@/components/HeaderClient";
-import ScrollChrome from "@/components/ScrollChrome";
+import CourseShell from "@/components/CourseShell";
 
-const ITEMS = [
-  { href: "/courses/copilot", label: "Overview" },
-  { href: "/courses/copilot/common", label: "Common days" },
-  { href: "/courses/copilot/today", label: "My week" },
-  { href: "/courses/copilot/library", label: "Library" },
-  { href: "/courses/copilot/docs", label: "Documents" },
-  { href: "/courses/copilot/me", label: "My progress" },
+const GROUPS = [
+  { items: [{ href: "/courses/copilot", label: "Overview" }] },
+  {
+    label: "Your path",
+    items: [
+      { href: "/courses/copilot/common", label: "1. Common days" },
+      { href: "/courses/copilot/tracks", label: "2. Team tracks" },
+      { href: "/courses/copilot/today", label: "3. Weekly apps" },
+    ],
+  },
+  {
+    label: "Reference",
+    items: [
+      { href: "/courses/copilot/library", label: "Lesson library" },
+      { href: "/courses/copilot/docs", label: "Documents" },
+    ],
+  },
+  { label: "Me", items: [{ href: "/courses/copilot/me", label: "My progress" }] },
 ];
-const FACILITATOR_ITEMS = [
-  { href: "/courses/copilot/progress", label: "Progress" },
-  { href: "/courses/copilot/results", label: "Results" },
-];
+const FACILITATOR = {
+  label: "Facilitator",
+  items: [
+    { href: "/courses/copilot/progress", label: "Progress" },
+    { href: "/courses/copilot/tracks/roster", label: "Track roster" },
+    { href: "/courses/copilot/tracks/progress", label: "Track reviews" },
+    { href: "/courses/copilot/results", label: "Results" },
+  ],
+};
 
-// Progress and Results only appear for facilitators.
-async function CourseLinks() {
-  await connection(); // auth() uses random bytes, so render per request, not at build
-  const facilitator = await actingFacilitator((await auth())?.user?.email);
-  return <NavLinks items={facilitator ? [...ITEMS, ...FACILITATOR_ITEMS] : ITEMS} />;
-}
-
-// Course sub-navigation shared by every GitHub Copilot page.
+// Course menu shared by every GitHub Copilot page.
 export default function CopilotLayout({ children }: LayoutProps<"/courses/copilot">) {
   return (
-    <>
-      <ScrollChrome />
-      <div className="course-nav sticky top-[49px] z-10 border-b border-line bg-surface">
-        <nav className="mx-auto flex max-w-5xl items-center gap-1 overflow-x-auto px-6 py-1.5" aria-label="GitHub Copilot course">
-          <span className="mr-2 shrink-0 text-xs font-semibold uppercase tracking-wide text-muted">GitHub Copilot</span>
-          <Suspense>
-            <CourseLinks />
-          </Suspense>
-        </nav>
-      </div>
+    <CourseShell title="GitHub Copilot" groups={GROUPS} facilitatorGroup={FACILITATOR}>
       {children}
-    </>
+    </CourseShell>
   );
 }

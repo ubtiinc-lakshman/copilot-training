@@ -12,14 +12,30 @@ import { SESSIONS } from "@/program/sessions";
 import { EVENTS, WEEKS, getWeek, libraryFor, type ProgramEvent } from "@/program/calendar";
 import { LabDone, PainPointCard, PainPointView, SubmissionForm, type SubmissionData } from "@/components/ProgramActions";
 
-export const metadata = { title: "My week" };
+import { actingFacilitator } from "@/lib/viewMode";
+import { isStage3Open } from "@/lib/gtDb";
+
+export const metadata = { title: "Weekly apps" };
 
 type Submission = SubmissionData & { week: number; submitted_at: string };
+
+function Stage3Locked() {
+  return (
+    <div className="card p-6 text-sm">
+      <h1 className="text-2xl font-extrabold tracking-tight">Stage 3: Weekly apps</h1>
+      <p className="mt-3 font-semibold">This opens when you finish your team track</p>
+      <p className="mt-1 text-muted">Complete the five labs of your track (approved by a facilitator is not required, but a lab sent back does not count) and pass the track quiz at 70%.</p>
+      <Link href="/courses/copilot/tracks" className="link mt-3 inline-block">Go to Team tracks</Link>
+    </div>
+  );
+}
 
 async function MyWeek() {
   await connection(); // depends on the signed-in user
   const user = await currentUser();
   if (!user) redirect("/login");
+
+  if (!(await actingFacilitator(user.email)) && !(await isStage3Open((await db()) as unknown as Sql, user.email))) return <Stage3Locked />;
 
   const { completions: comps, submissions: subs, assignments: assigns, proofs } = await loadMine((await db()) as unknown as Sql, user.email);
   const done = new Map(comps.map((c) => [c.activity as string, (c.note as string | null) ?? ""]));
@@ -97,7 +113,7 @@ async function MyWeek() {
   return (
     <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight">My week</h1>
+        <h1 className="text-3xl font-extrabold tracking-tight">Stage 3: Weekly apps</h1>
         <p className="mt-1 text-muted">
           Level {week} of {WEEKS.length}. Your app: <b>{info.feature}</b>. Work at your own pace: submit this app to unlock the next level.
         </p>
@@ -156,7 +172,7 @@ async function MyWeek() {
 
 export default function TodayPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Suspense fallback={<p className="text-muted">Loading...</p>}>
         <MyWeek />
       </Suspense>

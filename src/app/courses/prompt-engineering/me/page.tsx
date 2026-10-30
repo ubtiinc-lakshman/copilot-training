@@ -58,7 +58,7 @@ async function Progress() {
 
 export default function MePage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/prompt-engineering" className="link text-sm">
         Prompt Engineering
       </Link>

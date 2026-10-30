@@ -23,7 +23,7 @@ export default async function UserMenu() {
   const name = user.name ?? user.email ?? "";
   return (
     <header className="site-header sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur">
-      <div className="mx-auto flex max-w-5xl items-center gap-2 px-6 py-2">
+      <div className="mx-auto flex max-w-[1800px] items-center gap-2 px-6 py-2">
         <Link href="/" className="mr-3 flex shrink-0 items-center gap-2 font-bold">
           <span className="grid h-8 w-8 place-items-center rounded-lg text-xs text-white" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
             AI

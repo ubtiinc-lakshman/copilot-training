@@ -3,6 +3,7 @@ import { currentUser } from "@/lib/user";
 import { actingFacilitator } from "@/lib/viewMode";
 import { getWeek } from "@/program/calendar";
 import { loadLevel, saveSubmission } from "@/lib/program";
+import { isStage3Open } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -17,6 +18,7 @@ export async function POST(request: Request) {
   const info = getWeek(week);
   if (!info) return Response.json({ error: "Unknown week" }, { status: 400 });
   const sql = (await db()) as unknown as Sql;
+  if (!(await actingFacilitator(user.email)) && !(await isStage3Open(sql, user.email))) return Response.json({ error: "Finish your team track first" }, { status: 403 });
   if (week > (await loadLevel(sql, user.email)) && !(await actingFacilitator(user.email))) return Response.json({ error: `Submit your week ${week - 1} app first` }, { status: 403 });
 
   let url: URL;

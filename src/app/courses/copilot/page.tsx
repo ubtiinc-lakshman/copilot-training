@@ -7,6 +7,11 @@ import type { Sql } from "@/lib/assign";
 import { currentUser } from "@/lib/user";
 import { DAYS } from "@/days/registry";
 import { SESSIONS } from "@/program/sessions";
+import { GT_TRACKS, gtTrackDone } from "@/lib/gt";
+import { loadGtState } from "@/lib/gtDb";
+import { actingFacilitator } from "@/lib/viewMode";
+import { COMMON_DAYS } from "@/program/common";
+import { TRACKS as GT_TRACK_INFO } from "@/program/tracks";
 import { EVENTS, WEEKS, libraryFor, trackedEvents } from "@/program/calendar";
 
 const KIND = { session: "Session", call: "Live call", finale: "Finale", submit: "Submit" } as const;
@@ -15,6 +20,8 @@ async function Dashboard() {
   await connection(); // depends on the signed-in user
   const user = await currentUser();
   const mine = user ? await loadMine((await db()) as unknown as Sql, user.email) : null;
+  const facilitator = await actingFacilitator(user?.email);
+  const gt = user ? await loadGtState((await db()) as unknown as Sql, user.email) : null;
   const done = new Set((mine?.completions ?? []).map((c) => c.activity as string));
   const submitted = new Set((mine?.submissions ?? []).map((s) => s.week as number));
   const titles = new Map((mine?.assignments ?? []).map((a) => [a.week as number, (a.data as { title: string }).title]));
@@ -26,8 +33,42 @@ async function Dashboard() {
   const state = (id: string, eventWeek: number) =>
     done.has(id) ? <span className="chip-done">Done</span> : eventWeek <= week ? <span className="chip-today">To do</span> : <span className="chip-idle">Locked</span>;
 
+  // The path: Common days (Day 0-7) -> Team track (opens when the Day 7 gate is marked complete) -> Weekly apps (self-paced, open any time).
+  const commonDone = COMMON_DAYS.filter((d) => done.has(d.id)).length;
+  const gateDone = done.has("c7");
+  const trackSubmitted = new Set(gt?.submitted ?? []);
+  const trackPassed = new Set(gt?.passed ?? []);
+  const tracksDone = GT_TRACKS.filter((t) => gtTrackDone(t, trackSubmitted, trackPassed));
+  const myTrack = GT_TRACKS.map((t) => ({ t, labs: [1, 2, 3, 4, 5].filter((n) => trackSubmitted.has(`gt-${t}-${n}`)).length })).sort((a, b) => b.labs - a.labs)[0];
+  const stages = [
+    {
+      n: 1, title: "Common days", href: "/courses/copilot/common", open: true, done: gateDone,
+      text: `${commonDone} of ${COMMON_DAYS.length} days done. Day 0 to Day 7 for every team; the Day 7 gate opens your track.`,
+    },
+    {
+      n: 2, title: "Team track", href: "/courses/copilot/tracks", open: gateDone || facilitator, done: tracksDone.length > 0,
+      text: !(gateDone || facilitator) ? "Opens when you mark the Day 7 gate complete." : tracksDone.length ? `${tracksDone.map((t) => GT_TRACK_INFO.find((x) => x.id === t)?.name).join(", ")} complete.` : myTrack?.labs ? `${GT_TRACK_INFO.find((x) => x.id === myTrack.t)?.name}: ${myTrack.labs} of 5 labs submitted.` : "Open. Pick the track for your team: five sessions, labs reviewed by a facilitator, and a quiz.",
+    },
+    {
+      n: 3, title: "Weekly apps", href: "/courses/copilot/today", open: !!gt?.stage3 || facilitator, done: submitted.size === WEEKS.length,
+      text: !(gt?.stage3 || facilitator) ? "Opens when you finish your team track." : `Self-paced. ${submitted.size} of ${WEEKS.length} apps submitted.`,
+    },
+  ];
+
   return (
     <>
+      <h2 className="mb-3 mt-8 text-xl font-bold">Your path</h2>
+      <div className="grid gap-4 md:grid-cols-3">
+        {stages.map((s) => (
+          <div key={s.n} className="card flex flex-col p-5">
+            <span className={s.done ? "chip-done w-fit" : s.open ? "chip-today w-fit" : "chip-idle w-fit"}>{s.done ? "Done" : s.open ? "Open" : "Locked"}</span>
+            <h3 className="mt-3 font-bold">Stage {s.n}: {s.title}</h3>
+            <p className="mt-1 flex-1 text-sm text-muted">{s.text}</p>
+            {s.open ? <Link href={s.href} className="btn-primary mt-4 w-fit">Open</Link> : <p className="mt-4 text-xs text-muted">Finish stage {s.n - 1} first.</p>}
+          </div>
+        ))}
+      </div>
+
       <div className="mt-8 grid gap-4 md:grid-cols-[1fr_auto]">
         <Link href="/courses/copilot/today" className="relative overflow-hidden rounded-2xl p-6 text-white shadow-lg transition hover:shadow-xl" style={{ backgroundImage: "linear-gradient(135deg, var(--brand), var(--brand-2))" }}>
           <p className="text-sm/6 opacity-80">Your level</p>
@@ -134,7 +175,7 @@ async function Dashboard() {
 
 export default function Home() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <p className="chip-brand">GitHub Copilot</p>
       <h1 className="mt-3 text-4xl font-extrabold tracking-tight">
         Learn Copilot{" "}

@@ -4,6 +4,8 @@ import { actingFacilitator } from "@/lib/viewMode";
 import { getEvent } from "@/program/calendar";
 import { DAYS } from "@/days/registry";
 import { getProof, loadLevel, saveProof } from "@/lib/program";
+import { gtTrackOfUnit, isGtUnit } from "@/lib/gt";
+import { isEnrolledIn, isGtOpen, isStage3Open } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 
 const TYPES = ["image/png", "image/jpeg", "image/webp"];
@@ -19,12 +21,16 @@ export async function POST(request: Request) {
   const file = form?.get("file");
   const event = getEvent(id);
   const lesson = /^lab-(\d+)$/.exec(id); // library lesson lab
-  if (lesson ? !DAYS.some((d) => d.day === Number(lesson[1])) : event?.kind !== "session") return Response.json({ error: "Unknown lab" }, { status: 400 });
+  const track = isGtUnit(id); // GitHub Copilot team track session lab
+  if (track ? false : lesson ? !DAYS.some((d) => d.day === Number(lesson[1])) : event?.kind !== "session") return Response.json({ error: "Unknown lab" }, { status: 400 });
   if (!(file instanceof File)) return Response.json({ error: "Choose a screenshot" }, { status: 400 });
   if (!TYPES.includes(file.type)) return Response.json({ error: "Upload a PNG, JPG or WebP image" }, { status: 400 });
   if (file.size > MAX_BYTES) return Response.json({ error: "The image is over 3 MB. Crop the screenshot to the commit." }, { status: 400 });
 
   const sql = (await db()) as unknown as Sql;
+  if (track && !(await actingFacilitator(user.email)) && !(await isGtOpen(sql, user.email))) return Response.json({ error: "Complete the Day 7 gate first" }, { status: 403 });
+  if (track && !(await actingFacilitator(user.email)) && !(await isEnrolledIn(sql, user.email, gtTrackOfUnit(id)))) return Response.json({ error: "This is not your track. Pick your track first." }, { status: 403 });
+  if (event && !(await actingFacilitator(user.email)) && !(await isStage3Open(sql, user.email))) return Response.json({ error: "Finish your team track first" }, { status: 403 });
   if (event && event.week > (await loadLevel(sql, user.email)) && !(await actingFacilitator(user.email))) {
     return Response.json({ error: `Submit your week ${event.week - 1} app first` }, { status: 403 });
   }

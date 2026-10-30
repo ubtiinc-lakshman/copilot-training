@@ -72,7 +72,7 @@ async function Progress() {
       <section className="card p-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-xl font-bold">My apps</h2>
-          <Link href="/courses/copilot/today" className="link text-sm">Go to My week</Link>
+          <Link href="/courses/copilot/today" className="link text-sm">Go to Weekly apps</Link>
         </div>
         <ul className="divide-y divide-line">
           {WEEKS.map((w) => {
@@ -104,7 +104,7 @@ async function Progress() {
 
 export default function MyProgressPage() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-8">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
       <h1 className="mb-6 text-3xl font-bold">My progress</h1>
       <Suspense fallback={<p className="text-muted">Loading...</p>}>
         <Progress />

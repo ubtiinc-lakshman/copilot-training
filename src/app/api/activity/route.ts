@@ -6,6 +6,7 @@ import { getEvent } from "@/program/calendar";
 import { getCommonDay } from "@/program/common";
 import { DAYS } from "@/days/registry";
 import { hasProof, loadLevel, markComplete, undoComplete } from "@/lib/program";
+import { isStage3Open } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 
 // POST { id, note?, done? }: the signed-in participant marks a lab/call as completed (done: false undoes it).
@@ -25,6 +26,7 @@ export async function POST(request: Request) {
   if (common && !isOpen(common.date) && !facilitator) return Response.json({ error: "This activity has not opened yet" }, { status: 403 });
 
   const sql = (await db()) as unknown as Sql;
+  if (weekly && !facilitator && !(await isStage3Open(sql, user.email))) return Response.json({ error: "Finish your team track first" }, { status: 403 });
   if (weekly && !facilitator && weekly.week > (await loadLevel(sql, user.email))) return Response.json({ error: `Submit your week ${weekly.week - 1} app first` }, { status: 403 });
   if (body.done === false) {
     await undoComplete(sql, user.email, id);

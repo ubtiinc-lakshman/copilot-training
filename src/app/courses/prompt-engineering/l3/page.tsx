@@ -7,7 +7,7 @@ export const metadata = { title: "Level 3 | Prompt Engineering" };
 
 export default function Level3Page() {
   return (
-    <main className="mx-auto w-full max-w-5xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/prompt-engineering" className="link text-sm">
         Prompt Engineering
       </Link>

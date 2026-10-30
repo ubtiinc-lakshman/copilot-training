@@ -16,7 +16,7 @@ async function FacilitatorOnly() {
 
 export default function ProgressPage() {
   return (
-    <main className="mx-auto w-full max-w-6xl px-6 py-10">
+    <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
       <Link href="/courses/copilot" className="text-sm link">
         GitHub Copilot
       </Link>

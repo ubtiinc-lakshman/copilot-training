@@ -2,6 +2,8 @@ import { db } from "@/lib/db";
 import { currentUser } from "@/lib/user";
 import { assignPainPoint, type Sql } from "@/lib/assign";
 import { isOnRoster, loadLevel } from "@/lib/program";
+import { isStage3Open } from "@/lib/gtDb";
+import { actingFacilitator } from "@/lib/viewMode";
 
 // POST: gives the signed-in participant the pain point for the week you are on, picked at random. Idempotent (a second click returns the same one).
 export async function POST() {
@@ -10,6 +12,8 @@ export async function POST() {
 
   const sql = (await db()) as unknown as Sql;
   if (!(await isOnRoster(sql, user.email))) return Response.json({ error: "You are not on the participant list. Ask the facilitator to add you." }, { status: 403 });
+
+  if (!(await actingFacilitator(user.email)) && !(await isStage3Open(sql, user.email))) return Response.json({ error: "Finish your team track first" }, { status: 403 });
 
   const week = await loadLevel(sql, user.email); // the week you are on: you move up by submitting the previous app
 
