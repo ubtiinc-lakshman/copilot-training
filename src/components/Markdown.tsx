@@ -35,10 +35,23 @@ const cells = (l: string) => l.trim().slice(1, -1).split("|").map((c) => c.trim(
 // A heading such as "main.bicep" or "models/staging/schema.yml" names the file the next code block belongs to.
 const looksLikeFile = (h: string) => /^[\w./ -]+\.[A-Za-z0-9]+$/.test(h) || h.includes("/");
 
+// The source files hide unfinished parts in HTML comments. A commented-out "Related Documents" block is meant to be shown (its links now work),
+// any other comment stays hidden.
+function clean(source: string) {
+  return source
+    .replace(/\r\n/g, "\n")
+    .replace(/<!--\s*(#{1,6}\s*Related Documents[\s\S]*?)-->/gi, "$1")
+    .replace(/<!--[\s\S]*?-->/g, "");
+}
+
+const isRelatedHeading = (l: string) => /^#{1,6}\s*related documents\s*$/i.test(l.trim());
+const soleLink = (item: string) => /^\[([^\]]+)\]\(([^)]+)\)\s*(?:[-:\u2014].*)?$/.exec(item.trim());
+
 export default function Markdown({ source, resolveHref }: { source: string; resolveHref?: Resolve }) {
-  const lines = source.replace(/\r\n/g, "\n").split("\n");
+  const lines = clean(source).split("\n");
   const nodes: ReactNode[] = [];
   let heading = "";
+  let related = false;
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
@@ -64,18 +77,26 @@ export default function Markdown({ source, resolveHref }: { source: string; reso
       const level = line.indexOf(" ");
       const cls = ["", "text-2xl font-extrabold", "text-xl font-bold", "text-lg font-bold", "font-bold", "font-semibold", "font-semibold"][level];
       heading = line.slice(level + 1).trim();
-      nodes.push(<p key={key} className={`${cls} mt-4`}>{inline(heading, resolveHref)}</p>);
+      related = isRelatedHeading(line);
+      nodes.push(<p key={related ? "related-heading" : key} className={`${cls} mt-4`}>{inline(heading, resolveHref)}</p>);
       i++;
     } else if (/^\s*([-*]|\d+\.)\s/.test(line)) {
       const ordered = /^\s*\d+\./.test(line);
       const items: string[] = [];
       while (i < lines.length && /^\s*([-*]|\d+\.)\s/.test(lines[i])) items.push(lines[i++].replace(/^\s*([-*]|\d+\.)\s/, ""));
       const Tag = ordered ? "ol" : "ul";
-      nodes.push(
-        <Tag key={key} className={`ml-5 space-y-1 text-sm ${ordered ? "list-decimal" : "list-disc"}`}>
-          {items.map((it, n) => <li key={n}>{inline(it, resolveHref)}</li>)}
-        </Tag>,
-      );
+      // Under "Related Documents", an item that is only a link to a document this reader cannot open is left out.
+      const shown = related ? items.filter((it) => { const m = soleLink(it); return !m || /^https?:\/\//.test(m[2]) || !!resolveHref?.(m[2].trim()); }) : items;
+      if (related && !shown.length) {
+        const last = nodes[nodes.length - 1] as { key?: string } | undefined;
+        if (last && last.key === "related-heading") nodes.pop();
+      } else {
+        nodes.push(
+          <Tag key={key} className={`ml-5 space-y-1 text-sm ${ordered ? "list-decimal" : "list-disc"}`}>
+            {shown.map((it, n) => <li key={n}>{inline(it, resolveHref)}</li>)}
+          </Tag>,
+        );
+      }
     } else if (isTableRow(line) && i + 1 < lines.length && /^\s*\|[\s:|-]+\|\s*$/.test(lines[i + 1])) {
       const head = cells(line);
       i += 2;

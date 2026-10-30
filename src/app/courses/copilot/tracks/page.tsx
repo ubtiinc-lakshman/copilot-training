@@ -4,6 +4,7 @@ import { GT_SESSIONS, gtQuizOf, gtTrackDone, gtUnitId } from "@/lib/gt";
 import { GtLocked, gtViewer } from "@/components/GtParts";
 import EnrollButton from "@/components/EnrollButton";
 import { TRACKS } from "@/program/tracks";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Team tracks | GitHub Copilot" };
 
@@ -53,7 +54,7 @@ export default function TracksPage() {
       </Link>
       <h1 className="mb-2 mt-3 text-3xl font-extrabold tracking-tight">Stage 2: Team tracks</h1>
       <p className="text-muted">Pick the track that matches your daily work. Each track has five sessions with a lab (commit screenshot plus a short write-up, reviewed by a facilitator) and a quiz. Finishing your track opens Stage 3, the weekly apps.</p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Tracks />
       </Suspense>
     </main>

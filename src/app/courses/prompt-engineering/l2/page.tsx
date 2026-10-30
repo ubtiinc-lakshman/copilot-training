@@ -8,6 +8,7 @@ import { peUnitDone } from "@/lib/pe";
 import { loadPeState } from "@/lib/peDb";
 import type { Sql } from "@/lib/assign";
 import { TRACKS } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Level 2 | Prompt Engineering" };
 
@@ -52,7 +53,7 @@ export default function Level2Page() {
       </Link>
       <h1 className="mb-2 mt-3 text-3xl font-extrabold tracking-tight">Level 2: Your team track</h1>
       <p className="text-muted">Pick the track that matches your work. Finishing one track opens Level 3; you can do more than one.</p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Tracks />
       </Suspense>
     </main>

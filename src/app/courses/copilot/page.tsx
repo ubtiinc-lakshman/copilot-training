@@ -13,6 +13,7 @@ import { actingFacilitator } from "@/lib/viewMode";
 import { COMMON_DAYS } from "@/program/common";
 import { TRACKS as GT_TRACK_INFO } from "@/program/tracks";
 import { EVENTS, WEEKS, libraryFor, trackedEvents } from "@/program/calendar";
+import { PageSkeleton } from "@/components/Skeleton";
 
 const KIND = { session: "Session", call: "Live call", finale: "Finale", submit: "Submit" } as const;
 
@@ -196,7 +197,7 @@ export default function Home() {
       <h2 className="mt-12 text-2xl font-bold tracking-tight">Self-paced: build an app every week</h2>
       <p className="mt-1 max-w-2xl text-sm text-muted">Optional practice. Each lab teaches one skill that you use on your own app, deploy, and submit. Dates are a suggested pace; there are no live sessions.</p>
 
-      <Suspense fallback={<p className="mt-10 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Dashboard />
       </Suspense>
 

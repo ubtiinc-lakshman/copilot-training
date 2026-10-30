@@ -13,6 +13,7 @@ import type { Sql } from "@/lib/assign";
 import { COURSES } from "@/courses";
 import { DAYS } from "@/days/registry";
 import { COMMON_DAYS } from "@/program/common";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "My profile" };
 
@@ -114,7 +115,7 @@ async function Profile() {
 export default function ProfilePage() {
   return (
     <main className="mx-auto w-full max-w-[1800px] px-6 py-8">
-      <Suspense fallback={<p className="text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Profile />
       </Suspense>
     </main>

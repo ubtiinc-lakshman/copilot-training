@@ -9,6 +9,7 @@ import { auth } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
 import { isLessonOpen } from "@/lib/schedule";
 import CheckIn from "@/components/CheckIn";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export function generateStaticParams() {
   return DAYS.map((d) => ({ day: String(d.day) }));
@@ -88,7 +89,7 @@ export default function DayPage({ params }: { params: Promise<{ day: string }> }
       <Link href="/courses/copilot/library" className="link text-sm">
         Library
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <DayContent params={params} />
       </Suspense>
     </main>

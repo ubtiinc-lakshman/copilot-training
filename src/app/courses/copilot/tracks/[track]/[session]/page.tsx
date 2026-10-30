@@ -6,6 +6,7 @@ import { GtLocked, GtNotYours, gtViewer } from "@/components/GtParts";
 import { Section } from "@/components/Section";
 import GtLabForm from "@/components/GtLabForm";
 import { TRACKS } from "@/program/tracks";
+import { PageSkeleton } from "@/components/Skeleton";
 
 const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => {
   const Tag = ordered ? "ol" : "ul";
@@ -66,7 +67,7 @@ async function Session({ params }: { params: Promise<{ track: string; session: s
 export default function SessionPage({ params }: { params: Promise<{ track: string; session: string }> }) {
   return (
     <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <BackLink params={params} />
         <Session params={params} />
       </Suspense>

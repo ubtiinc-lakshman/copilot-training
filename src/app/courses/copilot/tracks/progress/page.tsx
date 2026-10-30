@@ -10,6 +10,7 @@ import { loadGtProgress } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 import PeReview from "@/components/PeReview";
 import { TRACKS } from "@/program/tracks";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Track reviews | GitHub Copilot" };
 
@@ -84,7 +85,7 @@ export default function TrackReviewsPage() {
       </Link>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Track lab reviews</h1>
       <p className="text-muted">Approve a lab or send it back with feedback. A lab that is sent back does not count toward the track until it is resubmitted.</p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Reviews />
       </Suspense>
     </main>

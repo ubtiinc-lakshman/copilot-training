@@ -28,7 +28,7 @@ export default function EnrollSelect({ email, current, tracks }: { email: string
           <option key={t.id} value={t.id}>{t.name}</option>
         ))}
       </select>
-      <button className="btn-ghost !py-1" disabled={busy || !value || value === current} onClick={save}>Save</button>
+      <button className="btn-ghost !py-1" disabled={busy || !value || value === current} aria-busy={busy} onClick={save}>Save</button>
       {error && <span className="text-xs text-rose-600">{error}</span>}
     </span>
   );

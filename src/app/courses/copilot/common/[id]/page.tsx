@@ -11,6 +11,7 @@ import { Section, CodeBlock } from "@/components/Section";
 import { LabDone } from "@/components/ProgramActions";
 import Quiz from "@/components/Quiz";
 import { COMMON_QUIZ_MIN } from "@/lib/schedule";
+import { PageSkeleton } from "@/components/Skeleton";
 
 const List = ({ items, ordered }: { items: string[]; ordered?: boolean }) => {
   const Tag = ordered ? "ol" : "ul";
@@ -133,7 +134,7 @@ export default function CommonDayPage({ params }: { params: Promise<{ id: string
       <Link href="/courses/copilot/common" className="link text-sm">
         Stage 1: Common days
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <DayContent params={params} />
       </Suspense>
     </main>

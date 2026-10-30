@@ -2,6 +2,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import PeUnit from "@/components/PeUnit";
 import { FOUNDATION } from "@/program/pe";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Level 1 | Prompt Engineering" };
 
@@ -11,7 +12,7 @@ export default function Level1Page() {
       <Link href="/courses/prompt-engineering" className="link text-sm">
         Prompt Engineering
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <PeUnit unit={FOUNDATION} />
       </Suspense>
     </main>

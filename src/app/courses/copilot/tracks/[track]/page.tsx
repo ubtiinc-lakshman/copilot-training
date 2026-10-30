@@ -7,6 +7,7 @@ import { GtLocked, GtNotYours, gtViewer } from "@/components/GtParts";
 import { Section } from "@/components/Section";
 import Quiz from "@/components/Quiz";
 import { TRACKS } from "@/program/tracks";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const generateStaticParams = () => GT_TRACKS.map((track) => ({ track }));
 
@@ -102,7 +103,7 @@ export default function TrackPage({ params }: { params: Promise<{ track: string 
       <Link href="/courses/copilot/tracks" className="link text-sm">
         Team tracks
       </Link>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Track params={params} />
       </Suspense>
     </main>

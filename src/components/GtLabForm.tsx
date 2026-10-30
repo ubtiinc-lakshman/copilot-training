@@ -53,7 +53,7 @@ export default function GtLabForm({ unit, initial, hasProof }: { unit: string; i
       ))}
       <p className="text-xs text-muted">Use sanitised or invented data. Do not paste secrets, customer data or confidential material.</p>
       <div className="flex items-center gap-3">
-        <button className="btn-primary" onClick={submit} disabled={state.kind === "saving"}>
+        <button className="btn-primary" onClick={submit} disabled={state.kind === "saving"} aria-busy={state.kind === "saving"}>
           {initial ? "Resubmit lab" : "Submit lab"}
         </button>
         {state.text && <span className={`text-sm ${state.kind === "error" ? "text-rose-600" : "text-muted"}`}>{state.text}</span>}

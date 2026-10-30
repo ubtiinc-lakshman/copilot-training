@@ -14,6 +14,7 @@ import { LabDone, PainPointCard, PainPointView, SubmissionForm, type SubmissionD
 
 import { actingFacilitator } from "@/lib/viewMode";
 import { isStage3Open } from "@/lib/gtDb";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Weekly apps" };
 
@@ -173,7 +174,7 @@ async function MyWeek() {
 export default function TodayPage() {
   return (
     <main className="mx-auto w-full max-w-[1800px] px-6 py-10">
-      <Suspense fallback={<p className="text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <MyWeek />
       </Suspense>
     </main>

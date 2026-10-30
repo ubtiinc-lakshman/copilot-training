@@ -32,6 +32,8 @@ const ABOUT: Record<string, { what: string; steps?: string[] }> = {
     ],
   },
 };
+// Ascending order inside a group: Lab 1, 2, 3 ... 10, 11 (numbers by value, not as text), and Basic, Intermediate, Advanced in that order.
+const orderKey = (slug: string) => slug.replace(/^((?:gc-)?)updated-lab-(\d+)-/, "$1lab-$2-z-").replace("basic", "level-1-basic").replace("intermediate", "level-2-intermediate").replace("advanced", "level-3-advanced");
 const FACILITATOR_ONLY = "For facilitators. Participants do not see this.";
 const aboutOf = (section: string, facilitator: boolean) => (facilitator ? { what: FACILITATOR_ONLY } : ABOUT[section]);
 
@@ -48,7 +50,9 @@ export async function DocList({ course, base }: { course: string; base: string }
   if (!docs.length) return <p className="mt-6 text-muted">The library has not been loaded yet.</p>;
 
   const sections = new Map<string, Record<string, unknown>[]>();
-  for (const d of docs) sections.set(d.section as string, [...(sections.get(d.section as string) ?? []), d]);
+  for (const d of [...docs].sort((x, y) => orderKey(x.slug as string).localeCompare(orderKey(y.slug as string), undefined, { numeric: true }))) {
+    sections.set(d.section as string, [...(sections.get(d.section as string) ?? []), d]);
+  }
   return (
     <div className="mt-6 grid gap-4 lg:grid-cols-2 2xl:grid-cols-3">
       {[...sections].map(([section, items]) => {
@@ -64,7 +68,7 @@ export async function DocList({ course, base }: { course: string; base: string }
               {items.map((d) => (
                 <li key={d.slug as string}>
                   <Link href={`${base}/${d.slug}`} className="link">
-                    {d.title as string}
+                    {d.title as string}{(d.slug as string).startsWith("updated-") ? " (updated version)" : ""}
                   </Link>
                 </li>
               ))}

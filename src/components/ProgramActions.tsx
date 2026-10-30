@@ -88,7 +88,7 @@ export function LabDone({ id, label, initialDone, initialNote, proof, hasProof }
           </button>
         </p>
       ) : (
-        <button className="btn-success" onClick={() => act(true)} disabled={busy}>
+        <button className="btn-success" onClick={() => act(true)} disabled={busy} aria-busy={busy}>
           {label}
         </button>
       )}
@@ -126,6 +126,7 @@ export function PainPointCard({ initial, open, opensOn }: { initial: PainPoint |
       <button
         className="btn-primary"
         disabled={busy}
+        aria-busy={busy}
         onClick={async () => {
           setBusy(true);
           setError("");
@@ -177,6 +178,7 @@ export function SubmissionForm({ week, initial }: { week: number; initial: Submi
         <button
           className="btn-primary"
           disabled={busy}
+          aria-busy={busy}
           onClick={async () => {
             setBusy(true);
             try {

@@ -11,6 +11,7 @@ import { loadGtRoster } from "@/lib/gtDb";
 import type { Sql } from "@/lib/assign";
 import EnrollSelect from "@/components/EnrollSelect";
 import { TRACKS } from "@/program/tracks";
+import { PageSkeleton } from "@/components/Skeleton";
 
 export const metadata = { title: "Track roster | GitHub Copilot" };
 
@@ -91,7 +92,7 @@ export default function TrackRosterPage() {
       </Link>
       <h1 className="mt-3 text-3xl font-extrabold tracking-tight">Track roster</h1>
       <p className="text-muted">Everyone on the participant list: the stage they are in, their track and progress. People pick their own track once; use Assign to set or change it (for example to match the roster team).</p>
-      <Suspense fallback={<p className="mt-6 text-muted">Loading...</p>}>
+      <Suspense fallback={<PageSkeleton />}>
         <Roster />
       </Suspense>
     </main>

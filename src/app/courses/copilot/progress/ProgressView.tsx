@@ -1,5 +1,7 @@
 "use client";
 
+import { LinesSkeleton } from "@/components/Skeleton";
+
 import { useEffect, useState } from "react";
 import { WEEKS, trackedEvents } from "@/program/calendar";
 
@@ -47,7 +49,7 @@ export default function ProgressView() {
   }, [tick]);
 
   if (error) return <p className="text-rose-600">{error}</p>;
-  if (!data) return <p className="text-muted">Loading...</p>;
+  if (!data) return <LinesSkeleton lines={6} />;
 
   const doneSet = new Set(data.completions.map((c) => `${c.email}|${c.activity}`));
   const note = (email: string, id: string) => data.completions.find((c) => c.email === email && c.activity === id)?.note;
