@@ -5,6 +5,9 @@ import { gradeQuiz, isCorrect, type Given } from "@/lib/grade";
 import { getQuiz } from "@/lib/quizzes";
 import { quizOpen } from "@/lib/schedule";
 import { getEvent } from "@/program/calendar";
+import { PE_QUIZ_MIN, peLevelOfQuiz } from "@/lib/pe";
+import { loadPeLevel } from "@/lib/peDb";
+import type { Sql } from "@/lib/assign";
 
 // POST: a signed-in participant submits quiz answers. The score is recomputed here, never trusted from the browser.
 export async function POST(request: Request) {
@@ -20,7 +23,9 @@ export async function POST(request: Request) {
   const day = Number(body.day);
   const questions = await getQuiz(day);
   if (!questions) return Response.json({ error: "No quiz for that day" }, { status: 400 });
-  if (!quizOpen(day, day > 100 ? getEvent(`s${String(day - 100).padStart(2, "0")}`)?.date : undefined) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
+  if (day >= PE_QUIZ_MIN) {
+    if (!(await actingFacilitator(user.email)) && peLevelOfQuiz(day) > (await loadPeLevel((await db()) as unknown as Sql, user.email.toLowerCase()))) return Response.json({ error: "This level has not opened yet" }, { status: 403 });
+  } else if (!quizOpen(day, day > 100 ? getEvent(`s${String(day - 100).padStart(2, "0")}`)?.date : undefined) && !(await actingFacilitator(user.email))) return Response.json({ error: "This day has not opened yet" }, { status: 403 });
   if (!Array.isArray(body.answers) || body.answers.length !== questions.length) {
     return Response.json({ error: "answers must match the number of questions" }, { status: 400 });
   }
@@ -37,7 +42,7 @@ export async function POST(request: Request) {
 export async function GET() {
   if (!isFacilitator((await auth())?.user?.email)) return Response.json({ error: "Facilitators only" }, { status: 403 });
   const sql = await db();
-  const rows = (await sql`SELECT id, created_at, day, email, name, score, total, percent FROM results ORDER BY id DESC`) as ResultRow[];
+  const rows = (await sql`SELECT id, created_at, day, email, name, score, total, percent FROM results WHERE day < ${PE_QUIZ_MIN} ORDER BY id DESC`) as ResultRow[];
   const attendance = (await sql`SELECT email, name, day FROM attendance`) as AttendanceRow[];
   const labs = ((await sql`SELECT c.email, c.name, c.activity, c.note, c.completed_at,
       EXISTS (SELECT 1 FROM lab_proofs p WHERE p.email = c.email AND p.activity = c.activity) AS proof

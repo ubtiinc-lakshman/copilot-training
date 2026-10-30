@@ -52,4 +52,28 @@ export const PROGRAM_TABLES: string[] = [
     github_id TEXT,
     added_at TIMESTAMPTZ NOT NULL DEFAULT now()
   )`,
+  // Prompt Engineering course: one lab submission per person per unit ("l1", "l2-qa", "l3"). Resubmitting replaces it.
+  `CREATE TABLE IF NOT EXISTS pe_submissions (
+    email TEXT NOT NULL,
+    name TEXT NOT NULL,
+    unit TEXT NOT NULL,
+    fields JSONB NOT NULL,
+    submitted_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    status TEXT NOT NULL DEFAULT 'pending',
+    feedback TEXT,
+    reviewed_by TEXT,
+    reviewed_at TIMESTAMPTZ,
+    PRIMARY KEY (email, unit)
+  )`,
+  // Reference documents (playbooks, workbooks, prompt repository, sample projects; audience "facilitator" = runbooks). Loaded by scripts/seed-pe-docs.mjs.
+  `CREATE TABLE IF NOT EXISTS pe_docs (
+    slug TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    audience TEXT NOT NULL,
+    section TEXT NOT NULL,
+    sort INTEGER NOT NULL,
+    body TEXT NOT NULL
+  )`,
+  // Which course a document belongs to ("prompt-engineering" or "copilot"; the table name is from when it held only Prompt Engineering).
+  `ALTER TABLE pe_docs ADD COLUMN IF NOT EXISTS course TEXT NOT NULL DEFAULT 'prompt-engineering'`,
 ];

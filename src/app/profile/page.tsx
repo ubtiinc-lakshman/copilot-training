@@ -6,6 +6,8 @@ import { auth } from "@/auth";
 import { actingFacilitator } from "@/lib/viewMode";
 import { db } from "@/lib/db";
 import { loadMine } from "@/lib/program";
+import { loadPeState } from "@/lib/peDb";
+import { peUnitDone } from "@/lib/pe";
 import { initialsOf, loadProfile } from "@/lib/profile";
 import type { Sql } from "@/lib/assign";
 import { COURSES } from "@/courses";
@@ -29,7 +31,8 @@ async function Profile() {
   const email = session.email.toLowerCase();
   const name = session.name ?? email;
   const sql = (await db()) as unknown as Sql;
-  const [mine, profile] = await Promise.all([loadMine(sql, email), loadProfile(sql, email)]);
+  const [mine, profile, pe] = await Promise.all([loadMine(sql, email), loadProfile(sql, email), loadPeState(sql, email)]);
+  const peDone = ["l1", ...pe.submitted].filter((u, i, a) => a.indexOf(u) === i && peUnitDone(u, new Set(pe.submitted), new Set(pe.passed))).length;
 
   const done = new Set(mine.completions.map((c) => c.activity as string));
   const commonDone = COMMON_DAYS.filter((d) => done.has(d.id)).length;
@@ -86,6 +89,17 @@ async function Profile() {
                 </div>
                 <p className="mt-4 text-sm">
                   <Link href="/courses/copilot/me" className="link">Weekly apps and certification progress</Link>
+                </p>
+              </>
+            )}
+            {c.id === "prompt-engineering" && (
+              <>
+                <div className="mt-4 grid grid-cols-2 gap-3 md:grid-cols-4">
+                  <Stat label="Level" value={`${pe.level} / 3`} hint="Current level" />
+                  <Stat label="Units complete" value={String(peDone)} hint="Lab submitted and quiz passed" />
+                </div>
+                <p className="mt-4 text-sm">
+                  <Link href="/courses/prompt-engineering/me" className="link">Prompt Engineering progress</Link>
                 </p>
               </>
             )}

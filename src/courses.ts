@@ -13,9 +13,9 @@ export const COURSES: Course[] = [
   {
     id: "prompt-engineering",
     title: "Prompt Engineering",
-    blurb: "Self-paced prompt engineering: content, labs, tasks, quizzes and an assessment.",
+    blurb: "Self-paced in three levels: the prompt formula and safe use, a track for your own team, then an assessment on a real scenario.",
     href: "/courses/prompt-engineering",
-    status: "soon",
-    parts: ["Content", "Labs", "Tasks", "Quizzes", "Assessment"],
+    status: "live",
+    parts: ["Content", "Labs", "Quizzes", "Assessment"],
   },
 ];
