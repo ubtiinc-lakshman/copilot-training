@@ -14,10 +14,10 @@ async function DayList() {
       {LEVELS.map((level) => (
         <section key={level} className="mt-10">
           <h2 className="mb-3 text-xl font-bold">{level}</h2>
-          <ul className="card divide-y divide-line overflow-hidden">
+          <ul className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-3">
             {DAYS.filter((d) => d.level === level).map((d) => (
               <li key={d.day}>
-                <Link href={`/courses/copilot/days/${d.day}`} className="flex items-center justify-between gap-4 px-5 py-3 transition hover:bg-brand-soft">
+                <Link href={`/courses/copilot/days/${d.day}`} className="card-link flex h-full items-center justify-between gap-4 px-5 py-3">
                   <span>
                     <b className="mr-2 text-brand">Day {d.day}</b> {d.title}
                   </span>
