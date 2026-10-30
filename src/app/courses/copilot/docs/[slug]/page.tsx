@@ -3,7 +3,7 @@ import Link from "next/link";
 import { DocView } from "@/components/Docs";
 
 async function Doc({ params }: { params: Promise<{ slug: string }> }) {
-  return <DocView course="copilot" slug={(await params).slug} />;
+  return <DocView course="copilot" slug={(await params).slug} base="/courses/copilot/docs" />;
 }
 
 export default function CopilotDocPage({ params }: { params: Promise<{ slug: string }> }) {

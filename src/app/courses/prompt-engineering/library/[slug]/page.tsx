@@ -3,7 +3,7 @@ import Link from "next/link";
 import { DocView } from "@/components/Docs";
 
 async function Doc({ params }: { params: Promise<{ slug: string }> }) {
-  return <DocView course="prompt-engineering" slug={(await params).slug} />;
+  return <DocView course="prompt-engineering" slug={(await params).slug} base="/courses/prompt-engineering/library" />;
 }
 
 export default function DocPage({ params }: { params: Promise<{ slug: string }> }) {

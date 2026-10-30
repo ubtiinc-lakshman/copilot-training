@@ -25,12 +25,12 @@ function addDir(dir, opts) {
   }
 }
 
-// Participants
-addFile(path.join(src, "GitHub-Copilot-Training-Plan.md"), { audience: "all", section: "Program plan", title: "Training plan: summary" });
-addFile(path.join(src, "GitHub-Copilot-Training-Plan-Detailed.md"), { audience: "all", section: "Program plan", title: "Training plan: detailed (day by day)" });
-addFile(path.resolve("data/copilot-converted/github-copilot-training-program.md"), { audience: "all", section: "Program plan", title: "GitHub Copilot Training Program" });
-addFile(path.resolve("data/copilot-converted/ai-enabled-development-guide.md"), { audience: "all", section: "Guides", title: "AI Enabled Development Guide" });
-addFile(path.resolve("data/copilot-converted/ai-development-handbook.md"), { audience: "all", section: "Guides", title: "AI Development Practical Handbook" });
+// The plans and the guides are for facilitators; participants get the playbooks, workbooks and reference sheets.
+addFile(path.join(src, "GitHub-Copilot-Training-Plan.md"), { audience: "facilitator", section: "Program plan", title: "Training plan: summary" });
+addFile(path.join(src, "GitHub-Copilot-Training-Plan-Detailed.md"), { audience: "facilitator", section: "Program plan", title: "Training plan: detailed (day by day)" });
+addFile(path.resolve("data/copilot-converted/github-copilot-training-program.md"), { audience: "facilitator", section: "Program plan", title: "GitHub Copilot Training Program" });
+addFile(path.resolve("data/copilot-converted/ai-enabled-development-guide.md"), { audience: "facilitator", section: "Guides", title: "AI Enabled Development Guide" });
+addFile(path.resolve("data/copilot-converted/ai-development-handbook.md"), { audience: "facilitator", section: "Guides", title: "AI Development Practical Handbook" });
 addDir("3_TEAM_PLAYBOOKS", { audience: "all", section: "Playbooks" });
 addDir("4_LAB_WORKBOOKS", { audience: "all", section: "Lab workbooks" });
 addDir("5_REFERENCE_MATERIALS", { audience: "all", section: "Reference", only: /^(Advanced|Common|Core|Glossary|Prompt)/ });
