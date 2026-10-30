@@ -88,3 +88,9 @@ body {
 @utility link {
   @apply font-medium text-brand underline-offset-4 hover:underline;
 }
+
+/* Course pages: the main header slides up once scrolled and the course menu moves to the top (see ScrollChrome). */
+.site-header { transition: transform 0.2s ease; }
+.course-nav { transition: top 0.2s ease; }
+html[data-course-scrolled] .site-header { transform: translateY(-100%); }
+html[data-course-scrolled] .course-nav { top: 0; }
